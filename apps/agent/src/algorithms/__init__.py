@@ -1,4 +1,4 @@
-"""Phase 1 algorithm implementations for license optimization.
+"""Algorithm implementations for license optimization.
 
 Exported algorithms:
   - Algorithm 2.2: Read-Only User Detector
@@ -6,6 +6,7 @@ Exported algorithms:
   - Algorithm 3.3: Privilege Creep Detector
   - Algorithm 3.4: Toxic Combination Detector
   - Algorithm 4.7: New User License Recommender
+  - Algorithm 7.1: License Utilization Trend Analyzer
 """
 
 from .algorithm_2_2_readonly_detector import detect_readonly_users
@@ -20,6 +21,11 @@ from .algorithm_4_7_new_user_license_recommender import (
     LicenseRecommendationOption,
     suggest_license_for_new_user,
 )
+from .algorithm_7_1_license_utilization_trend import (
+    LicenseUtilization,
+    LicenseUtilizationAnalysis,
+    analyze_license_utilization,
+)
 
 __all__ = [
     "detect_readonly_users",
@@ -30,4 +36,7 @@ __all__ = [
     "NewUserLicenseRecommender",
     "LicenseRecommendationOption",
     "suggest_license_for_new_user",
+    "LicenseUtilization",
+    "LicenseUtilizationAnalysis",
+    "analyze_license_utilization",
 ]
