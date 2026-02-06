@@ -1,0 +1,54 @@
+{
+  "scenario_name": "Already Optimized: Correct License Assignment",
+  "description": "User with appropriate Team Members license assignment. No optimization needed.",
+
+  "user": {
+    "user_id": "USR005",
+    "name": "Carol Martinez",
+    "email": "carol.martinez@contoso.com",
+    "current_license": "Team Members",
+    "current_license_cost_monthly": 60.00
+  },
+
+  "activity_summary": {
+    "date_range": "2026-01-01 to 2026-01-31",
+    "total_operations": 320,
+    "read_operations": 315,
+    "write_operations": 5,
+    "read_percentage": 98.44,
+    "write_percentage": 1.56
+  },
+
+  "write_operations_detail": [
+    {
+      "menu_item": "TimeEntry",
+      "action": "Write",
+      "count": 3,
+      "team_members_eligible": true,
+      "note": "Weekly time sheet submissions"
+    },
+    {
+      "menu_item": "ExpenseReport",
+      "action": "Write",
+      "count": 1,
+      "team_members_eligible": true,
+      "note": "Monthly expense submission"
+    },
+    {
+      "menu_item": "UserProfile",
+      "action": "Write",
+      "count": 1,
+      "team_members_eligible": true,
+      "note": "Profile update"
+    }
+  ],
+
+  "expected_recommendation": {
+    "action": "no_change",
+    "current_license": "Team Members",
+    "confidence_score": 0.90,
+    "estimated_monthly_savings": 0.00,
+    "estimated_annual_savings": 0.00,
+    "rationale": "User appropriately assigned Team Members license. 98.44% read-only operations with minimal self-service writes. License matches usage pattern. No optimization opportunity."
+  }
+}

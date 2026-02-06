@@ -1,0 +1,13 @@
+securityrole,AOTName,AccessLevel,LicenseType,Priority,Entitled,NotEntitled,securitytype
+Accountant,GeneralJournalEntry,Write,Finance,180,1,0,MenuItemDisplay
+Accountant,CustomerList,Read,Team Members,60,1,0,MenuItemDisplay
+Accountant,VendorList,Read,Team Members,60,1,0,MenuItemDisplay
+Accountant,BankReconciliation,Write,Finance,180,1,0,MenuItemAction
+Accountant,ACCOUNTANT_BR,Read,Team Members,60,1,0,MenuItemDisplay
+Purchasing manager,PurchaseOrder,Write,SCM,180,1,0,MenuItemDisplay
+Purchasing manager,VendorList,Read,Team Members,60,1,0,MenuItemDisplay
+Purchasing manager,InventoryOnHand,Read,Team Members,60,1,0,MenuItemDisplay
+Sales manager,SalesOrder,Write,Operations,90,1,0,MenuItemDisplay
+Sales manager,CustomerList,Read,Team Members,60,1,0,MenuItemDisplay
+Warehouse worker,WHSMobileApp,Write,SCM,180,1,0,MenuItemDisplay
+Warehouse worker,InventoryOnHand,Read,Team Members,60,1,0,MenuItemDisplay

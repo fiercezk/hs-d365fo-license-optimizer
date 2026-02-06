@@ -1,0 +1,48 @@
+{
+  "scenario_name": "Obvious Optimization: High Read-Only User with Commerce License",
+  "description": "User with 99.76% read operations assigned expensive Commerce license. Clear candidate for downgrade to Team Members.",
+
+  "user": {
+    "user_id": "USR001",
+    "name": "John Doe",
+    "email": "john.doe@contoso.com",
+    "current_license": "Commerce",
+    "current_license_cost_monthly": 180.00
+  },
+
+  "activity_summary": {
+    "date_range": "2026-01-01 to 2026-01-31",
+    "total_operations": 849,
+    "read_operations": 847,
+    "write_operations": 2,
+    "read_percentage": 99.76,
+    "write_percentage": 0.24
+  },
+
+  "write_operations_detail": [
+    {
+      "menu_item": "UserProfile",
+      "action": "Write",
+      "count": 1,
+      "team_members_eligible": true,
+      "note": "Self-service profile update"
+    },
+    {
+      "menu_item": "TimeEntry",
+      "action": "Write",
+      "count": 1,
+      "team_members_eligible": true,
+      "note": "Time sheet submission"
+    }
+  ],
+
+  "expected_recommendation": {
+    "action": "downgrade",
+    "from_license": "Commerce",
+    "to_license": "Team Members",
+    "confidence_score": 0.95,
+    "estimated_monthly_savings": 120.00,
+    "estimated_annual_savings": 1440.00,
+    "rationale": "User performs 99.76% read-only operations. 2 write operations are self-service actions eligible for Team Members license. High confidence: 1-month data, consistent pattern, no edge cases."
+  }
+}

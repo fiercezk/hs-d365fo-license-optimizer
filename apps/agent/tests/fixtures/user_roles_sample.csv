@@ -1,0 +1,5 @@
+user_id,user_name,email,company,department,role_id,role_name,assigned_date,status
+USR001,John Doe,john.doe@contoso.com,USMF,Finance,ROLE_ACCT,Accountant,2024-01-15,Active
+USR002,Jane Smith,jane.smith@contoso.com,USMF,Procurement,ROLE_PURCH,Purchasing manager,2024-02-01,Active
+USR003,Bob Johnson,bob.johnson@contoso.com,USMF,Sales,ROLE_SALES,Sales manager,2024-01-10,Active
+USR004,Alice Williams,alice.williams@contoso.com,USMF,Warehouse,ROLE_WH,Warehouse worker,2024-03-01,Active

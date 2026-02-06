@@ -1,0 +1,21 @@
+user_id,timestamp,menu_item,action,session_id,license_tier,feature
+USR001,2026-01-15 09:00:00,CustomerList,Read,sess-001,Team Members,Accounts Receivable
+USR001,2026-01-15 09:05:00,VendorList,Read,sess-001,Team Members,Accounts Payable
+USR001,2026-01-15 09:10:00,BankReconciliation,Read,sess-001,Team Members,Cash Management
+USR001,2026-01-15 09:15:00,GeneralJournalEntry,Read,sess-001,Team Members,General Ledger
+USR001,2026-01-15 09:20:00,CustomerList,Read,sess-001,Team Members,Accounts Receivable
+USR001,2026-01-15 10:00:00,ACCOUNTANT_BR,Read,sess-002,Team Members,Finance
+USR001,2026-01-15 10:05:00,VendorList,Read,sess-002,Team Members,Accounts Payable
+USR001,2026-01-15 10:10:00,CustomerList,Read,sess-002,Team Members,Accounts Receivable
+USR001,2026-01-15 14:00:00,UserProfile,Write,sess-003,Team Members,Self-Service
+USR001,2026-01-15 14:30:00,TimeEntry,Write,sess-003,Team Members,Self-Service
+USR002,2026-01-16 08:00:00,PurchaseOrder,Write,sess-101,SCM,Procurement
+USR002,2026-01-16 08:30:00,VendorList,Read,sess-101,Team Members,Accounts Payable
+USR002,2026-01-16 09:00:00,PurchaseOrder,Write,sess-101,SCM,Procurement
+USR002,2026-01-16 09:30:00,InventoryOnHand,Read,sess-101,Team Members,Inventory
+USR002,2026-01-16 10:00:00,PurchaseOrder,Write,sess-102,SCM,Procurement
+USR003,2026-01-17 09:00:00,SalesOrder,Write,sess-201,Operations,Sales
+USR003,2026-01-17 09:30:00,CustomerList,Read,sess-201,Team Members,Accounts Receivable
+USR003,2026-01-17 10:00:00,SalesOrder,Write,sess-201,Operations,Sales
+USR003,2026-01-17 10:30:00,CustomerList,Read,sess-201,Team Members,Accounts Receivable
+USR003,2026-01-17 11:00:00,SalesOrder,Write,sess-202,Operations,Sales

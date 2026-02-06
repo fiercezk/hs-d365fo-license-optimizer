@@ -1,0 +1,171 @@
+{
+  "$schema": "./pricing-schema.json",
+  "version": "2026-02-06",
+  "currency": "USD",
+  "billingPeriod": "monthly",
+  "note": "Microsoft Dynamics 365 Finance & Operations license pricing. Customer-overridable per tenant configuration (FR-Agent-1.3). Prices verified February 2026.",
+
+  "licenses": {
+    "team_members": {
+      "name": "Team Members",
+      "sku": "Dynamics_365_for_Team_Members",
+      "pricePerUserPerMonth": 60.00,
+      "description": "Self-service scenarios, read-only access to most forms, limited write operations (profile updates, time entry, expense submission)",
+      "capabilities": [
+        "Read-only access to most forms",
+        "Self-service write operations",
+        "Time and expense entry",
+        "Profile management"
+      ],
+      "limitations": [
+        "Cannot create transactional records (POs, invoices, journal entries)",
+        "Limited to TEAM_MEMBERS_ELIGIBLE_FORMS list"
+      ]
+    },
+
+    "operations_activity": {
+      "name": "Operations - Activity",
+      "sku": "Dynamics_365_Operations_Activity",
+      "pricePerUserPerMonth": 30.00,
+      "description": "Add-on for Team Members. Enables activity-based operations (time tracking, project tasks) without full transactional access.",
+      "requiresBaseLicense": "team_members",
+      "capabilities": [
+        "Project time tracking",
+        "Task management",
+        "Activity-based operations"
+      ]
+    },
+
+    "operations": {
+      "name": "Operations",
+      "sku": "Dynamics_365_Operations",
+      "pricePerUserPerMonth": 90.00,
+      "description": "Base operational license. Enables transactional operations in single module (Finance OR SCM OR Commerce, not multiple).",
+      "capabilities": [
+        "Full CRUD operations in assigned module",
+        "Transactional record creation",
+        "Single module access (Finance OR SCM OR Commerce)"
+      ]
+    },
+
+    "scm": {
+      "name": "SCM",
+      "sku": "Dynamics_365_Supply_Chain_Management",
+      "pricePerUserPerMonth": 180.00,
+      "description": "Full Supply Chain Management license. Warehouse, inventory, production, procurement.",
+      "capabilities": [
+        "Full SCM module access",
+        "Warehouse management",
+        "Production control",
+        "Procurement",
+        "Inventory management"
+      ]
+    },
+
+    "finance": {
+      "name": "Finance",
+      "sku": "Dynamics_365_Finance",
+      "pricePerUserPerMonth": 180.00,
+      "description": "Full Finance license. General ledger, AR, AP, cash management, financial reporting.",
+      "capabilities": [
+        "Full Finance module access",
+        "General ledger",
+        "Accounts receivable/payable",
+        "Cash and bank management",
+        "Financial reporting",
+        "Budgeting"
+      ]
+    },
+
+    "commerce": {
+      "name": "Commerce",
+      "sku": "Dynamics_365_Commerce",
+      "pricePerUserPerMonth": 180.00,
+      "description": "Full Commerce license. Retail, e-commerce, omnichannel operations.",
+      "capabilities": [
+        "Point of sale (POS)",
+        "E-commerce",
+        "Omnichannel retail",
+        "Merchandising",
+        "Store operations"
+      ]
+    },
+
+    "device": {
+      "name": "Device License",
+      "sku": "Dynamics_365_Operations_Device",
+      "pricePerDevicePerMonth": 80.00,
+      "description": "Shared device license. Unlimited users on a single device (warehouse scanner, POS terminal, kiosk).",
+      "billingUnit": "device",
+      "useCases": [
+        "Warehouse scanners",
+        "POS terminals",
+        "Manufacturing floor devices",
+        "Kiosks"
+      ],
+      "note": "Cost-effective when 3+ users share a device (Phase 2: Algorithm 4.1)"
+    }
+  },
+
+  "pricingRules": {
+    "addOnsRequireBase": {
+      "operations_activity": {
+        "requires": "team_members",
+        "combinedPrice": 90.00,
+        "note": "Team Members ($60) + Operations Activity ($30) = $90 total"
+      }
+    },
+
+    "multiLicenseStacking": {
+      "description": "Users can hold multiple licenses. Total cost is sum of all licenses.",
+      "example": {
+        "licenses": ["scm", "finance"],
+        "totalCost": 360.00,
+        "calculation": "$180 (SCM) + $180 (Finance) = $360"
+      }
+    }
+  },
+
+  "savingsCalculation": {
+    "annualMultiplier": 12,
+    "confidenceThresholds": {
+      "high": 0.90,
+      "medium": 0.70,
+      "low": 0.50
+    },
+    "note": "Confidence score based on: data completeness (40%), pattern consistency (30%), edge case handling (30%)"
+  },
+
+  "seasonalAwareness": {
+    "enabled": true,
+    "description": "FR-Agent-1.4: Adjust recommendations based on fiscal calendars, audit periods, year-end close. See Algorithm 3.4 (doc 06) for seasonal pattern detection.",
+    "considerations": [
+      "Q4 accounting surge (retain Finance licenses)",
+      "Summer slowdown (candidate for temporary downgrade)",
+      "Year-end close blackout (defer changes)",
+      "Audit period (defer security role changes)"
+    ]
+  },
+
+  "customerOverrides": {
+    "enabled": true,
+    "description": "Customers can override prices for volume licensing agreements, EA discounts, regional pricing variations.",
+    "overrideFile": "./customer-pricing-override.json",
+    "validation": {
+      "requireApproval": true,
+      "auditLog": true
+    }
+  },
+
+  "metadata": {
+    "source": "Microsoft Dynamics 365 Licensing Guide 2026",
+    "lastVerified": "2026-02-06",
+    "verifiedBy": "Requirements analysis (doc 06, 09, 12)",
+    "caveats": [
+      "Team Members form eligibility (TEAM_MEMBERS_ELIGIBLE_FORMS) requires customer validation before production use",
+      "Operations Activity form eligibility (OPERATIONS_ACTIVITY_ELIGIBLE_FORMS) requires customer validation",
+      "Regional pricing may vary outside USD",
+      "Volume licensing discounts not reflected (customer-specific)"
+    ]
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "scenario_name": "Edge Case: 50/50 Read-Write Split",
+  "description": "User with balanced read-write operations. Not a clear optimization candidate due to significant transactional activity.",
+
+  "user": {
+    "user_id": "USR002",
+    "name": "Jane Smith",
+    "email": "jane.smith@contoso.com",
+    "current_license": "SCM",
+    "current_license_cost_monthly": 180.00
+  },
+
+  "activity_summary": {
+    "date_range": "2026-01-01 to 2026-01-31",
+    "total_operations": 500,
+    "read_operations": 250,
+    "write_operations": 250,
+    "read_percentage": 50.0,
+    "write_percentage": 50.0
+  },
+
+  "write_operations_detail": [
+    {
+      "menu_item": "PurchaseOrder",
+      "action": "Write",
+      "count": 200,
+      "team_members_eligible": false,
+      "note": "Core transactional activity - requires full license"
+    },
+    {
+      "menu_item": "VendorInvoice",
+      "action": "Write",
+      "count": 30,
+      "team_members_eligible": false,
+      "note": "Finance transactional activity"
+    },
+    {
+      "menu_item": "InventoryAdjustment",
+      "action": "Write",
+      "count": 15,
+      "team_members_eligible": false,
+      "note": "SCM transactional activity"
+    },
+    {
+      "menu_item": "UserProfile",
+      "action": "Write",
+      "count": 5,
+      "team_members_eligible": true,
+      "note": "Self-service updates"
+    }
+  ],
+
+  "expected_recommendation": {
+    "action": "no_change",
+    "current_license": "SCM",
+    "confidence_score": 0.85,
+    "estimated_monthly_savings": 0.00,
+    "estimated_annual_savings": 0.00,
+    "rationale": "User requires full SCM license due to significant transactional write operations (245 out of 250 writes). 50% write ratio indicates active transactional role. Downgrade would block core job functions."
+  }
+}
