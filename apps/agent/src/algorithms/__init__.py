@@ -1,5 +1,3 @@
-"""Algorithm implementations for license optimization.
-
 Exported algorithms:
   - Algorithm 1.1: Role License Composition Analyzer
 """Phase 1 & 2 algorithm implementations for license optimization.
@@ -13,6 +11,10 @@ Exported algorithms:
   - Algorithm 4.7: New User License Recommender
 
   Phase 2:
+  - Algorithm 2.1: Permission vs. Usage Analyzer
+"""
+
+from .algorithm_2_1_permission_usage_analyzer import analyze_permission_usage
   - Algorithm 1.4: Component Removal Recommender
 """
 
@@ -40,6 +42,8 @@ from .algorithm_4_7_new_user_license_recommender import (
 )
 
 __all__ = [
+    # Phase 2
+    "analyze_permission_usage",
     "LicenseCompositionEntry",
     "RoleComposition",
     "analyze_role_composition",
