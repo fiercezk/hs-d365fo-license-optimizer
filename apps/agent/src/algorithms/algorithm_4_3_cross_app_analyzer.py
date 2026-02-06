@@ -29,6 +29,7 @@ from ..models.output_schemas import (
     RecommendationReason,
     SavingsEstimate,
 )
+from ..utils.pricing import get_license_price
 
 
 def analyze_cross_application_licenses(
@@ -130,15 +131,15 @@ def analyze_cross_application_licenses(
 
     # Step 5: Determine current license cost (assume user holds individual licenses)
     # Get prices from pricing config
-    finance_price = _get_license_price(pricing_config, "Finance")
-    scm_price = _get_license_price(pricing_config, "SCM")
+    finance_price = get_license_price(pricing_config, "Finance")
+    scm_price = get_license_price(pricing_config, "SCM")
     combined_price = _get_combined_price(pricing_config, "Finance", "SCM")
 
     # Calculate cost of other applications (not Finance/SCM)
     other_app_cost = 0.0
     other_apps = user_applications - {"Finance", "SCM"}
     for app in other_apps:
-        other_app_cost += _get_license_price(pricing_config, app)
+        other_app_cost += get_license_price(pricing_config, app)
 
     current_cost = finance_price + scm_price + other_app_cost
     recommended_cost = combined_price + other_app_cost
@@ -301,40 +302,6 @@ def _create_no_cross_app_recommendation(
     )
 
 
-def _get_license_price(pricing_config: dict[str, Any], license_name: str) -> float:
-    """Get the monthly price for a license from the pricing configuration.
-
-    Args:
-        pricing_config: Pricing configuration dictionary
-        license_name: License name (Finance, SCM, Commerce, etc.)
-
-    Returns:
-        Monthly price in USD
-
-    Raises:
-        KeyError: If license not found in config
-    """
-    licenses = pricing_config.get("licenses", {})
-
-    # Try exact case-sensitive match first
-    if license_name in licenses:
-        return float(licenses[license_name].get("pricePerUserPerMonth", 0))
-
-    # Try lowercase with underscores
-    license_key_lower = license_name.lower().replace(" ", "_").replace("+", "_")
-    if license_key_lower in licenses:
-        return float(licenses[license_key_lower].get("pricePerUserPerMonth", 0))
-
-    # Try matching by case-insensitive key lookup
-    for key, config in licenses.items():
-        if key.lower().replace(" ", "_") == license_key_lower:
-            return float(config.get("pricePerUserPerMonth", 0))
-
-    raise KeyError(
-        f"License '{license_name}' not found in pricing config. Available: {list(licenses.keys())}"
-    )
-
-
 def _get_combined_price(pricing_config: dict[str, Any], app1: str, app2: str) -> float:
     """Get the price for a combined license.
 
@@ -359,8 +326,8 @@ def _get_combined_price(pricing_config: dict[str, Any], app1: str, app2: str) ->
         return 210.0  # Combined price from Requirements/07
 
     # For other combinations, return sum
-    price1 = _get_license_price(pricing_config, app1)
-    price2 = _get_license_price(pricing_config, app2)
+    price1 = get_license_price(pricing_config, app1)
+    price2 = get_license_price(pricing_config, app2)
     return price1 + price2
 
 

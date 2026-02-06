@@ -36,6 +36,7 @@ from ..models.output_schemas import (
     RecommendationReason,
     SavingsEstimate,
 )
+from ..utils.pricing import get_license_price
 
 # Device types eligible for device license conversion
 ELIGIBLE_DEVICE_TYPES: frozenset[str] = frozenset(
@@ -58,31 +59,6 @@ _DEFAULT_LICENSE_PRIORITY: dict[str, int] = {
     "Commerce": 180,
     "Device License": 80,
 }
-
-
-def _get_license_price(pricing_config: dict[str, Any], license_type: str) -> float:
-    """Retrieve the monthly price for a given license type.
-
-    Args:
-        pricing_config: Parsed pricing.json dictionary.
-        license_type: License type name (e.g., "Commerce", "SCM").
-
-    Returns:
-        Monthly price in USD.
-
-    Raises:
-        KeyError: If license type not found in pricing config.
-    """
-    licenses_dict: dict[str, Any] = pricing_config.get("licenses", {})
-    # Handle both snake_case (from config) and space-case (from data)
-    normalized_name = license_type.lower().replace(" ", "_")
-    for config_key, config_data in licenses_dict.items():
-        if config_key.lower() == normalized_name:
-            price_key = "pricePerUserPerMonth"
-            if price_key in config_data:
-                return float(config_data[price_key])
-    # Fallback if not found
-    raise KeyError(f"License type '{license_type}' not found in pricing config")
 
 
 def _get_device_license_price(pricing_config: dict[str, Any]) -> float:
@@ -355,7 +331,7 @@ def detect_device_license_opportunities(
             user_activity = device_df[device_df["user_id"] == user_id]
             current_license = _determine_current_license(user_activity, pricing_config)
             try:
-                user_license_cost = _get_license_price(pricing_config, current_license)
+                user_license_cost = get_license_price(pricing_config, current_license)
                 current_cost += user_license_cost
             except KeyError:
                 # If license not found, estimate at $90
