@@ -1,0 +1,28 @@
+{
+  "scenario_name": "No Manager Assigned: Active User Without Manager",
+  "description": "Active user with roles and recent activity but no manager assigned. Orphaned due to missing management oversight. HIGH risk because account is active with no oversight.",
+
+  "user": {
+    "user_id": "USR-ORPHAN-001",
+    "name": "Sarah Chen",
+    "email": "sarah.chen@contoso.com",
+    "status": "Active",
+    "manager_id": null,
+    "manager_status": null,
+    "department": "Finance",
+    "department_exists": true,
+    "current_license": "Finance",
+    "current_license_cost_monthly": 180.00,
+    "roles": ["Accountant", "AP Clerk"],
+    "role_count": 2,
+    "days_since_last_activity": 5
+  },
+
+  "expected_result": {
+    "is_orphaned": true,
+    "orphan_reasons": ["No valid manager"],
+    "orphan_type": "NO_MANAGER",
+    "risk_level": "HIGH",
+    "recommendation": "Assign a valid manager to this account"
+  }
+}
