@@ -11,6 +11,7 @@ Exported algorithms:
   - Algorithm 4.7: New User License Recommender
 
   Phase 2:
+  - Algorithm 3.5: Orphaned Account Detector
   - Algorithm 2.1: Permission vs. Usage Analyzer
 """
 
@@ -35,6 +36,12 @@ from .algorithm_3_4_toxic_combination_detector import (
     detect_toxic_combinations,
     detect_toxic_combinations_batch,
 )
+from .algorithm_3_5_orphaned_account_detector import (
+    detect_orphaned_accounts,
+    OrphanedAccountResult,
+    OrphanType,
+    UserDirectoryRecord,
+)
 from .algorithm_4_7_new_user_license_recommender import (
     NewUserLicenseRecommender,
     LicenseRecommendationOption,
@@ -43,6 +50,10 @@ from .algorithm_4_7_new_user_license_recommender import (
 
 __all__ = [
     # Phase 2
+    "detect_orphaned_accounts",
+    "OrphanedAccountResult",
+    "OrphanType",
+    "UserDirectoryRecord",
     "analyze_permission_usage",
     "LicenseCompositionEntry",
     "RoleComposition",

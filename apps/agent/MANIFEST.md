@@ -1,5 +1,7 @@
 # Algorithm Implementation Manifest
 
+**Algorithm:** 3.5 - Orphaned Account Detector
+**Branch:** `feature/algo-3-5-orphaned`
 **Algorithm:** 2.1 - Permission vs. Usage Analyzer
 **Branch:** `feature/algo-2-1`
 **Algorithm:** 1.1 - Role License Composition Analyzer
@@ -15,6 +17,14 @@
 ## Scope
 
 ### Primary Deliverables
+- [x] Implementation: `src/algorithms/algorithm_3_5_orphaned_account_detector.py`
+- [x] Tests: `tests/test_algorithm_3_5.py`
+- [x] Test fixtures: `tests/fixtures/algo_3_5/` (8 JSON scenarios)
+- [x] Documentation: Inline docstrings + spec reference
+
+### Specification Reference
+- Requirements doc: `Requirements/07-Advanced-Algorithms-Expansion.md`, lines 634-747
+- Algorithm category: Security & Compliance
 - [x] Implementation: `src/algorithms/algorithm_2_1_permission_usage_analyzer.py`
 - [x] Tests: `tests/test_algorithm_2_1.py`
 - [x] Test fixtures: Built dynamically in test helpers
@@ -45,6 +55,19 @@
 ## Dependencies
 
 ### Data Models (Input)
+Custom input model defined in algorithm file:
+- [x] `UserDirectoryRecord` (Pydantic model with 13 fields: user_id, status, manager_id, department, last_activity_date, etc.)
+
+### Data Models (Output)
+Custom output model defined in algorithm file:
+- [x] `OrphanedAccountResult` (Pydantic model with 13 fields)
+- [x] `OrphanType` (Enum: NO_MANAGER, INACTIVE, NO_DEPARTMENT, INACTIVE_MANAGER, MULTIPLE)
+
+### Shared Utilities
+None. This is a self-contained security algorithm.
+
+### Algorithm Dependencies
+None. Standalone orphaned account detection.
 Input schemas from DataFrames:
 - [x] Security configuration (role → menu item → license mapping)
 - [x] User-role assignments (user → role mapping)
@@ -101,6 +124,18 @@ None. This is a standalone algorithm.
 
 ```python
 # Added to imports section:
+from .algorithm_3_5_orphaned_account_detector import (
+    detect_orphaned_accounts,
+    OrphanedAccountResult,
+    OrphanType,
+    UserDirectoryRecord,
+)
+
+# Added to __all__ list:
+"detect_orphaned_accounts",
+"OrphanedAccountResult",
+"OrphanType",
+"UserDirectoryRecord",
 from .algorithm_2_1_permission_usage_analyzer import analyze_permission_usage
 
 # Added to __all__ list:
@@ -133,6 +168,14 @@ from .algorithm_1_4_component_removal import (
 **Reason:** Append-only changes, no modifications to existing exports
 
 ### `src/models/input_schemas.py`
+**Action:** NONE (custom model in algorithm file)
+
+### `src/models/output_schemas.py`
+**Action:** NONE (custom model in algorithm file)
+
+### `src/utils/`
+**Action:** NONE
+
 **Action:** NONE
 
 ### `src/models/output_schemas.py`
@@ -158,6 +201,12 @@ No new utilities created. Algorithm is self-contained.
 Sequential development approach - no parallel branches active.
 
 ### Potential Conflicts
+None. Algorithm 3.5 is self-contained with custom models.
+
+### Coordination Notes
+- [x] Reviewed MANIFEST.md template
+- [x] Confirmed uses custom models (no shared schema changes)
+- [x] Sequential development: 1.4 → 1.1 → 2.1 → 3.5 (current) → COMPLETE
 None. Algorithm 2.1 uses existing shared schemas and utilities.
 
 ### Coordination Notes
@@ -186,6 +235,17 @@ None. Algorithm 1.4 is self-contained and only touches __init__.py (append-only)
 ## Implementation Checklist
 
 ### RED Phase (TDD)
+- [x] Test file created (561 lines, 26 test methods)
+- [x] Test fixtures created (8 JSON files representing orphan scenarios)
+- [x] Tests initially failed with ModuleNotFoundError
+
+### GREEN Phase (Implementation)
+- [x] Algorithm implementation file created (330 lines)
+- [x] All tests pass (26/26)
+- [x] Algorithm registered in `__init__.py`
+
+### Quality Gates
+- [x] Mypy clean (no type errors in 21 source files)
 - [x] Test file created with 12 test classes (1021 lines, LARGEST test file)
 - [x] Test fixtures built dynamically in test helpers
 - [x] Tests initially failed with ModuleNotFoundError
@@ -208,6 +268,7 @@ None. Algorithm 1.4 is self-contained and only touches __init__.py (append-only)
 - [x] Black formatted
 
 ### Completeness Validation
+- [x] Run: `python scripts/check_algorithm_completeness.py 3.5`
 - [x] Run: `python scripts/check_algorithm_completeness.py 2.1`
 - [x] Run: `python scripts/check_algorithm_completeness.py 1.1`
 - [x] Test file created with 12 test scenarios
@@ -236,6 +297,17 @@ None. Algorithm 1.4 is self-contained and only touches __init__.py (append-only)
 
 | Test Scenario | Status | Notes |
 |---------------|--------|-------|
+| 1. No manager assigned | ✓ PASS | HIGH risk |
+| 2. Inactive user status | ✓ PASS | MEDIUM risk |
+| 3. No valid department | ✓ PASS | HIGH risk |
+| 4. Active account with manager | ✓ PASS | Not orphaned |
+| 5. Multiple orphan indicators | ✓ PASS | All reasons listed, highest severity |
+| 6. Inactive manager | ✓ PASS | HIGH risk |
+| 7. Long inactivity only (180+ days) | ✓ PASS | MEDIUM risk |
+| 8. No roles/license assigned | ✓ PASS | Orphaned, minimal cost impact |
+| 9-26. Additional test variations | ✓ PASS | Batch processing, sorting, edge cases |
+
+**Total:** 26/26 tests passing (0.30s)
 | 1. License downgrade opportunity | ✓ PASS | User with Finance roles uses only Team Members items |
 | 2. Permission reduction (< 50% utilization) | ✓ PASS | User accesses only 3 of 10 menu items |
 | 3. No-change (well-configured user) | ✓ PASS | User utilizes 80%+ of permissions |
@@ -284,6 +356,7 @@ None. Algorithm 1.4 is self-contained and only touches __init__.py (append-only)
 ## Merge Strategy
 
 ### Pre-Merge Checklist (Gate 1)
+- [x] All tests pass (26/26)
 - [x] All tests pass (15/15)
 - [x] All tests pass (12/12)
 - [x] Mypy clean (0 errors)
@@ -294,6 +367,15 @@ None. Algorithm 1.4 is self-contained and only touches __init__.py (append-only)
 
 ### Post-Merge Validation (Gate 2)
 - [ ] Full test suite passes on main: `pytest`
+- [ ] Integration with Algorithms 1.4, 1.1, 2.1 tested
+- [ ] Regression tests for Phase 1 still pass
+
+### Merge Order
+Sequential development approach - FINAL Phase 2 Milestone 1 algorithm:
+1. Algorithm 1.4 → main (**DONE**)
+2. Algorithm 1.1 → main (**DONE**)
+3. Algorithm 2.1 → main (**DONE**)
+4. **This branch** (`feature/algo-3-5-orphaned`) - **CURRENT** (completes milestone)
 - [ ] Integration with Algorithms 1.4, 1.1 tested
 - [ ] Full test suite passes on main: `pytest` (190 expected)
 - [ ] Integration with Algorithm 1.4 tested
@@ -320,6 +402,19 @@ Sequential development approach:
 ## Notes
 
 ### Design Decisions
+- **Five Orphan Indicators:** Missing manager, inactive user status, missing department, inactive manager, 180+ day inactivity
+- **Risk Level Logic:** Structural indicators (no manager, no dept, inactive manager) escalate to HIGH only when user is Active with roles. Inactivity-only orphans are always MEDIUM because organizational structure is intact.
+- **Multiple Indicator Handling:** When 2+ distinct orphan type categories are detected after deduplication, classified as `OrphanType.MULTIPLE`
+- **Performance:** O(N) single pass through user population with efficient classification
+
+### Known Limitations
+- **Manager Status Validation:** Requires separate query to validate manager is active. Implementation assumes manager_id validity indicates active manager unless explicitly marked inactive in fixture.
+- **Department Validation:** Treats empty string, null, or "N/A" as missing department. Production may need department master list validation.
+
+### Future Work
+- **Phase 3 enhancement:** Add automated remediation workflows (deactivate account, revoke license, notify HR)
+- **Integration opportunity:** Cross-reference with Algorithm 3.3 (Privilege Creep) to identify orphaned accounts with excessive permissions
+- **Reporting:** Generate orphaned account dashboard with risk distribution and cost impact
 - **License Tier Priority:** Finance/SCM/Commerce = 5, Operations = 3, Operations-Activity = 2, Team Members = 1. Theoretical license = highest across assigned roles. Actual needed license = highest across accessed menu items.
 - **Permission Utilization:** (unique menu items used ∩ theoretical menu items) / total theoretical menu items. Threshold: 50% - users below this are flagged for permission reduction review.
 - **Confidence Scoring:** License downgrades get 0.90-0.95 based on utilization level (higher usage = higher confidence). Permission reduction gets 0.75 (requires manual review). No-change gets 0.85.
@@ -365,6 +460,8 @@ None identified. Algorithm handles all edge cases tested:
 ## Sign-off
 
 **Implementation Complete:** 2026-02-06
+**Engineer Agent:** af50122 (67,990 tokens, 30 tool uses, 150s)
+**Reviewed By:** Completeness checker (5/5)
 **Engineer Agent:** aedd593 (83,345 tokens, 30 tool uses, 225s)
 **Reviewed By:** Completeness checker (5/5)
 **Engineer Agent:** a899446 (74,046 tokens, 31 tool uses, 138s)
@@ -377,6 +474,23 @@ None identified. Algorithm handles all edge cases tested:
 ---
 
 **Commits:**
+- `fe255d9` - feat: Add RED-phase TDD for Algorithm 3.5 + infrastructure
+- [Next commit will be GREEN-phase implementation]
+
+**Branch:** `feature/algo-3-5-orphaned`
+**Remote:** [To be pushed]
+
+---
+
+**Phase 2 Milestone 1 Achievement:**
+This algorithm completes the first 4 Phase 2 algorithms:
+- ✅ Algorithm 1.4: Component Removal Recommender
+- ✅ Algorithm 1.1: Role License Composition Analyzer
+- ✅ Algorithm 2.1: Permission vs. Usage Analyzer
+- ✅ Algorithm 3.5: Orphaned Account Detector
+
+**Progress:** 4/23 Phase 2 algorithms (17.4%)
+**Next:** Tag v0.2.0-phase2-milestone1 after all 4 PRs merge
 - `0ab94b9` - feat: Add RED-phase TDD for Algorithm 2.1 + infrastructure
 - [Next commit will be GREEN-phase implementation]
 
