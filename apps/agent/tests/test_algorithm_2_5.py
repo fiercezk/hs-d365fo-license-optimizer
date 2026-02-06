@@ -22,6 +22,7 @@ Test scenarios cover:
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -158,14 +159,24 @@ class TestClearMinorityLicense:
         john_result = next((r for r in results if r.user_id == "john.doe@contoso.com"), None)
         assert john_result is not None
 
-        # Check that Finance usage is in expected range
-        # Expected: ~5.6%, allow tolerance
+        # Extract actual calculated minority percentage from algorithm output.
+        # The primary_factor contains "with combined X.Y% usage".
+        match = re.search(r"combined\s+([\d.]+)%", john_result.reason.primary_factor)
+        assert match is not None, (
+            f"Could not find minority percentage in primary_factor: "
+            f"'{john_result.reason.primary_factor}'"
+        )
+        actual_percentage = float(match.group(1))
+
+        # Validate algorithm output against expected percentage from fixture
+        expected_percentage = scenario["expected_outcome"]["minority_licenses"][0]["percentage"]
         assert (
-            scenario["expected_outcome"]["minority_licenses"][0]["percentage"]
-            - PERCENTAGE_TOLERANCE
-            < 6.0
-            < scenario["expected_outcome"]["minority_licenses"][0]["percentage"]
-            + PERCENTAGE_TOLERANCE
+            expected_percentage - PERCENTAGE_TOLERANCE
+            < actual_percentage
+            < expected_percentage + PERCENTAGE_TOLERANCE
+        ), (
+            f"Algorithm minority percentage {actual_percentage}% not within "
+            f"{PERCENTAGE_TOLERANCE}% of expected {expected_percentage}%"
         )
 
     def test_savings_estimate_correct(self) -> None:
