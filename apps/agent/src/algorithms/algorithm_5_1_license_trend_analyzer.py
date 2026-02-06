@@ -307,13 +307,13 @@ def detect_anomalies(
     anomalies = []
 
     # Statistical anomalies (z-score based)
-    user_counts = df["user_count"].values
-    costs = df["license_cost"].values
+    user_counts = np.asarray(df["user_count"].values, dtype=float)
+    costs = np.asarray(df["license_cost"].values, dtype=float)
 
-    user_mean = np.mean(user_counts)
-    user_std = np.std(user_counts)
-    cost_mean = np.mean(costs)
-    cost_std = np.std(costs)
+    user_mean = float(np.mean(user_counts))
+    user_std = float(np.std(user_counts))
+    cost_mean = float(np.mean(costs))
+    cost_std = float(np.std(costs))
 
     for idx, row in df.iterrows():
         # User count anomaly

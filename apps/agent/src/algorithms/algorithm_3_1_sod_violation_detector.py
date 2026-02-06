@@ -26,8 +26,8 @@ from itertools import combinations
 from pathlib import Path
 from typing import Any
 
-from src.models.input_schemas import UserRoleAssignment
-from src.models.output_schemas import SODViolation, SeverityLevel
+from ..models.input_schemas import UserRoleAssignment
+from ..models.output_schemas import SODViolation, SeverityLevel
 
 
 class SODMatrixLoader:

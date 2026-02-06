@@ -14,7 +14,7 @@ from enum import Enum
 from typing import Any
 from uuid import uuid4
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 
 class RecommendationAction(str, Enum):
@@ -75,7 +75,7 @@ class SavingsEstimate(BaseModel):
 
     @field_validator("annual_savings")
     @classmethod
-    def validate_annual_savings(cls, v: float, info) -> float:
+    def validate_annual_savings(cls, v: float, info: ValidationInfo) -> float:
         """Ensure annual savings = monthly savings * 12."""
         if "monthly_savings" in info.data:
             expected = info.data["monthly_savings"] * 12
@@ -173,7 +173,7 @@ class LicenseRecommendation(BaseModel):
 
     @field_validator("confidence_level")
     @classmethod
-    def validate_confidence_level(cls, v: ConfidenceLevel, info) -> ConfidenceLevel:
+    def validate_confidence_level(cls, v: ConfidenceLevel, info: ValidationInfo) -> ConfidenceLevel:
         """Ensure confidence_level matches confidence_score."""
         if "confidence_score" not in info.data:
             return v
