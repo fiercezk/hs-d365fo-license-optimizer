@@ -27,7 +27,6 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-import pytest
 
 from src.algorithms.algorithm_1_1_role_composition_analyzer import (
     RoleComposition,

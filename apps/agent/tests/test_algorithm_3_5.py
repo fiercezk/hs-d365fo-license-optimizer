@@ -26,7 +26,6 @@ import pytest
 
 from src.algorithms.algorithm_3_5_orphaned_account_detector import (
     detect_orphaned_accounts,
-    OrphanedAccountResult,
     OrphanType,
     UserDirectoryRecord,
 )

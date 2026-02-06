@@ -35,10 +35,8 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-import pytest
 
 from src.algorithms.algorithm_1_4_component_removal import (
-    ComponentRemovalCandidate,
     ComponentRemovalResult,
     recommend_component_removal,
 )
@@ -124,6 +122,10 @@ def _build_user_roles(
     rows: list[dict[str, str]] = []
     for uid in user_ids:
         rows.append({"user_id": uid, "role_name": role_name})
+
+    # Ensure DataFrame has correct columns even when empty
+    if not rows:
+        return pd.DataFrame(columns=["user_id", "role_name"])
     return pd.DataFrame(rows)
 
 
@@ -152,6 +154,12 @@ def _build_user_activity(
                 "license_tier": "Finance",
                 "feature": "General Ledger",
             }
+        )
+
+    # Ensure DataFrame has correct columns even when empty
+    if not rows:
+        return pd.DataFrame(
+            columns=["user_id", "timestamp", "menu_item", "action", "session_id", "license_tier", "feature"]
         )
     return pd.DataFrame(rows)
 
