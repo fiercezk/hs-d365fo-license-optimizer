@@ -320,3 +320,99 @@ class SODViolation(BaseModel):
             "SLA for remediation in hours " "(24 for CRITICAL, 168 for HIGH, 720 for MEDIUM)"
         ),
     )
+
+
+# ============================================================================
+# Algorithm 5.1: License Cost Trend Analysis Schemas
+# ============================================================================
+
+
+class GrowthRate(BaseModel):
+    """Growth rate statistics for license trends."""
+
+    mom: float = Field(description="Month-over-month growth rate (%)")
+    qoq: float = Field(description="Quarter-over-quarter growth rate (%)")
+    yoy: float = Field(description="Year-over-year growth rate (%)")
+
+
+class SeasonalPattern(BaseModel):
+    """Detected seasonal pattern in license usage."""
+
+    month: int = Field(description="Month number (1-12)", ge=1, le=12)
+    avg_users: float = Field(description="Average user count for this month", ge=0)
+    deviation_pct: float = Field(description="Deviation from baseline (%)")
+    confidence: ConfidenceLevel = Field(description="Pattern confidence level")
+
+
+class LicenseAnomalyRecord(BaseModel):
+    """Detected anomaly in license usage."""
+
+    anomaly_id: str = Field(default_factory=lambda: str(uuid4()), description="Unique anomaly ID")
+    date: datetime = Field(description="Date of anomaly")
+    user_count: int = Field(description="User count on anomaly date", ge=0)
+    expected_count: float = Field(description="Expected user count based on trend", ge=0)
+    deviation_pct: float = Field(description="Deviation from expected (%)")
+    severity: SeverityLevel = Field(description="Anomaly severity")
+    description: str = Field(description="Human-readable anomaly description")
+
+
+class ForecastMonth(BaseModel):
+    """Forecasted license demand for a specific month."""
+
+    month: int = Field(description="Month number (1-12)", ge=1, le=12)
+    year: int = Field(description="Year", ge=2020, le=2050)
+    forecasted_users: int = Field(description="Forecasted user count", ge=0)
+    forecasted_cost: float = Field(description="Forecasted monthly cost (USD)", ge=0)
+    confidence: ConfidenceLevel = Field(description="Forecast confidence")
+
+
+class TrendAnalysisRecommendation(BaseModel):
+    """Actionable recommendation from trend analysis."""
+
+    recommendation_id: str = Field(
+        default_factory=lambda: str(uuid4()), description="Unique recommendation ID"
+    )
+    category: str = Field(description="Recommendation category (e.g., 'Procurement', 'Optimization')")
+    priority: SeverityLevel = Field(description="Recommendation priority")
+    description: str = Field(description="Recommendation text")
+    estimated_impact: str | None = Field(default=None, description="Estimated financial/operational impact")
+
+
+class LicenseTrendAnalysis(BaseModel):
+    """Complete output from Algorithm 5.1: License Cost Trend Analysis."""
+
+    # Analysis metadata
+    analysis_id: str = Field(default_factory=lambda: str(uuid4()), description="Unique analysis ID")
+    analysis_date: datetime = Field(
+        default_factory=datetime.utcnow, description="Analysis execution timestamp"
+    )
+    analysis_period_months: int = Field(description="Number of months analyzed", ge=1)
+
+    # Current state
+    current_total_users: int = Field(description="Current total user count", ge=0)
+    current_monthly_cost: float = Field(description="Current monthly license cost (USD)", ge=0)
+
+    # Growth analysis
+    growth_rate: GrowthRate | None = Field(default=None, description="Growth rate statistics")
+
+    # Seasonal patterns
+    seasonal_patterns: list[SeasonalPattern] = Field(
+        default_factory=list, description="Detected seasonal patterns"
+    )
+
+    # Anomalies
+    anomalies: list[LicenseAnomalyRecord] = Field(default_factory=list, description="Detected anomalies")
+
+    # Forecast
+    forecast: list[ForecastMonth] = Field(default_factory=list, description="12-month forecast")
+
+    # Recommendations
+    recommendations: list[TrendAnalysisRecommendation] = Field(
+        default_factory=list, description="Actionable recommendations"
+    )
+
+    # Confidence
+    overall_confidence: ConfidenceLevel = Field(description="Overall analysis confidence")
+    confidence_factors: list[str] = Field(
+        default_factory=list, description="Factors affecting confidence"
+    )
