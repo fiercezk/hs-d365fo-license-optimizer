@@ -1,0 +1,28 @@
+{
+  "scenario_name": "No Roles: Orphaned Account With No Roles Assigned",
+  "description": "Inactive user with no manager and no roles assigned. This is a completely orphaned account with zero license cost but still poses a security risk. MEDIUM risk since no roles means limited access.",
+
+  "user": {
+    "user_id": "USR-ORPHAN-007",
+    "name": "Pat Johnson",
+    "email": "pat.johnson@contoso.com",
+    "status": "Inactive",
+    "manager_id": null,
+    "manager_status": null,
+    "department": "HR",
+    "department_exists": true,
+    "current_license": "Team Members",
+    "current_license_cost_monthly": 60.00,
+    "roles": [],
+    "role_count": 0,
+    "days_since_last_activity": 365
+  },
+
+  "expected_result": {
+    "is_orphaned": true,
+    "orphan_reasons": ["No valid manager", "User status is Inactive", "No activity in 365 days"],
+    "orphan_type": "MULTIPLE",
+    "risk_level": "MEDIUM",
+    "recommendation": "Disable account and remove license"
+  }
+}
