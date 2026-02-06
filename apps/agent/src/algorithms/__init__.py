@@ -1,3 +1,5 @@
+Exported algorithms:
+  - Algorithm 1.1: Role License Composition Analyzer
 """Phase 1 & 2 algorithm implementations for license optimization.
 
 Exported algorithms:
@@ -10,8 +12,23 @@ Exported algorithms:
 
   Phase 2:
   - Algorithm 3.5: Orphaned Account Detector
+  - Algorithm 2.1: Permission vs. Usage Analyzer
 """
 
+from .algorithm_2_1_permission_usage_analyzer import analyze_permission_usage
+  - Algorithm 1.4: Component Removal Recommender
+"""
+
+from .algorithm_1_1_role_composition_analyzer import (
+    LicenseCompositionEntry,
+    RoleComposition,
+    analyze_role_composition,
+    analyze_roles_batch,
+from .algorithm_1_4_component_removal import (
+    ComponentRemovalCandidate,
+    ComponentRemovalResult,
+    recommend_component_removal,
+)
 from .algorithm_2_2_readonly_detector import detect_readonly_users
 from .algorithm_2_5_license_minority_detector import detect_license_minority_users
 from .algorithm_3_3_privilege_creep_detector import detect_privilege_creep
@@ -37,6 +54,15 @@ __all__ = [
     "OrphanedAccountResult",
     "OrphanType",
     "UserDirectoryRecord",
+    "analyze_permission_usage",
+    "LicenseCompositionEntry",
+    "RoleComposition",
+    "analyze_role_composition",
+    "analyze_roles_batch",
+    # Phase 2
+    "ComponentRemovalCandidate",
+    "ComponentRemovalResult",
+    "recommend_component_removal",
     # Phase 1
     "detect_readonly_users",
     "detect_license_minority_users",
