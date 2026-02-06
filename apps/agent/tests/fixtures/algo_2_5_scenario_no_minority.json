@@ -1,0 +1,16 @@
+{
+  "scenario": "No Minority License",
+  "description": "Mike Johnson has Finance + SCM. Usage: 75% Finance, 25% SCM. SCM is 25% (above 15% threshold), so no minority license detected.",
+  "user_id": "mike.johnson@contoso.com",
+  "user_name": "Mike Johnson",
+  "current_licenses": ["finance", "scm"],
+  "analysis_period_days": 90,
+  "expected_outcome": {
+    "minority_licenses": [],
+    "recommendation_action": "keep_current",
+    "confidence": "low",
+    "expected_savings_monthly": 0.0,
+    "expected_savings_annual": 0.0,
+    "expected_savings_percentage": 0.0
+  }
+}

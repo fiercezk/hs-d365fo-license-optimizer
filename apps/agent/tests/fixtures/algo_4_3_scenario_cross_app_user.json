@@ -1,0 +1,30 @@
+{
+  "scenario": "User with both Finance and SCM access, holding both separate licenses",
+  "user_id": "U001",
+  "user_name": "Alice Johnson",
+  "current_licenses": ["Finance", "SCM"],
+  "current_monthly_cost": 360.00,
+  "security_roles": {
+    "Finance Accountant": {
+      "roles": ["Finance Accountant"],
+      "applications": ["Finance"],
+      "menu_items_count": 45
+    },
+    "SCM Manager": {
+      "roles": ["SCM Manager"],
+      "applications": ["SCM"],
+      "menu_items_count": 38
+    }
+  },
+  "expected_recommendation": {
+    "action": "remove_license",
+    "primary_reason": "User has roles in both Finance and SCM applications with current separate licenses ($180 each = $360/month)",
+    "recommended_license": "Finance + SCM combined",
+    "recommended_monthly_cost": 210.00,
+    "monthly_savings": 150.00,
+    "annual_savings": 1800.00,
+    "confidence": "high",
+    "already_optimized": false,
+    "notes": "Combining Finance ($180) + SCM ($180) into Finance+SCM ($210) saves $150/month ($1,800/year)"
+  }
+}

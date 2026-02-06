@@ -1,0 +1,129 @@
+user_id,timestamp,menu_item,action,session_id,license_tier,feature,device_id,device_type,location
+WH001,2026-01-02 06:00:00,WHSMobileApp,Write,sess-wh-001,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH001,2026-01-02 06:15:00,InventoryOnHand,Read,sess-wh-001,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH001,2026-01-02 06:30:00,WHSMobileApp,Write,sess-wh-001,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH001,2026-01-02 06:45:00,InventoryOnHand,Read,sess-wh-001,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH001,2026-01-02 07:00:00,WHSMobileApp,Write,sess-wh-001,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH002,2026-01-02 08:00:00,WHSMobileApp,Write,sess-wh-002,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH002,2026-01-02 08:15:00,InventoryOnHand,Read,sess-wh-002,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH002,2026-01-02 08:30:00,WHSMobileApp,Write,sess-wh-002,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH002,2026-01-02 08:45:00,InventoryOnHand,Read,sess-wh-002,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH002,2026-01-02 09:00:00,WHSMobileApp,Write,sess-wh-002,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH003,2026-01-02 10:00:00,WHSMobileApp,Write,sess-wh-003,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH003,2026-01-02 10:15:00,InventoryOnHand,Read,sess-wh-003,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH003,2026-01-02 10:30:00,WHSMobileApp,Write,sess-wh-003,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH003,2026-01-02 10:45:00,InventoryOnHand,Read,sess-wh-003,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH003,2026-01-02 11:00:00,WHSMobileApp,Write,sess-wh-003,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH004,2026-01-02 12:00:00,WHSMobileApp,Write,sess-wh-004,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH004,2026-01-02 12:15:00,InventoryOnHand,Read,sess-wh-004,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH004,2026-01-02 12:30:00,WHSMobileApp,Write,sess-wh-004,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH004,2026-01-02 12:45:00,InventoryOnHand,Read,sess-wh-004,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH004,2026-01-02 13:00:00,WHSMobileApp,Write,sess-wh-004,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH005,2026-01-02 14:00:00,WHSMobileApp,Write,sess-wh-005,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH005,2026-01-02 14:15:00,InventoryOnHand,Read,sess-wh-005,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH005,2026-01-02 14:30:00,WHSMobileApp,Write,sess-wh-005,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH005,2026-01-02 14:45:00,InventoryOnHand,Read,sess-wh-005,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH005,2026-01-02 15:00:00,WHSMobileApp,Write,sess-wh-005,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH001,2026-01-03 06:00:00,WHSMobileApp,Write,sess-wh-006,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH001,2026-01-03 06:15:00,InventoryOnHand,Read,sess-wh-006,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH001,2026-01-03 06:30:00,WHSMobileApp,Write,sess-wh-006,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH001,2026-01-03 06:45:00,InventoryOnHand,Read,sess-wh-006,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH001,2026-01-03 07:00:00,WHSMobileApp,Write,sess-wh-006,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH002,2026-01-03 08:00:00,WHSMobileApp,Write,sess-wh-007,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH002,2026-01-03 08:15:00,InventoryOnHand,Read,sess-wh-007,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH002,2026-01-03 08:30:00,WHSMobileApp,Write,sess-wh-007,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH002,2026-01-03 08:45:00,InventoryOnHand,Read,sess-wh-007,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH002,2026-01-03 09:00:00,WHSMobileApp,Write,sess-wh-007,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH003,2026-01-03 10:00:00,WHSMobileApp,Write,sess-wh-008,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH003,2026-01-03 10:15:00,InventoryOnHand,Read,sess-wh-008,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH003,2026-01-03 10:30:00,WHSMobileApp,Write,sess-wh-008,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH003,2026-01-03 10:45:00,InventoryOnHand,Read,sess-wh-008,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH003,2026-01-03 11:00:00,WHSMobileApp,Write,sess-wh-008,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH004,2026-01-03 12:00:00,WHSMobileApp,Write,sess-wh-009,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH004,2026-01-03 12:15:00,InventoryOnHand,Read,sess-wh-009,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH004,2026-01-03 12:30:00,WHSMobileApp,Write,sess-wh-009,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH004,2026-01-03 12:45:00,InventoryOnHand,Read,sess-wh-009,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH004,2026-01-03 13:00:00,WHSMobileApp,Write,sess-wh-009,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH005,2026-01-03 14:00:00,WHSMobileApp,Write,sess-wh-010,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH005,2026-01-03 14:15:00,InventoryOnHand,Read,sess-wh-010,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH005,2026-01-03 14:30:00,WHSMobileApp,Write,sess-wh-010,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH005,2026-01-03 14:45:00,InventoryOnHand,Read,sess-wh-010,Team Members,Inventory,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH005,2026-01-03 15:00:00,WHSMobileApp,Write,sess-wh-010,SCM,Warehouse,SCAN-CHI-01,Warehouse,Chicago Warehouse
+WH006,2026-01-02 07:00:00,WHSMobileApp,Write,sess-wh-011,SCM,Warehouse,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH006,2026-01-02 07:15:00,InventoryOnHand,Read,sess-wh-011,Team Members,Inventory,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH006,2026-01-02 07:30:00,WHSMobileApp,Write,sess-wh-011,SCM,Warehouse,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH006,2026-01-02 07:45:00,InventoryOnHand,Read,sess-wh-011,Team Members,Inventory,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH006,2026-01-02 08:00:00,WHSMobileApp,Write,sess-wh-011,SCM,Warehouse,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH007,2026-01-02 09:00:00,WHSMobileApp,Write,sess-wh-012,SCM,Warehouse,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH007,2026-01-02 09:15:00,InventoryOnHand,Read,sess-wh-012,Team Members,Inventory,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH007,2026-01-02 09:30:00,WHSMobileApp,Write,sess-wh-012,SCM,Warehouse,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH007,2026-01-02 09:45:00,InventoryOnHand,Read,sess-wh-012,Team Members,Inventory,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH007,2026-01-02 10:00:00,WHSMobileApp,Write,sess-wh-012,SCM,Warehouse,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH008,2026-01-02 11:00:00,WHSMobileApp,Write,sess-wh-013,SCM,Warehouse,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH008,2026-01-02 11:15:00,InventoryOnHand,Read,sess-wh-013,Team Members,Inventory,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH008,2026-01-02 11:30:00,WHSMobileApp,Write,sess-wh-013,SCM,Warehouse,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH008,2026-01-02 11:45:00,InventoryOnHand,Read,sess-wh-013,Team Members,Inventory,SCAN-CHI-02,Warehouse,Chicago Warehouse
+WH008,2026-01-02 12:00:00,WHSMobileApp,Write,sess-wh-013,SCM,Warehouse,SCAN-CHI-02,Warehouse,Chicago Warehouse
+POS001,2026-01-02 09:00:00,RetailStore,Write,sess-pos-001,Commerce,Retail,POS-NYC-01,POS,New York Store
+POS001,2026-01-02 09:15:00,CustomerList,Read,sess-pos-001,Team Members,Accounts Receivable,POS-NYC-01,POS,New York Store
+POS001,2026-01-02 09:30:00,RetailStore,Write,sess-pos-001,Commerce,Retail,POS-NYC-01,POS,New York Store
+POS001,2026-01-02 09:45:00,CustomerList,Read,sess-pos-001,Team Members,Accounts Receivable,POS-NYC-01,POS,New York Store
+POS001,2026-01-02 10:00:00,RetailStore,Write,sess-pos-001,Commerce,Retail,POS-NYC-01,POS,New York Store
+POS002,2026-01-02 12:00:00,RetailStore,Write,sess-pos-002,Commerce,Retail,POS-NYC-01,POS,New York Store
+POS002,2026-01-02 12:15:00,CustomerList,Read,sess-pos-002,Team Members,Accounts Receivable,POS-NYC-01,POS,New York Store
+POS002,2026-01-02 12:30:00,RetailStore,Write,sess-pos-002,Commerce,Retail,POS-NYC-01,POS,New York Store
+POS002,2026-01-02 12:45:00,CustomerList,Read,sess-pos-002,Team Members,Accounts Receivable,POS-NYC-01,POS,New York Store
+POS002,2026-01-02 13:00:00,RetailStore,Write,sess-pos-002,Commerce,Retail,POS-NYC-01,POS,New York Store
+POS003,2026-01-02 15:00:00,RetailStore,Write,sess-pos-003,Commerce,Retail,POS-NYC-01,POS,New York Store
+POS003,2026-01-02 15:15:00,CustomerList,Read,sess-pos-003,Team Members,Accounts Receivable,POS-NYC-01,POS,New York Store
+POS003,2026-01-02 15:30:00,RetailStore,Write,sess-pos-003,Commerce,Retail,POS-NYC-01,POS,New York Store
+POS003,2026-01-02 15:45:00,CustomerList,Read,sess-pos-003,Team Members,Accounts Receivable,POS-NYC-01,POS,New York Store
+POS003,2026-01-02 16:00:00,RetailStore,Write,sess-pos-003,Commerce,Retail,POS-NYC-01,POS,New York Store
+POS004,2026-01-03 09:00:00,RetailStore,Write,sess-pos-004,Commerce,Retail,POS-NYC-01,POS,New York Store
+POS004,2026-01-03 09:15:00,CustomerList,Read,sess-pos-004,Team Members,Accounts Receivable,POS-NYC-01,POS,New York Store
+POS004,2026-01-03 09:30:00,RetailStore,Write,sess-pos-004,Commerce,Retail,POS-NYC-01,POS,New York Store
+POS004,2026-01-03 09:45:00,CustomerList,Read,sess-pos-004,Team Members,Accounts Receivable,POS-NYC-01,POS,New York Store
+POS004,2026-01-03 10:00:00,RetailStore,Write,sess-pos-004,Commerce,Retail,POS-NYC-01,POS,New York Store
+DESK001,2026-01-02 09:00:00,GeneralJournalEntry,Write,sess-desk-001,Finance,General Ledger,DESK-HQ-01,Desktop,HQ Office
+DESK001,2026-01-02 09:30:00,BankReconciliation,Write,sess-desk-001,Finance,Cash Management,DESK-HQ-01,Desktop,HQ Office
+DESK001,2026-01-02 10:00:00,CustomerList,Read,sess-desk-001,Team Members,Accounts Receivable,DESK-HQ-01,Desktop,HQ Office
+DESK001,2026-01-02 10:30:00,VendorList,Read,sess-desk-001,Team Members,Accounts Payable,DESK-HQ-01,Desktop,HQ Office
+DESK001,2026-01-02 11:00:00,GeneralJournalEntry,Write,sess-desk-001,Finance,General Ledger,DESK-HQ-01,Desktop,HQ Office
+DESK002,2026-01-02 14:00:00,GeneralJournalEntry,Write,sess-desk-002,Finance,General Ledger,DESK-HQ-01,Desktop,HQ Office
+DESK002,2026-01-02 14:30:00,BankReconciliation,Read,sess-desk-002,Team Members,Cash Management,DESK-HQ-01,Desktop,HQ Office
+DESK002,2026-01-02 15:00:00,CustomerList,Read,sess-desk-002,Team Members,Accounts Receivable,DESK-HQ-01,Desktop,HQ Office
+DESK002,2026-01-02 15:30:00,VendorList,Read,sess-desk-002,Team Members,Accounts Payable,DESK-HQ-01,Desktop,HQ Office
+DESK002,2026-01-02 16:00:00,GeneralJournalEntry,Write,sess-desk-002,Finance,General Ledger,DESK-HQ-01,Desktop,HQ Office
+SOLO001,2026-01-02 08:00:00,WHSMobileApp,Write,sess-solo-001,SCM,Warehouse,SCAN-LA-01,Warehouse,LA Warehouse
+SOLO001,2026-01-02 08:15:00,InventoryOnHand,Read,sess-solo-001,Team Members,Inventory,SCAN-LA-01,Warehouse,LA Warehouse
+SOLO001,2026-01-02 08:30:00,WHSMobileApp,Write,sess-solo-001,SCM,Warehouse,SCAN-LA-01,Warehouse,LA Warehouse
+SOLO001,2026-01-02 08:45:00,InventoryOnHand,Read,sess-solo-001,Team Members,Inventory,SCAN-LA-01,Warehouse,LA Warehouse
+SOLO001,2026-01-02 09:00:00,WHSMobileApp,Write,sess-solo-001,SCM,Warehouse,SCAN-LA-01,Warehouse,LA Warehouse
+SOLO002,2026-01-02 10:00:00,WHSMobileApp,Write,sess-solo-002,SCM,Warehouse,SCAN-LA-01,Warehouse,LA Warehouse
+SOLO002,2026-01-02 10:15:00,InventoryOnHand,Read,sess-solo-002,Team Members,Inventory,SCAN-LA-01,Warehouse,LA Warehouse
+SOLO002,2026-01-02 10:30:00,WHSMobileApp,Write,sess-solo-002,SCM,Warehouse,SCAN-LA-01,Warehouse,LA Warehouse
+SOLO002,2026-01-02 10:45:00,InventoryOnHand,Read,sess-solo-002,Team Members,Inventory,SCAN-LA-01,Warehouse,LA Warehouse
+SOLO002,2026-01-02 11:00:00,WHSMobileApp,Write,sess-solo-002,SCM,Warehouse,SCAN-LA-01,Warehouse,LA Warehouse
+DUAL001,2026-01-02 06:00:00,WHSMobileApp,Write,sess-dual-001,SCM,Warehouse,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL001,2026-01-02 06:15:00,InventoryOnHand,Read,sess-dual-001,Team Members,Inventory,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL001,2026-01-02 06:30:00,WHSMobileApp,Write,sess-dual-001,SCM,Warehouse,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL001,2026-01-02 06:45:00,InventoryOnHand,Read,sess-dual-001,Team Members,Inventory,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL001,2026-01-02 07:00:00,WHSMobileApp,Write,sess-dual-001,SCM,Warehouse,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL001,2026-01-02 14:00:00,PurchaseOrder,Write,sess-dual-desk-001,SCM,Procurement,DESK-HQ-02,Desktop,HQ Office
+DUAL001,2026-01-02 14:30:00,VendorList,Read,sess-dual-desk-001,Team Members,Accounts Payable,DESK-HQ-02,Desktop,HQ Office
+DUAL001,2026-01-02 15:00:00,PurchaseOrder,Write,sess-dual-desk-001,SCM,Procurement,DESK-HQ-02,Desktop,HQ Office
+DUAL002,2026-01-02 08:00:00,WHSMobileApp,Write,sess-dual-002,SCM,Warehouse,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL002,2026-01-02 08:15:00,InventoryOnHand,Read,sess-dual-002,Team Members,Inventory,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL002,2026-01-02 08:30:00,WHSMobileApp,Write,sess-dual-002,SCM,Warehouse,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL002,2026-01-02 08:45:00,InventoryOnHand,Read,sess-dual-002,Team Members,Inventory,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL002,2026-01-02 09:00:00,WHSMobileApp,Write,sess-dual-002,SCM,Warehouse,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL003,2026-01-02 10:00:00,WHSMobileApp,Write,sess-dual-003,SCM,Warehouse,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL003,2026-01-02 10:15:00,InventoryOnHand,Read,sess-dual-003,Team Members,Inventory,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL003,2026-01-02 10:30:00,WHSMobileApp,Write,sess-dual-003,SCM,Warehouse,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL003,2026-01-02 10:45:00,InventoryOnHand,Read,sess-dual-003,Team Members,Inventory,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL003,2026-01-02 11:00:00,WHSMobileApp,Write,sess-dual-003,SCM,Warehouse,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL004,2026-01-02 12:00:00,WHSMobileApp,Write,sess-dual-004,SCM,Warehouse,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL004,2026-01-02 12:15:00,InventoryOnHand,Read,sess-dual-004,Team Members,Inventory,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL004,2026-01-02 12:30:00,WHSMobileApp,Write,sess-dual-004,SCM,Warehouse,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL004,2026-01-02 12:45:00,InventoryOnHand,Read,sess-dual-004,Team Members,Inventory,SCAN-CHI-03,Warehouse,Chicago Warehouse
+DUAL004,2026-01-02 13:00:00,WHSMobileApp,Write,sess-dual-004,SCM,Warehouse,SCAN-CHI-03,Warehouse,Chicago Warehouse

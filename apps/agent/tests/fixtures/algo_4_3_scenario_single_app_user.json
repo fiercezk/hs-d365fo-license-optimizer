@@ -1,0 +1,25 @@
+{
+  "scenario": "User with access only to Finance module, no cross-app opportunity",
+  "user_id": "U002",
+  "user_name": "Bob Smith",
+  "current_licenses": ["Finance"],
+  "current_monthly_cost": 180.00,
+  "security_roles": {
+    "Finance Analyst": {
+      "roles": ["Finance Analyst"],
+      "applications": ["Finance"],
+      "menu_items_count": 35
+    }
+  },
+  "expected_recommendation": {
+    "action": "no_change",
+    "primary_reason": "User has access to only one application (Finance), no cross-application opportunity",
+    "recommended_license": "Finance",
+    "recommended_monthly_cost": 180.00,
+    "monthly_savings": 0.00,
+    "annual_savings": 0.00,
+    "confidence": "high",
+    "already_optimized": true,
+    "notes": "Single application access does not qualify for cross-application license analysis"
+  }
+}

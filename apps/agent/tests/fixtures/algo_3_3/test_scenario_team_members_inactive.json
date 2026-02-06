@@ -1,0 +1,34 @@
+{
+  "scenario_name": "Inactive Team Members License: Low-Cost License Unused",
+  "description": "User with the cheapest Team Members license ($60/month) who is completely inactive for 150 days. Still worth flagging since any unused license wastes money, though savings are lower.",
+
+  "user": {
+    "user_id": "USR-INACTIVE-TM-001",
+    "name": "Anna Petrov",
+    "email": "anna.petrov@contoso.com",
+    "current_license": "Team Members",
+    "current_license_cost_monthly": 60.00,
+    "last_login_days_ago": 150,
+    "operation_count_90d": 0
+  },
+
+  "activity_summary": {
+    "analysis_period_days": 90,
+    "total_operations": 0,
+    "last_login_date": "2025-09-09",
+    "days_since_last_login": 150,
+    "login_count_90d": 0,
+    "operation_count_90d": 0
+  },
+
+  "expected_recommendation": {
+    "action": "remove_license",
+    "from_license": "Team Members",
+    "to_license": null,
+    "confidence_level": "medium",
+    "confidence_score": 0.75,
+    "estimated_monthly_savings": 60.00,
+    "estimated_annual_savings": 720.00,
+    "rationale": "User has zero activity in the last 150 days. Even though Team Members is the lowest-cost license, the unused license should be reclaimed."
+  }
+}

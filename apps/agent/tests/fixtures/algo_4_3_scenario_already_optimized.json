@@ -1,0 +1,30 @@
+{
+  "scenario": "User with Finance and SCM access already holding the combined Finance+SCM license",
+  "user_id": "U003",
+  "user_name": "Carol Davis",
+  "current_licenses": ["Finance+SCM"],
+  "current_monthly_cost": 210.00,
+  "security_roles": {
+    "Finance Accountant": {
+      "roles": ["Finance Accountant"],
+      "applications": ["Finance"],
+      "menu_items_count": 42
+    },
+    "SCM Manager": {
+      "roles": ["SCM Manager"],
+      "applications": ["SCM"],
+      "menu_items_count": 40
+    }
+  },
+  "expected_recommendation": {
+    "action": "no_change",
+    "primary_reason": "User already holds the optimal combined Finance+SCM license for their dual-application access",
+    "recommended_license": "Finance+SCM",
+    "recommended_monthly_cost": 210.00,
+    "monthly_savings": 0.00,
+    "annual_savings": 0.00,
+    "confidence": "high",
+    "already_optimized": true,
+    "notes": "Already holds combined license - no action required"
+  }
+}

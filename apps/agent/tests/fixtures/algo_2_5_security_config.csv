@@ -1,0 +1,31 @@
+securityrole,AOTName,AccessLevel,LicenseType,Priority,Entitled,NotEntitled,securitytype
+Procurement Manager,PurchaseOrder,Write,SCM,180,1,0,MenuItemDisplay
+Procurement Manager,ReceivingOrder,Write,SCM,180,1,0,MenuItemDisplay
+Procurement Manager,VendorMaster,Read,SCM,180,1,0,MenuItemDisplay
+Warehouse Manager,WarehouseInventory,Write,SCM,180,1,0,MenuItemDisplay
+Warehouse Manager,InventoryOnHand,Write,SCM,180,1,0,MenuItemDisplay
+Warehouse Manager,InventoryCount,Read,SCM,180,1,0,MenuItemDisplay
+Warehouse Manager,ShippingOrder,Write,SCM,180,1,0,MenuItemDisplay
+Production Manager,ProductionOrder,Write,SCM,180,1,0,MenuItemDisplay
+Production Manager,WorkOrder,Write,SCM,180,1,0,MenuItemDisplay
+Accountant,GeneralJournalEntry,Write,Finance,180,1,0,MenuItemDisplay
+Accountant,BankReconciliation,Write,Finance,180,1,0,MenuItemDisplay
+Accountant,CustomerList,Read,Finance,180,1,0,MenuItemDisplay
+Accountant,VendorList,Read,Finance,180,1,0,MenuItemDisplay
+Retail Manager,RetailStore,Write,Commerce,180,1,0,MenuItemDisplay
+Retail Manager,POSTerminal,Write,Commerce,180,1,0,MenuItemDisplay
+Retail Manager,CustomerOrder,Write,Commerce,180,1,0,MenuItemDisplay
+Finance Analyst,GeneralJournalEntry,Read,Finance,180,1,0,MenuItemDisplay
+Finance Analyst,CustomerList,Write,Finance,180,1,0,MenuItemDisplay
+Finance Analyst,VendorList,Write,Finance,180,1,0,MenuItemDisplay
+Finance Analyst,BankReconciliation,Read,Finance,180,1,0,MenuItemDisplay
+Multi-License User,PurchaseOrder,Write,SCM,180,1,0,MenuItemDisplay
+Multi-License User,InventoryOnHand,Write,SCM,180,1,0,MenuItemDisplay
+Multi-License User,WarehouseInventory,Write,SCM,180,1,0,MenuItemDisplay
+Multi-License User,ReceivingOrder,Write,SCM,180,1,0,MenuItemDisplay
+Multi-License User,ShippingOrder,Write,SCM,180,1,0,MenuItemDisplay
+Multi-License User,BankReconciliation,Read,Finance,180,1,0,MenuItemDisplay
+Multi-License User,GeneralJournalEntry,Read,Finance,180,1,0,MenuItemDisplay
+Project Manager,ProjectTimeEntry,Write,Operations,90,1,0,MenuItemDisplay
+Project Manager,TaskManagement,Write,Operations,90,1,0,MenuItemDisplay
+Project Manager,GeneralJournalEntry,Read,Finance,180,1,0,MenuItemDisplay

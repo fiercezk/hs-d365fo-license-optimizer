@@ -1,0 +1,35 @@
+{
+  "scenario_name": "Seasonal Worker: Known Seasonal Pattern, Currently Inactive",
+  "description": "User flagged with a seasonal profile (SEASONAL_YEAR_END). Inactive for 100 days but has a known active season approaching. Algorithm should flag as inactive but attach seasonal risk warning and lower confidence.",
+
+  "user": {
+    "user_id": "USR-SEASONAL-001",
+    "name": "Lisa Yamamoto",
+    "email": "lisa.yamamoto@contoso.com",
+    "current_license": "Finance",
+    "current_license_cost_monthly": 180.00,
+    "last_login_days_ago": 100,
+    "operation_count_90d": 0,
+    "seasonal_profile": "SEASONAL_YEAR_END"
+  },
+
+  "activity_summary": {
+    "analysis_period_days": 90,
+    "total_operations": 0,
+    "last_login_date": "2025-10-29",
+    "days_since_last_login": 100,
+    "login_count_90d": 0,
+    "operation_count_90d": 0
+  },
+
+  "expected_recommendation": {
+    "action": "review_required",
+    "from_license": "Finance",
+    "to_license": null,
+    "confidence_level": "low",
+    "confidence_score": 0.55,
+    "estimated_monthly_savings": 180.00,
+    "estimated_annual_savings": 2160.00,
+    "rationale": "User is inactive for 100 days but has a known seasonal profile (SEASONAL_YEAR_END). Active season may be approaching. Recommend manual review before license suspension."
+  }
+}

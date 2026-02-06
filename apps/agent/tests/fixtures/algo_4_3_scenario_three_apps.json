@@ -1,0 +1,35 @@
+{
+  "scenario": "User with access to Finance, SCM, and Commerce - only Finance+SCM can be combined",
+  "user_id": "U004",
+  "user_name": "Diana Wilson",
+  "current_licenses": ["Finance", "SCM", "Commerce"],
+  "current_monthly_cost": 540.00,
+  "security_roles": {
+    "Finance Accountant": {
+      "roles": ["Finance Accountant"],
+      "applications": ["Finance"],
+      "menu_items_count": 40
+    },
+    "SCM Manager": {
+      "roles": ["SCM Manager"],
+      "applications": ["SCM"],
+      "menu_items_count": 38
+    },
+    "Commerce Manager": {
+      "roles": ["Commerce Manager"],
+      "applications": ["Commerce"],
+      "menu_items_count": 25
+    }
+  },
+  "expected_recommendation": {
+    "action": "downgrade",
+    "primary_reason": "User has roles in Finance and SCM applications which can be combined into Finance+SCM license",
+    "recommended_license": "Finance+SCM + Commerce",
+    "recommended_monthly_cost": 390.00,
+    "monthly_savings": 150.00,
+    "annual_savings": 1800.00,
+    "confidence": "high",
+    "already_optimized": false,
+    "notes": "Combine Finance ($180) + SCM ($180) into Finance+SCM ($210), keep Commerce ($180) separate. Total: $390 instead of $540"
+  }
+}

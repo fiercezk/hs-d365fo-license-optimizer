@@ -1,0 +1,16 @@
+{
+  "scenario": "Single License User",
+  "description": "Bob Wilson has only SCM license. Algorithm should skip single-license users.",
+  "user_id": "bob.wilson@contoso.com",
+  "user_name": "Bob Wilson",
+  "current_licenses": ["scm"],
+  "analysis_period_days": 90,
+  "expected_outcome": {
+    "minority_licenses": [],
+    "recommendation_action": "keep_current",
+    "confidence": "low",
+    "expected_savings_monthly": 0.0,
+    "expected_savings_annual": 0.0,
+    "expected_savings_percentage": 0.0
+  }
+}

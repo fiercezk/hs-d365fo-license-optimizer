@@ -1,0 +1,35 @@
+{
+  "scenario_name": "Contractor Between Projects: Gap Period Inactivity",
+  "description": "Contractor user with no activity for 100 days. Between project assignments. Algorithm should flag as inactive but note contractor status as a risk factor requiring review.",
+
+  "user": {
+    "user_id": "USR-CONTR-001",
+    "name": "James Walsh",
+    "email": "james.walsh@contoso.com",
+    "current_license": "Finance",
+    "current_license_cost_monthly": 180.00,
+    "last_login_days_ago": 100,
+    "operation_count_90d": 0,
+    "is_contractor": true
+  },
+
+  "activity_summary": {
+    "analysis_period_days": 90,
+    "total_operations": 0,
+    "last_login_date": "2025-10-29",
+    "days_since_last_login": 100,
+    "login_count_90d": 0,
+    "operation_count_90d": 0
+  },
+
+  "expected_recommendation": {
+    "action": "review_required",
+    "from_license": "Finance",
+    "to_license": null,
+    "confidence_level": "medium",
+    "confidence_score": 0.70,
+    "estimated_monthly_savings": 180.00,
+    "estimated_annual_savings": 2160.00,
+    "rationale": "Contractor user inactive for 100 days. May be between project assignments. Recommend review with project management before license suspension."
+  }
+}

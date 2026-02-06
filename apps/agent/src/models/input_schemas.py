@@ -189,3 +189,23 @@ class TeamMembersEligibleForm(BaseModel):
         default=None, description="When validation was performed"
     )
     notes: str | None = Field(default=None, description="Validation notes / exceptions")
+
+
+class SecurityFinding(BaseModel):
+    """Individual security finding for Algorithm 5.2 risk scoring.
+
+    Represents a detected security risk (SoD violation, privilege creep, etc.)
+    that contributes to the user's overall security risk score.
+    """
+
+    finding_type: str = Field(
+        description="Type of security finding (SoD_VIOLATION, PRIVILEGE_CREEP, "
+        "ANOMALOUS_CHANGE, ORPHANED_ACCOUNT, etc.)"
+    )
+    severity: str = Field(
+        description="Severity level (CRITICAL, HIGH, MEDIUM, LOW) "
+        "- case insensitive"
+    )
+    description: str = Field(
+        description="Detailed description of the security finding"
+    )

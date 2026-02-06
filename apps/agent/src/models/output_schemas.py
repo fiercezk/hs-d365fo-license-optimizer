@@ -12,6 +12,7 @@ Consumed by: TypeScript API layer, Web UI, reporting.
 from datetime import datetime
 from enum import Enum
 from typing import Any
+from uuid import uuid4
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -79,9 +80,7 @@ class SavingsEstimate(BaseModel):
         if "monthly_savings" in info.data:
             expected = info.data["monthly_savings"] * 12
             if abs(v - expected) > 0.01:  # Allow for floating point precision
-                raise ValueError(
-                    f"Annual savings {v} doesn't match monthly * 12 ({expected:.2f})"
-                )
+                raise ValueError(f"Annual savings {v} doesn't match monthly * 12 ({expected:.2f})")
         return v
 
 
@@ -133,23 +132,15 @@ class LicenseRecommendation(BaseModel):
     )
 
     # Analysis metadata
-    analysis_period_days: int = Field(
-        description="Number of days of data analyzed", ge=1, le=3650
-    )
-    sample_size: int = Field(
-        description="Number of operations analyzed", ge=0
-    )
+    analysis_period_days: int = Field(description="Number of days of data analyzed", ge=1, le=3650)
+    sample_size: int = Field(description="Number of operations analyzed", ge=0)
     data_completeness: float = Field(
         description="Data completeness score (0.0-1.0)", ge=0.0, le=1.0
     )
 
     # Implementation guidance
-    safe_to_automate: bool = Field(
-        description="Whether this recommendation can be auto-approved"
-    )
-    requires_approval: bool = Field(
-        description="Whether this requires manager/admin approval"
-    )
+    safe_to_automate: bool = Field(description="Whether this recommendation can be auto-approved")
+    requires_approval: bool = Field(description="Whether this requires manager/admin approval")
     implementation_notes: list[str] = Field(
         description="Implementation guidance and caveats",
         default_factory=list,
@@ -172,11 +163,11 @@ class LicenseRecommendation(BaseModel):
         expected = (
             ConfidenceLevel.HIGH
             if score >= 0.90
-            else ConfidenceLevel.MEDIUM
-            if score >= 0.70
-            else ConfidenceLevel.LOW
-            if score >= 0.50
-            else ConfidenceLevel.INSUFFICIENT_DATA
+            else (
+                ConfidenceLevel.MEDIUM
+                if score >= 0.70
+                else ConfidenceLevel.LOW if score >= 0.50 else ConfidenceLevel.INSUFFICIENT_DATA
+            )
         )
 
         if v != expected:
@@ -221,9 +212,7 @@ class BatchRecommendationResult(BaseModel):
     completed_at: datetime = Field(description="Batch completion time (UTC)")
 
     total_users_analyzed: int = Field(description="Total users in batch", ge=0)
-    recommendations_generated: int = Field(
-        description="Number of actionable recommendations", ge=0
-    )
+    recommendations_generated: int = Field(description="Number of actionable recommendations", ge=0)
 
     recommendations: list[LicenseRecommendation] = Field(
         description="All recommendations from batch"
@@ -239,9 +228,7 @@ class BatchRecommendationResult(BaseModel):
     medium_confidence_count: int = Field(
         description="Number of medium-confidence recommendations", ge=0
     )
-    low_confidence_count: int = Field(
-        description="Number of low-confidence recommendations", ge=0
-    )
+    low_confidence_count: int = Field(description="Number of low-confidence recommendations", ge=0)
 
     metrics: AlgorithmMetrics = Field(description="Batch execution metrics")
 
@@ -266,3 +253,70 @@ class ValidationResult(BaseModel):
         description="When validation was performed (UTC)", default_factory=datetime.utcnow
     )
     validated_by: str = Field(description="Validation rule set version")
+
+
+class SeverityLevel(str, Enum):
+    """SoD violation severity levels per Requirements/15."""
+
+    CRITICAL = "CRITICAL"  # Direct fraud risk or SOX material weakness
+    HIGH = "HIGH"  # Significant control weakness, audit finding
+    MEDIUM = "MEDIUM"  # Control improvement opportunity
+    LOW = "LOW"  # Minor control gap
+
+
+class SODViolation(BaseModel):
+    """Segregation of Duties violation detected by Algorithm 3.1.
+
+    Represents a detected SoD conflict where a user has been assigned
+    two roles that conflict according to the SoD conflict matrix.
+
+    See Requirements/15-Default-SoD-Conflict-Matrix.md and
+    Requirements/07-Advanced-Algorithms-Expansion.md (Algorithm 3.1).
+    """
+
+    # Identification
+    violation_id: str = Field(
+        description="Unique violation identifier (UUID)",
+        default_factory=lambda: str(uuid4()),
+    )
+    rule_id: str = Field(
+        description=("SoD conflict rule ID " "(e.g., 'AP-001', 'GL-001', 'CUSTOM-001')")
+    )
+    detected_at: datetime = Field(
+        description="When violation was detected (UTC)",
+        default_factory=datetime.utcnow,
+    )
+
+    # User and roles
+    user_id: str = Field(description="User identifier with conflicting roles")
+    user_name: str | None = Field(default=None, description="User display name")
+    user_email: str | None = Field(default=None, description="User email")
+
+    # Conflicting roles
+    role_a: str = Field(description="First conflicting role name")
+    role_b: str = Field(description="Second conflicting role name")
+    conflict_type: str = Field(
+        description=("Type of conflict " "(e.g., 'Process vs. Create', 'Pay vs. Reconcile')")
+    )
+
+    # Severity and risk
+    severity: SeverityLevel = Field(description="Severity level (CRITICAL/HIGH/MEDIUM/LOW)")
+    risk_description: str = Field(description="Detailed explanation of fraud/compliance risk")
+    regulatory_reference: str = Field(
+        description=("Applicable regulatory " "standard(s) " "(e.g., 'SOX 404, COSO Principle 10')")
+    )
+
+    # Remediation guidance
+    recommendation: str | None = Field(
+        default=None,
+        description=(
+            "Recommended remediation action "
+            "(e.g., 'Remove one role' or 'Add compensating control')"
+        ),
+    )
+    sla_hours: int | None = Field(
+        default=None,
+        description=(
+            "SLA for remediation in hours " "(24 for CRITICAL, 168 for HIGH, 720 for MEDIUM)"
+        ),
+    )

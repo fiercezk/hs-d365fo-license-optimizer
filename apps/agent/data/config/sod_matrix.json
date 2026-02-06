@@ -1,0 +1,367 @@
+{
+  "$schema": "./sod-matrix-schema.json",
+  "version": "1.0",
+  "created_date": "2026-02-06",
+  "description": "Default SoD Conflict Matrix for Algorithm 3.1. 27 rules across 7 categories based on SOX 404 and Big 4 audit frameworks. See Requirements/15-Default-SoD-Conflict-Matrix.md.",
+  "total_rules": 27,
+
+  "rules": [
+    {
+      "rule_id": "AP-001",
+      "category": "Accounts Payable",
+      "role_a": "Accounts payable clerk",
+      "role_b": "Vendor master maintenance",
+      "conflict_type": "Process vs. Create",
+      "risk_description": "A user who can both create vendors and process invoices against those vendors can fabricate fictitious vendors and route payments to themselves.",
+      "severity": "CRITICAL",
+      "regulatory_reference": "SOX 404, COSO Principle 10",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "AP-002",
+      "category": "Accounts Payable",
+      "role_a": "Accounts payable clerk",
+      "role_b": "Accounts payable manager",
+      "conflict_type": "Process vs. Approve",
+      "risk_description": "A user who can both enter invoices and approve them for payment bypasses the review control, enabling unauthorized or inflated payments.",
+      "severity": "CRITICAL",
+      "regulatory_reference": "SOX 404, COSO Principle 12",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "AP-003",
+      "category": "Accounts Payable",
+      "role_a": "Vendor master maintenance",
+      "role_b": "Payment clerk",
+      "conflict_type": "Create vs. Pay",
+      "risk_description": "A user who can both create vendor records and execute payment runs can establish shell vendors and disburse funds without independent verification.",
+      "severity": "CRITICAL",
+      "regulatory_reference": "SOX 404, COSO Principle 10",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "AP-004",
+      "category": "Accounts Payable",
+      "role_a": "Accounts payable clerk",
+      "role_b": "Payment clerk",
+      "conflict_type": "Record vs. Pay",
+      "risk_description": "A user who can both record liabilities and execute payments can manipulate invoice amounts and immediately release funds without segregated review.",
+      "severity": "HIGH",
+      "regulatory_reference": "SOX 404, COSO Principle 13",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "AP-005",
+      "category": "Accounts Payable",
+      "role_a": "Purchasing agent",
+      "role_b": "Accounts payable manager",
+      "conflict_type": "Procure vs. Approve Payment",
+      "risk_description": "A user who can both create purchase orders and approve the resulting invoices for payment can authorize procurement and payment without independent oversight.",
+      "severity": "HIGH",
+      "regulatory_reference": "SOX 404, COSO Principle 10",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "AR-001",
+      "category": "Accounts Receivable",
+      "role_a": "Customer master maintenance",
+      "role_b": "Accounts receivable clerk",
+      "conflict_type": "Create vs. Invoice",
+      "risk_description": "A user who can both create customer records and generate invoices can fabricate fictitious sales transactions to manipulate revenue figures.",
+      "severity": "CRITICAL",
+      "regulatory_reference": "SOX 404, COSO Principle 10",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "AR-002",
+      "category": "Accounts Receivable",
+      "role_a": "Accounts receivable clerk",
+      "role_b": "Collections agent",
+      "conflict_type": "Invoice vs. Collect",
+      "risk_description": "A user who can both generate invoices and process collections can write off receivables or apply payments to conceal misappropriation of customer funds.",
+      "severity": "HIGH",
+      "regulatory_reference": "SOX 404, COSO Principle 13",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "AR-003",
+      "category": "Accounts Receivable",
+      "role_a": "Customer master maintenance",
+      "role_b": "Collections agent",
+      "conflict_type": "Create vs. Write-Off",
+      "risk_description": "A user who can both maintain customer master data and execute collections activities can modify credit terms, write off balances, or redirect payments.",
+      "severity": "HIGH",
+      "regulatory_reference": "SOX 404, COSO Principle 10",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "AR-004",
+      "category": "Accounts Receivable",
+      "role_a": "Billing clerk",
+      "role_b": "Accounts receivable clerk",
+      "conflict_type": "Bill vs. Record",
+      "risk_description": "A user who can both generate billing documents and record receivable transactions can manipulate billing amounts and conceal discrepancies in the ledger.",
+      "severity": "MEDIUM",
+      "regulatory_reference": "COSO Principle 13, ISACA COBIT DSS05",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "GL-001",
+      "category": "General Ledger",
+      "role_a": "General ledger clerk",
+      "role_b": "Accounting manager",
+      "conflict_type": "Create vs. Approve",
+      "risk_description": "A user who can both create journal entries and approve them can post fraudulent or erroneous entries without independent review, directly impacting financial statements.",
+      "severity": "CRITICAL",
+      "regulatory_reference": "SOX 404, COSO Principle 8",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "GL-002",
+      "category": "General Ledger",
+      "role_a": "General ledger clerk",
+      "role_b": "Accounting supervisor",
+      "conflict_type": "Record vs. Post",
+      "risk_description": "A user who can both record journal entries and post them to the ledger bypasses the segregation between preparation and authorization of financial transactions.",
+      "severity": "CRITICAL",
+      "regulatory_reference": "SOX 404, COSO Principle 10",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "GL-003",
+      "category": "General Ledger",
+      "role_a": "Accounting supervisor",
+      "role_b": "Financial controller",
+      "conflict_type": "Post vs. Close",
+      "risk_description": "A user who can both post journal entries and execute period-close procedures can manipulate closing entries and adjust financial results without independent oversight.",
+      "severity": "HIGH",
+      "regulatory_reference": "SOX 404, COSO Principle 13",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "GL-004",
+      "category": "General Ledger",
+      "role_a": "General ledger clerk",
+      "role_b": "Financial controller",
+      "conflict_type": "Record vs. Reconcile",
+      "risk_description": "A user who can both record transactions and perform reconciliation can conceal errors or fraud by adjusting both the source entries and the reconciliation.",
+      "severity": "HIGH",
+      "regulatory_reference": "SOX 404, COSO Principle 16",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "PR-001",
+      "category": "Procurement",
+      "role_a": "Purchasing agent",
+      "role_b": "Purchasing manager",
+      "conflict_type": "Create PO vs. Approve PO",
+      "risk_description": "A user who can both create purchase orders and approve them bypasses authorization controls, enabling unauthorized procurement commitments.",
+      "severity": "CRITICAL",
+      "regulatory_reference": "SOX 404, COSO Principle 12",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "PR-002",
+      "category": "Procurement",
+      "role_a": "Requisitioner",
+      "role_b": "Purchasing manager",
+      "conflict_type": "Request vs. Approve",
+      "risk_description": "A user who can both create purchase requisitions and approve purchase orders can self-authorize procurement without independent budget or need verification.",
+      "severity": "HIGH",
+      "regulatory_reference": "SOX 404, COSO Principle 10",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "PR-003",
+      "category": "Procurement",
+      "role_a": "Purchasing agent",
+      "role_b": "Receiving clerk",
+      "conflict_type": "Order vs. Receive",
+      "risk_description": "A user who can both place purchase orders and confirm goods receipt can fabricate receiving records for goods never delivered, enabling payment fraud.",
+      "severity": "HIGH",
+      "regulatory_reference": "SOX 404, COSO Principle 10",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "PR-004",
+      "category": "Procurement",
+      "role_a": "Purchasing agent",
+      "role_b": "Vendor master maintenance",
+      "conflict_type": "Order vs. Create Vendor",
+      "risk_description": "A user who can both create vendors and issue purchase orders can establish fictitious vendors and route procurement through them for personal benefit.",
+      "severity": "CRITICAL",
+      "regulatory_reference": "SOX 404, COSO Principle 10",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "INV-001",
+      "category": "Inventory & Warehouse",
+      "role_a": "Warehouse manager",
+      "role_b": "Inventory clerk",
+      "conflict_type": "Custody vs. Record",
+      "risk_description": "A user who has physical custody of inventory and can also adjust inventory records can conceal theft by manipulating quantities in the system.",
+      "severity": "CRITICAL",
+      "regulatory_reference": "SOX 404, COSO Principle 11",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "INV-002",
+      "category": "Inventory & Warehouse",
+      "role_a": "Warehouse worker",
+      "role_b": "Inventory clerk",
+      "conflict_type": "Move vs. Count",
+      "risk_description": "A user who can both move inventory within the warehouse and perform inventory counts can manipulate count results to conceal missing or misplaced stock.",
+      "severity": "HIGH",
+      "regulatory_reference": "COSO Principle 11, ISACA COBIT DSS05",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "INV-003",
+      "category": "Inventory & Warehouse",
+      "role_a": "Shipping clerk",
+      "role_b": "Receiving clerk",
+      "conflict_type": "Ship vs. Receive",
+      "risk_description": "A user who can both ship and receive goods can divert outbound shipments, record fictitious receipts, or manipulate transfer records between locations.",
+      "severity": "MEDIUM",
+      "regulatory_reference": "COSO Principle 10, SOX 404",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "CM-001",
+      "category": "Cash Management",
+      "role_a": "Payment clerk",
+      "role_b": "Bank reconciliation clerk",
+      "conflict_type": "Pay vs. Reconcile",
+      "risk_description": "A user who can both execute payments and reconcile bank statements can issue unauthorized payments and conceal them during the reconciliation process.",
+      "severity": "CRITICAL",
+      "regulatory_reference": "SOX 404, COSO Principle 10",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "CM-002",
+      "category": "Cash Management",
+      "role_a": "Treasurer",
+      "role_b": "Payment clerk",
+      "conflict_type": "Authorize vs. Execute",
+      "risk_description": "A user who can both authorize payment parameters (bank accounts, payment methods) and execute payment runs can redirect funds to unauthorized accounts.",
+      "severity": "CRITICAL",
+      "regulatory_reference": "SOX 404, COSO Principle 12",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "CM-003",
+      "category": "Cash Management",
+      "role_a": "Treasurer",
+      "role_b": "Bank reconciliation clerk",
+      "conflict_type": "Manage vs. Reconcile",
+      "risk_description": "A user who can both manage cash positions and bank relationships and also reconcile bank statements can manipulate cash reporting and conceal discrepancies.",
+      "severity": "HIGH",
+      "regulatory_reference": "SOX 404, COSO Principle 16",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "SA-001",
+      "category": "System Administration",
+      "role_a": "System administrator",
+      "role_b": "Security administrator",
+      "conflict_type": "Configure vs. Provision",
+      "risk_description": "A user who can both configure system settings and assign security roles can grant themselves elevated access and modify system behavior to conceal unauthorized actions.",
+      "severity": "CRITICAL",
+      "regulatory_reference": "SOX 404 (ITGC), ISACA COBIT DSS05",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "SA-002",
+      "category": "System Administration",
+      "role_a": "Security administrator",
+      "role_b": "Accounts payable manager",
+      "conflict_type": "Provision vs. Operate",
+      "risk_description": "A user who can assign security roles and also perform financial operations can grant themselves conflicting access and execute transactions without oversight.",
+      "severity": "CRITICAL",
+      "regulatory_reference": "SOX 404 (ITGC), COSO Principle 12",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "SA-003",
+      "category": "System Administration",
+      "role_a": "IT manager",
+      "role_b": "Financial controller",
+      "conflict_type": "IT Control vs. Business Control",
+      "risk_description": "A user with both IT management authority and financial controller duties can manipulate system configurations to bypass financial controls and alter financial data.",
+      "severity": "HIGH",
+      "regulatory_reference": "SOX 404 (ITGC), COSO Principle 11",
+      "is_default": true,
+      "is_enabled": true
+    },
+    {
+      "rule_id": "SA-004",
+      "category": "System Administration",
+      "role_a": "System administrator",
+      "role_b": "General ledger clerk",
+      "conflict_type": "Admin vs. Transact",
+      "risk_description": "A user who has system administration privileges and also performs financial transactions can modify application behavior, override controls, and manipulate transaction records.",
+      "severity": "HIGH",
+      "regulatory_reference": "SOX 404 (ITGC), ISACA COBIT DSS05",
+      "is_default": true,
+      "is_enabled": true
+    }
+  ],
+
+  "severity_sla": {
+    "CRITICAL": {
+      "description": "Direct fraud risk or SOX material weakness",
+      "remediation_hours": 24,
+      "escalation": ["CISO", "CFO"]
+    },
+    "HIGH": {
+      "description": "Significant control weakness, audit finding",
+      "remediation_days": 7,
+      "escalation": ["Security Officer"]
+    },
+    "MEDIUM": {
+      "description": "Control improvement opportunity",
+      "remediation_days": 30,
+      "escalation": []
+    }
+  },
+
+  "metadata": {
+    "source": "Requirements/15-Default-SoD-Conflict-Matrix.md",
+    "regulatory_frameworks": ["SOX Section 404", "COSO 2013", "ISACA COBIT", "Big 4 Audit"],
+    "last_verified": "2026-02-06",
+    "categories": [
+      "Accounts Payable",
+      "Accounts Receivable",
+      "General Ledger",
+      "Procurement",
+      "Inventory & Warehouse",
+      "Cash Management",
+      "System Administration"
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "scenario_name": "Active User: Regular Usage Within 90 Days",
+  "description": "User with Commerce license who has active usage in the last 90 days. Should NOT be flagged as inactive. Algorithm should either skip or return no_change.",
+
+  "user": {
+    "user_id": "USR-ACTIVE-001",
+    "name": "Mike Torres",
+    "email": "mike.torres@contoso.com",
+    "current_license": "Commerce",
+    "current_license_cost_monthly": 180.00,
+    "last_login_days_ago": 3,
+    "operation_count_90d": 450
+  },
+
+  "activity_summary": {
+    "analysis_period_days": 90,
+    "total_operations": 450,
+    "last_login_date": "2026-02-03",
+    "days_since_last_login": 3,
+    "login_count_90d": 45,
+    "operation_count_90d": 450
+  },
+
+  "expected_recommendation": {
+    "action": "no_change",
+    "from_license": "Commerce",
+    "to_license": null,
+    "confidence_score": 0.95,
+    "estimated_monthly_savings": 0.00,
+    "estimated_annual_savings": 0.00,
+    "rationale": "User has active usage within the inactivity threshold. Not a candidate for unused license detection."
+  }
+}
