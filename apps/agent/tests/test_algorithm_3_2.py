@@ -30,13 +30,9 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-import pytest
 
 from src.algorithms.algorithm_3_2_anomalous_role_change_detector import (
     detect_anomalous_role_changes,
-)
-from src.models.output_schemas import (
-    LicenseRecommendation,
 )
 
 # ---------------------------------------------------------------------------
@@ -155,7 +151,9 @@ class TestAfterHoursHighPrivilege:
         )
 
         # Should have one anomaly
-        assert len(results) >= 1, "Should detect at least one anomaly for after-hours high-privilege"
+        assert (
+            len(results) >= 1
+        ), "Should detect at least one anomaly for after-hours high-privilege"
 
         # Find the result for USR015
         result = None
@@ -165,19 +163,22 @@ class TestAfterHoursHighPrivilege:
                 break
 
         assert result is not None, "Should have result for USR015"
-        assert result["risk_level"] == "CRITICAL", \
-            f"After-hours high-privilege should be CRITICAL, got {result['risk_level']}"
-        assert result["anomaly_score"] >= 50, \
-            f"Anomaly score should be >= 50, got {result['anomaly_score']}"
+        assert (
+            result["risk_level"] == "CRITICAL"
+        ), f"After-hours high-privilege should be CRITICAL, got {result['risk_level']}"
+        assert (
+            result["anomaly_score"] >= 50
+        ), f"Anomaly score should be >= 50, got {result['anomaly_score']}"
 
         # Check for expected anomaly reasons
         reasons_text = " ".join(result["anomaly_reasons"])
-        assert "after-hours" in reasons_text.lower() or "2 am" in reasons_text.lower(), \
-            "Should mention after-hours change"
-        assert "weekend" in reasons_text.lower() or "saturday" in reasons_text.lower(), \
-            "Should mention weekend"
-        assert "high-privilege" in reasons_text.lower(), \
-            "Should mention high-privilege role"
+        assert (
+            "after-hours" in reasons_text.lower() or "2 am" in reasons_text.lower()
+        ), "Should mention after-hours change"
+        assert (
+            "weekend" in reasons_text.lower() or "saturday" in reasons_text.lower()
+        ), "Should mention weekend"
+        assert "high-privilege" in reasons_text.lower(), "Should mention high-privilege role"
 
     def test_after_hours_medium_privilege(self) -> None:
         """Medium-privilege role assigned at 2 AM → HIGH risk (but not CRITICAL)."""
@@ -203,8 +204,10 @@ class TestAfterHoursHighPrivilege:
         assert result is not None
 
         # Should be HIGH or MEDIUM (after-hours + weekend, but medium privilege)
-        assert result["risk_level"] in ["HIGH", "MEDIUM"], \
-            f"Medium-privilege after-hours should be HIGH/MEDIUM, got {result['risk_level']}"
+        assert result["risk_level"] in [
+            "HIGH",
+            "MEDIUM",
+        ], f"Medium-privilege after-hours should be HIGH/MEDIUM, got {result['risk_level']}"
 
 
 # ---------------------------------------------------------------------------
@@ -269,16 +272,18 @@ class TestRapidRoleEscalation:
 
         # At least one should be HIGH or CRITICAL
         risk_levels = [r["risk_level"] for r in usr017_results]
-        assert any(level in ["HIGH", "CRITICAL"] for level in risk_levels), \
-            f"Rapid escalation should trigger HIGH+ risk, got {risk_levels}"
+        assert any(
+            level in ["HIGH", "CRITICAL"] for level in risk_levels
+        ), f"Rapid escalation should trigger HIGH+ risk, got {risk_levels}"
 
         # Check for "rapid" mention in reasons (at least one result should have it)
         all_reasons = []
         for r in usr017_results:
             all_reasons.extend(r.get("anomaly_reasons", []))
         reasons_text = " ".join(all_reasons)
-        assert "rapid" in reasons_text.lower() or "escalation" in reasons_text.lower(), \
-            f"Should mention rapid/escalation in reasons, got: {all_reasons}"
+        assert (
+            "rapid" in reasons_text.lower() or "escalation" in reasons_text.lower()
+        ), f"Should mention rapid/escalation in reasons, got: {all_reasons}"
 
 
 # ---------------------------------------------------------------------------
@@ -301,6 +306,7 @@ class TestHighPrivilegeNewUser:
         """Assign high-privilege role to user created 5 days ago → HIGH alert."""
         # Use current date to make "5 days ago" realistic
         from datetime import datetime as dt
+
         now = dt.now()
         change_time = now  # Role assignment happens "now"
 
@@ -329,15 +335,19 @@ class TestHighPrivilegeNewUser:
             user_profiles=[user_profile],
         )
 
-        assert len(results) >= 1, \
-            f"Should detect anomaly for new user getting high-privilege role, got {len(results)} results"
+        assert (
+            len(results) >= 1
+        ), f"Should detect anomaly for new user getting high-privilege role, got {len(results)} results"
         result = next((r for r in results if r["user_affected"] == "USR018"), None)
         assert result is not None, "Should have result for USR018"
 
-        assert result["risk_level"] in ["HIGH", "CRITICAL"], \
-            f"New user high-privilege should be HIGH+, got {result['risk_level']}"
-        assert result["anomaly_score"] >= 50, \
-            f"Anomaly score should be >= 50, got {result['anomaly_score']}"
+        assert result["risk_level"] in [
+            "HIGH",
+            "CRITICAL",
+        ], f"New user high-privilege should be HIGH+, got {result['risk_level']}"
+        assert (
+            result["anomaly_score"] >= 50
+        ), f"Anomaly score should be >= 50, got {result['anomaly_score']}"
 
 
 # ---------------------------------------------------------------------------
@@ -379,15 +389,17 @@ class TestServiceAccountAnomalous:
         result = next((r for r in results if r["user_affected"] == "USR019"), None)
         assert result is not None
 
-        assert result["risk_level"] in ["HIGH", "CRITICAL"], \
-            f"Service account change should be HIGH+, got {result['risk_level']}"
-        assert result["anomaly_score"] >= 40, \
-            "Anomaly score should reflect service account concern"
+        assert result["risk_level"] in [
+            "HIGH",
+            "CRITICAL",
+        ], f"Service account change should be HIGH+, got {result['risk_level']}"
+        assert result["anomaly_score"] >= 40, "Anomaly score should reflect service account concern"
 
         # Check for service account mention
         reasons_text = " ".join(result["anomaly_reasons"])
-        assert "service account" in reasons_text.lower(), \
-            "Should mention service account involvement"
+        assert (
+            "service account" in reasons_text.lower()
+        ), "Should mention service account involvement"
 
 
 # ---------------------------------------------------------------------------
@@ -428,10 +440,14 @@ class TestMissingApproval:
         result = next((r for r in results if r["user_affected"] == "USR020"), None)
         assert result is not None
 
-        assert result["risk_level"] in ["MEDIUM", "HIGH", "CRITICAL"], \
-            f"Missing approval for high-privilege should be MEDIUM+, got {result['risk_level']}"
-        assert "approval" in " ".join(result["anomaly_reasons"]).lower(), \
-            "Should mention missing approval"
+        assert result["risk_level"] in [
+            "MEDIUM",
+            "HIGH",
+            "CRITICAL",
+        ], f"Missing approval for high-privilege should be MEDIUM+, got {result['risk_level']}"
+        assert (
+            "approval" in " ".join(result["anomaly_reasons"]).lower()
+        ), "Should mention missing approval"
 
 
 # ---------------------------------------------------------------------------
@@ -470,8 +486,9 @@ class TestNormalChange:
         usr021_results = [r for r in results if r["user_affected"] == "USR021"]
         if len(usr021_results) > 0:
             # If there is a result, it should be LOW severity
-            assert all(r["risk_level"] == "LOW" for r in usr021_results), \
-                "Normal change should not trigger HIGH+ alerts"
+            assert all(
+                r["risk_level"] == "LOW" for r in usr021_results
+            ), "Normal change should not trigger HIGH+ alerts"
         # Either no result or LOW severity is acceptable
 
 
@@ -510,8 +527,9 @@ class TestRoleRemoval:
         usr022_results = [r for r in results if r["user_affected"] == "USR022"]
         if len(usr022_results) > 0:
             # If there is a result, it should be LOW or MEDIUM (not HIGH/CRITICAL)
-            assert all(r["risk_level"] in ["LOW", "MEDIUM"] for r in usr022_results), \
-                "Role removal should not trigger CRITICAL+ alerts"
+            assert all(
+                r["risk_level"] in ["LOW", "MEDIUM"] for r in usr022_results
+            ), "Role removal should not trigger CRITICAL+ alerts"
 
 
 # ---------------------------------------------------------------------------
@@ -552,12 +570,15 @@ class TestCombinedAnomalies:
         result = next((r for r in results if r["user_affected"] == "USR023"), None)
         assert result is not None
 
-        assert result["risk_level"] == "CRITICAL", \
-            f"Multiple combined anomalies should be CRITICAL, got {result['risk_level']}"
-        assert result["anomaly_score"] >= 70, \
-            f"Combined anomalies should have high anomaly score, got {result['anomaly_score']}"
+        assert (
+            result["risk_level"] == "CRITICAL"
+        ), f"Multiple combined anomalies should be CRITICAL, got {result['risk_level']}"
+        assert (
+            result["anomaly_score"] >= 70
+        ), f"Combined anomalies should have high anomaly score, got {result['anomaly_score']}"
 
         # Should mention multiple reasons
         reasons = result["anomaly_reasons"]
-        assert len(reasons) >= 2, \
-            f"Should have multiple anomaly reasons, got {len(reasons)}: {reasons}"
+        assert (
+            len(reasons) >= 2
+        ), f"Should have multiple anomaly reasons, got {len(reasons)}: {reasons}"

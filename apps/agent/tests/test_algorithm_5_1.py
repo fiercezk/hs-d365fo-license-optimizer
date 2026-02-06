@@ -5,7 +5,6 @@ anomaly detection, and recommendation generation.
 """
 
 import json
-from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -16,13 +15,11 @@ from src.algorithms.algorithm_5_1_license_trend_analyzer import (
     detect_anomalies,
     calculate_growth_rates,
     generate_forecast,
-    generate_recommendations,
 )
 from src.models.output_schemas import (
     LicenseTrendAnalysis,
     ConfidenceLevel,
 )
-
 
 # ============================================================================
 # FIXTURES: Load test data
@@ -238,7 +235,8 @@ class TestAnomalyDetection:
 
         # Check for spike anomaly (month 6)
         spike_anomalies = [
-            a for a in anomalies
+            a
+            for a in anomalies
             if a.anomaly_type in ["SUDDEN_USER_CHANGE", "USER_COUNT_ANOMALY"]
             and a.value > a.expected
         ]
@@ -254,7 +252,8 @@ class TestAnomalyDetection:
 
         # Should detect drop anomaly (month 8)
         drop_anomalies = [
-            a for a in anomalies
+            a
+            for a in anomalies
             if a.anomaly_type in ["SUDDEN_USER_CHANGE", "USER_COUNT_ANOMALY"]
             and a.value < a.expected
         ]
@@ -402,10 +401,7 @@ class TestForecastGeneration:
         )
 
         # Forecast should apply seasonal adjustments
-        has_adjustments = any(
-            abs(m.seasonal_adjustment_percent) > 0.1
-            for m in forecast
-        )
+        has_adjustments = any(abs(m.seasonal_adjustment_percent) > 0.1 for m in forecast)
         assert has_adjustments or len(patterns) == 0
 
     def test_forecast_confidence_decreases(self, steady_growth_data):
@@ -445,8 +441,10 @@ class TestRecommendationGeneration:
 
         # Should include procurement planning
         recommendation_types = [r.recommendation_type for r in result.recommendations]
-        assert "PROCUREMENT_NEEDED" in recommendation_types or \
-               "BUDGET_FORECAST" in recommendation_types
+        assert (
+            "PROCUREMENT_NEEDED" in recommendation_types
+            or "BUDGET_FORECAST" in recommendation_types
+        )
 
     def test_recommendations_declining(self, declining_data):
         """Test recommendations for declining trend."""
@@ -539,8 +537,10 @@ class TestFullAnalysis:
 
         # Should recommend procurement
         recommendation_types = [r.recommendation_type for r in result.recommendations]
-        assert "PROCUREMENT_NEEDED" in recommendation_types or \
-               "BUDGET_FORECAST" in recommendation_types
+        assert (
+            "PROCUREMENT_NEEDED" in recommendation_types
+            or "BUDGET_FORECAST" in recommendation_types
+        )
 
     def test_full_analysis_with_anomalies(self, anomalies_data):
         """Test full analysis with anomalies."""
@@ -571,9 +571,14 @@ class TestEdgeCases:
     def test_minimum_data_period(self):
         """Test analysis with minimum viable data (6 months)."""
         minimal_data = [
-            {"date": f"2025-{m:02d}-01", "month_num": m, "year": 2025,
-             "user_count": 1000 + (i * 20), "license_cost": 180000 + (i * 3600)}
-            for i, m in enumerate(range(8, 14))
+            {
+                "date": f"2025-{m:02d}-01",
+                "month_num": m,
+                "year": 2025,
+                "user_count": 1000 + (i * 20),
+                "license_cost": 180000 + (i * 3600),
+            }
+            for i, m in enumerate(range(7, 13))
         ]
 
         result = analyze_license_trends(
@@ -589,11 +594,13 @@ class TestEdgeCases:
     def test_large_data_period(self):
         """Test analysis with 36 months of data."""
         large_data = [
-            {"date": f"2023-{(m % 12) + 1:02d}-01",
-             "month_num": (m % 12) + 1,
-             "year": 2023 + (m // 12),
-             "user_count": 1000 + (i * 10),
-             "license_cost": 180000 + (i * 1800)}
+            {
+                "date": f"{2023 + (m // 12)}-{(m % 12) + 1:02d}-01",
+                "month_num": (m % 12) + 1,
+                "year": 2023 + (m // 12),
+                "user_count": 1000 + (i * 10),
+                "license_cost": 180000 + (i * 1800),
+            }
             for i, m in enumerate(range(36))
         ]
 
@@ -610,8 +617,13 @@ class TestEdgeCases:
     def test_flat_data_no_growth(self):
         """Test with completely flat data (no growth or decline)."""
         flat_data = [
-            {"date": f"2025-{m:02d}-01", "month_num": m, "year": 2025,
-             "user_count": 1000, "license_cost": 180000}
+            {
+                "date": f"2025-{m:02d}-01",
+                "month_num": m,
+                "year": 2025,
+                "user_count": 1000,
+                "license_cost": 180000,
+            }
             for m in range(1, 13)
         ]
 
@@ -628,15 +640,35 @@ class TestEdgeCases:
     def test_extreme_spike(self):
         """Test handling of extreme spike (300% increase in one month)."""
         spike_data = [
-            {"date": "2025-01-01", "month_num": 1, "year": 2025,
-             "user_count": 1000, "license_cost": 180000},
-            {"date": "2025-02-01", "month_num": 2, "year": 2025,
-             "user_count": 4000, "license_cost": 720000},
-            {"date": "2025-03-01", "month_num": 3, "year": 2025,
-             "user_count": 4000, "license_cost": 720000},
+            {
+                "date": "2025-01-01",
+                "month_num": 1,
+                "year": 2025,
+                "user_count": 1000,
+                "license_cost": 180000,
+            },
+            {
+                "date": "2025-02-01",
+                "month_num": 2,
+                "year": 2025,
+                "user_count": 4000,
+                "license_cost": 720000,
+            },
+            {
+                "date": "2025-03-01",
+                "month_num": 3,
+                "year": 2025,
+                "user_count": 4000,
+                "license_cost": 720000,
+            },
         ] + [
-            {"date": f"2025-{m:02d}-01", "month_num": m, "year": 2025,
-             "user_count": 4000, "license_cost": 720000}
+            {
+                "date": f"2025-{m:02d}-01",
+                "month_num": m,
+                "year": 2025,
+                "user_count": 4000,
+                "license_cost": 720000,
+            }
             for m in range(4, 13)
         ]
 

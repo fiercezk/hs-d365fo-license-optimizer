@@ -117,7 +117,7 @@ class TestClearMinorityLicense:
 
     def test_clear_minority_detected(self) -> None:
         """Test that Finance license is detected as minority."""
-        scenario = _load_scenario("algo_2_5_scenario_clear_minority.json")
+        _load_scenario("algo_2_5_scenario_clear_minority.json")
         user_activity = _load_user_activity()
         security_config = _load_security_config()
         pricing_config = _load_pricing()
@@ -195,7 +195,7 @@ class TestClearMinorityLicense:
 
     def test_recommendation_action(self) -> None:
         """Test that recommendation is REVIEW_WITH_USER."""
-        scenario = _load_scenario("algo_2_5_scenario_clear_minority.json")
+        _load_scenario("algo_2_5_scenario_clear_minority.json")
         user_activity = _load_user_activity()
         security_config = _load_security_config()
         pricing_config = _load_pricing()
@@ -219,7 +219,7 @@ class TestClearMinorityLicense:
 
     def test_confidence_high(self) -> None:
         """Test that confidence is HIGH due to clear minority pattern."""
-        scenario = _load_scenario("algo_2_5_scenario_clear_minority.json")
+        _load_scenario("algo_2_5_scenario_clear_minority.json")
         user_activity = _load_user_activity()
         security_config = _load_security_config()
         pricing_config = _load_pricing()
@@ -252,7 +252,7 @@ class TestMultipleMinorityLicenses:
 
     def test_multiple_minorities_detected(self) -> None:
         """Test that both SCM and Finance are detected as minorities."""
-        scenario = _load_scenario("algo_2_5_scenario_multiple_minorities.json")
+        _load_scenario("algo_2_5_scenario_multiple_minorities.json")
         user_activity = _load_user_activity()
         security_config = _load_security_config()
         pricing_config = _load_pricing()
@@ -310,7 +310,7 @@ class TestNoMinorityLicense:
 
     def test_no_minority_detected(self) -> None:
         """Test that Mike is not flagged (no minority found)."""
-        scenario = _load_scenario("algo_2_5_scenario_no_minority.json")
+        _load_scenario("algo_2_5_scenario_no_minority.json")
         user_activity = _load_user_activity()
         security_config = _load_security_config()
         pricing_config = _load_pricing()
@@ -342,7 +342,7 @@ class TestSingleLicenseUser:
 
     def test_single_license_user_skipped(self) -> None:
         """Test that single-license users are skipped."""
-        scenario = _load_scenario("algo_2_5_scenario_single_license.json")
+        _load_scenario("algo_2_5_scenario_single_license.json")
         user_activity = _load_user_activity()
         security_config = _load_security_config()
         pricing_config = _load_pricing()
@@ -374,7 +374,7 @@ class TestReadOnlyHeavyMinority:
 
     def test_readonly_minority_detected(self) -> None:
         """Test that read-only heavy minority is detected."""
-        scenario = _load_scenario("algo_2_5_scenario_readonly_heavy.json")
+        _load_scenario("algo_2_5_scenario_readonly_heavy.json")
         user_activity = _load_user_activity()
         security_config = _load_security_config()
         pricing_config = _load_pricing()
@@ -395,7 +395,7 @@ class TestReadOnlyHeavyMinority:
 
     def test_readonly_percentage_noted(self) -> None:
         """Test that read-only percentage is included in recommendation."""
-        scenario = _load_scenario("algo_2_5_scenario_readonly_heavy.json")
+        _load_scenario("algo_2_5_scenario_readonly_heavy.json")
         user_activity = _load_user_activity()
         security_config = _load_security_config()
         pricing_config = _load_pricing()

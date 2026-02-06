@@ -143,8 +143,15 @@ def detect_anomalous_role_changes(
 
         if day_of_week in [5, 6]:  # Saturday or Sunday
             time_anomaly_score += 20
-            day_names = ["Monday", "Tuesday", "Wednesday", "Thursday",
-                        "Friday", "Saturday", "Sunday"]
+            day_names = [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday",
+            ]
             anomaly_reasons.append(f"Weekend change ({day_names[day_of_week]})")
 
         # Amplify time-based anomalies for high-privilege roles
@@ -212,7 +219,9 @@ def detect_anomalous_role_changes(
             # Only skip if usage_freq is very high (> 50), which would be unusual
             if usage_freq <= 5:  # Default or very rare
                 anomaly_score += 70  # Very high severity: service account making role change
-                anomaly_reasons.append(f"Changed by service account (unusual pattern): {changed_by}")
+                anomaly_reasons.append(
+                    f"Changed by service account (unusual pattern): {changed_by}"
+                )
 
         # Calculate risk level based on score
         # Lines 391-396 in pseudocode
@@ -227,21 +236,23 @@ def detect_anomalous_role_changes(
 
         # Only include anomalies with score >= 50 (MEDIUM+)
         if anomaly_score >= 50:
-            anomalies.append({
-                "change_id": change_id,
-                "user_affected": user_affected,
-                "user_name": user_name,
-                "role_changed": role_changed,
-                "action": action,
-                "changed_by": changed_by,
-                "timestamp": timestamp_str,
-                "anomaly_score": anomaly_score,
-                "anomaly_reasons": anomaly_reasons,
-                "risk_level": risk_level,
-                "recommendation": _generate_recommendation(
-                    user_affected, role_changed, risk_level, anomaly_reasons
-                ),
-            })
+            anomalies.append(
+                {
+                    "change_id": change_id,
+                    "user_affected": user_affected,
+                    "user_name": user_name,
+                    "role_changed": role_changed,
+                    "action": action,
+                    "changed_by": changed_by,
+                    "timestamp": timestamp_str,
+                    "anomaly_score": anomaly_score,
+                    "anomaly_reasons": anomaly_reasons,
+                    "risk_level": risk_level,
+                    "recommendation": _generate_recommendation(
+                        user_affected, role_changed, risk_level, anomaly_reasons
+                    ),
+                }
+            )
 
     # Sort by anomaly score (descending)
     anomalies.sort(key=lambda x: x["anomaly_score"], reverse=True)
@@ -345,7 +356,4 @@ def _generate_recommendation(
             f"with some unusual patterns. Routine investigation recommended."
         )
     else:  # LOW
-        return (
-            f"Informational: Role change for user {user_id}. "
-            f"No immediate action required."
-        )
+        return f"Informational: Role change for user {user_id}. " f"No immediate action required."

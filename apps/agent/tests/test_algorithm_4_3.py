@@ -30,7 +30,6 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-import pytest
 
 from src.algorithms.algorithm_4_3_cross_app_analyzer import (
     analyze_cross_application_licenses,
@@ -208,6 +207,7 @@ def test_already_optimized_combined_license():
 
     user_id = scenario["user_id"]
     user_name = scenario["user_name"]
+    current_licenses = scenario.get("current_licenses", [])
 
     result = analyze_cross_application_licenses(
         user_id=user_id,
@@ -215,6 +215,7 @@ def test_already_optimized_combined_license():
         security_config=security_config,
         user_roles=user_roles,
         pricing_config=pricing_config,
+        current_licenses=current_licenses,
     )
 
     # Verify already optimized
@@ -331,7 +332,10 @@ def test_missing_user_raises_error():
 
     # Should return NO_CHANGE (insufficient data to analyze)
     # OR should handle gracefully with INSUFFICIENT_DATA confidence
-    assert result.action == RecommendationAction.NO_CHANGE or result.confidence == ConfidenceLevel.INSUFFICIENT_DATA
+    assert (
+        result.action == RecommendationAction.NO_CHANGE
+        or result.confidence == ConfidenceLevel.INSUFFICIENT_DATA
+    )
 
 
 def test_output_schema_completeness():
@@ -383,9 +387,9 @@ def test_confidence_scoring_consistency():
         )
 
         # Verify confidence matches expected
-        assert result.confidence == expected_confidence, (
-            f"Scenario {scenario_file}: expected {expected_confidence}, got {result.confidence}"
-        )
+        assert (
+            result.confidence == expected_confidence
+        ), f"Scenario {scenario_file}: expected {expected_confidence}, got {result.confidence}"
 
 
 # ---------------------------------------------------------------------------
@@ -412,14 +416,14 @@ def test_respects_pricing_config():
         pricing_config=pricing_config,
     )
 
-    # Get actual prices from config
-    finance_price = float(
-        pricing_config["licenses"]["finance"]["pricePerUserPerMonth"]
-    )
-    scm_price = float(pricing_config["licenses"]["scm"]["pricePerUserPerMonth"])
+    # Get actual prices from config (keys match pricing.json casing)
+    licenses = pricing_config["licenses"]
+    # Support both capitalized keys (apps/data/config) and lowercase keys (data/config)
+    finance_key = "Finance" if "Finance" in licenses else "finance"
+    scm_key = "SCM" if "SCM" in licenses else "scm"
+    finance_price = float(licenses[finance_key]["pricePerUserPerMonth"])
+    scm_price = float(licenses[scm_key]["pricePerUserPerMonth"])
 
     # Verify current cost matches
     expected_current = finance_price + scm_price
-    assert (
-        abs(result.savings.monthly_current_cost - expected_current) < MONETARY_TOLERANCE
-    )
+    assert abs(result.savings.monthly_current_cost - expected_current) < MONETARY_TOLERANCE

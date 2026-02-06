@@ -9,7 +9,7 @@ See Requirements/11-License-Trend-Analysis-Algorithm.md for specification.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Any
 from uuid import uuid4
 import calendar
@@ -26,7 +26,6 @@ from ..models.output_schemas import (
     TrendAnalysisRecommendation,
     ConfidenceLevel,
 )
-
 
 # ============================================================================
 # MAIN ALGORITHM
@@ -175,9 +174,7 @@ def calculate_growth_rates(monthly_data: list[dict[str, Any]]) -> GrowthRate:
     # Quarter-over-quarter growth
     qoq_growths = []
     for i in range(3, len(user_counts)):
-        growth = (
-            (user_counts[i] - user_counts[i - 3]) / user_counts[i - 3]
-        ) * 100
+        growth = ((user_counts[i] - user_counts[i - 3]) / user_counts[i - 3]) * 100
         qoq_growths.append(growth)
 
     qoq_average = np.mean(qoq_growths) if qoq_growths else 0
@@ -185,9 +182,7 @@ def calculate_growth_rates(monthly_data: list[dict[str, Any]]) -> GrowthRate:
     # Year-over-year growth
     yoy_growths = []
     for i in range(12, len(user_counts)):
-        growth = (
-            (user_counts[i] - user_counts[i - 12]) / user_counts[i - 12]
-        ) * 100
+        growth = ((user_counts[i] - user_counts[i - 12]) / user_counts[i - 12]) * 100
         yoy_growths.append(growth)
 
     yoy_average = np.mean(yoy_growths) if yoy_growths else mom_average
@@ -324,7 +319,7 @@ def detect_anomalies(
         # User count anomaly
         if user_std > 0:
             user_zscore = (row["user_count"] - user_mean) / user_std
-            if abs(user_zscore) > std_dev_threshold:
+            if abs(user_zscore) >= std_dev_threshold:
                 severity = "HIGH" if abs(user_zscore) > 3.0 else "MEDIUM"
                 anomaly = LicenseAnomalyRecord(
                     anomaly_type="USER_COUNT_ANOMALY",
@@ -344,7 +339,7 @@ def detect_anomalies(
         # Cost anomaly
         if cost_std > 0:
             cost_zscore = (row["license_cost"] - cost_mean) / cost_std
-            if abs(cost_zscore) > std_dev_threshold:
+            if abs(cost_zscore) >= std_dev_threshold:
                 severity = "HIGH" if abs(cost_zscore) > 3.0 else "MEDIUM"
                 anomaly = LicenseAnomalyRecord(
                     anomaly_type="COST_ANOMALY",
@@ -367,15 +362,10 @@ def detect_anomalies(
         curr_row = df.iloc[i]
 
         user_change = (
-            (curr_row["user_count"] - prev_row["user_count"])
-            / prev_row["user_count"]
-        ) * 100
-        cost_change = (
-            (curr_row["license_cost"] - prev_row["license_cost"])
-            / prev_row["license_cost"]
+            (curr_row["user_count"] - prev_row["user_count"]) / prev_row["user_count"]
         ) * 100
 
-        if abs(user_change) > sudden_change_threshold:
+        if abs(user_change) >= sudden_change_threshold:
             severity = "HIGH" if abs(user_change) > 40 else "MEDIUM"
             anomaly = LicenseAnomalyRecord(
                 anomaly_type="SUDDEN_USER_CHANGE",
@@ -447,7 +437,6 @@ def generate_forecast(
         # Calculate forecast date
         forecast_date = base_date + timedelta(days=30 * i)
         forecast_month = forecast_date.month
-        forecast_year = forecast_date.year
 
         # Base forecast: apply growth
         forecast_users = base_users * ((1 + growth_rate) ** i)
@@ -476,10 +465,7 @@ def generate_forecast(
         notes = []
         if forecast_month in seasonal_map and seasonal_adj != 0:
             deviation = seasonal_map[forecast_month] * 100
-            notes.append(
-                f"Seasonal {'peak' if deviation > 0 else 'dip'} "
-                f"({deviation:+.1f}%)"
-            )
+            notes.append(f"Seasonal {'peak' if deviation > 0 else 'dip'} " f"({deviation:+.1f}%)")
 
         month_forecast = ForecastMonth(
             month_number=i,
@@ -533,17 +519,17 @@ def generate_recommendations(
                 TrendAnalysisRecommendation(
                     recommendation_type="PROCUREMENT_NEEDED",
                     description=(
-                        f"Procure {int(growth_6m)} additional licenses "
-                        f"in next 6 months"
+                        f"Procure {int(growth_6m)} additional licenses " f"in next 6 months"
                     ),
                     priority="HIGH" if growth_6m > 100 else "MEDIUM",
                     timeline="Next 6 months",
-                    estimated_impact=growth_6m * (current_cost / current_users)
-                    if current_users > 0 else 0,
+                    estimated_impact=(
+                        growth_6m * (current_cost / current_users) if current_users > 0 else 0
+                    ),
                     action_items=[
-                        f"Identify license SKUs needed",
-                        f"Request quotes from vendor",
-                        f"Plan procurement timeline",
+                        "Identify license SKUs needed",
+                        "Request quotes from vendor",
+                        "Plan procurement timeline",
                     ],
                 )
             )
@@ -561,12 +547,10 @@ def generate_recommendations(
                     ),
                     priority="MEDIUM",
                     timeline=f"Before {pattern.month_name}",
-                    estimated_impact=(
-                        pattern.deviation_percent / 100 * current_cost
-                    ),
+                    estimated_impact=(pattern.deviation_percent / 100 * current_cost),
                     action_items=[
                         f"Identify temporary licenses for {pattern.month_name}",
-                        f"Negotiate temporary pricing",
+                        "Negotiate temporary pricing",
                     ],
                 )
             )

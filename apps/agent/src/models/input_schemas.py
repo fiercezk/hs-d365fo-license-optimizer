@@ -203,9 +203,6 @@ class SecurityFinding(BaseModel):
         "ANOMALOUS_CHANGE, ORPHANED_ACCOUNT, etc.)"
     )
     severity: str = Field(
-        description="Severity level (CRITICAL, HIGH, MEDIUM, LOW) "
-        "- case insensitive"
+        description="Severity level (CRITICAL, HIGH, MEDIUM, LOW) " "- case insensitive"
     )
-    description: str = Field(
-        description="Detailed description of the security finding"
-    )
+    description: str = Field(description="Detailed description of the security finding")

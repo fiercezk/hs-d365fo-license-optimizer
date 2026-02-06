@@ -37,6 +37,7 @@ def analyze_cross_application_licenses(
     security_config: pd.DataFrame,
     user_roles: pd.DataFrame,
     pricing_config: dict[str, Any],
+    current_licenses: list[str] | None = None,
 ) -> LicenseRecommendation:
     """Analyze a user's cross-application license situation.
 
@@ -53,10 +54,23 @@ def analyze_cross_application_licenses(
             - security_role: Role name
             - assignment_date: Assignment date
         pricing_config: Parsed pricing.json configuration
+        current_licenses: Optional list of current license names held by user.
+            If provided, used to detect already-optimized scenarios (e.g.,
+            user already holds 'Finance+SCM' combined license).
 
     Returns:
         LicenseRecommendation with action, savings, and confidence.
     """
+    # Step 0: Check if user already holds the combined license
+    if current_licenses and any(
+        "+" in lic or "combined" in lic.lower() for lic in current_licenses
+    ):
+        return _create_already_optimized_recommendation(
+            user_id=user_id,
+            user_name=user_name,
+            current_licenses=current_licenses,
+        )
+
     # Step 1: Get all roles assigned to this user
     user_role_rows = user_roles[user_roles["user_id"] == user_id]
 
@@ -88,9 +102,7 @@ def analyze_cross_application_licenses(
 
     # Step 2: Map user roles to their applications
     user_role_names = user_role_rows["security_role"].tolist()
-    role_app_map = security_config.drop_duplicates(
-        subset=["securityrole", "Application"]
-    )
+    role_app_map = security_config.drop_duplicates(subset=["securityrole", "Application"])
     role_app_map_dict: dict[str, set[str]] = {}
 
     for role_name in user_role_names:
@@ -122,53 +134,62 @@ def analyze_cross_application_licenses(
     scm_price = _get_license_price(pricing_config, "SCM")
     combined_price = _get_combined_price(pricing_config, "Finance", "SCM")
 
-    current_cost = finance_price + scm_price
-    recommended_cost = combined_price
+    # Calculate cost of other applications (not Finance/SCM)
+    other_app_cost = 0.0
+    other_apps = user_applications - {"Finance", "SCM"}
+    for app in other_apps:
+        other_app_cost += _get_license_price(pricing_config, app)
+
+    current_cost = finance_price + scm_price + other_app_cost
+    recommended_cost = combined_price + other_app_cost
     savings = current_cost - recommended_cost
 
     # Step 6: Determine confidence level
-    # HIGH: Clear Finance and SCM access (substantive in both)
-    # MEDIUM: One application has minimal access
-    app_access_counts = {}
+    # HIGH: Clear Finance and SCM access (substantive menu items in both)
+    # MEDIUM: One application has minimal access (few menu items)
+    # Count total security config entries (menu items) per application
+    app_menu_item_counts: dict[str, int] = {}
     for role_name in user_role_names:
-        role_rows_for_role = role_app_map[role_app_map["securityrole"] == role_name]
-        for _, row in role_rows_for_role.iterrows():
+        role_entries = security_config[security_config["securityrole"] == role_name]
+        for _, row in role_entries.iterrows():
             app = row["Application"]
-            if app not in app_access_counts:
-                app_access_counts[app] = 0
-            app_access_counts[app] += 1
+            if app not in app_menu_item_counts:
+                app_menu_item_counts[app] = 0
+            app_menu_item_counts[app] += 1
 
-    finance_role_count = app_access_counts.get("Finance", 0)
-    scm_role_count = app_access_counts.get("SCM", 0)
+    finance_menu_count = app_menu_item_counts.get("Finance", 0)
+    scm_menu_count = app_menu_item_counts.get("SCM", 0)
 
-    # If either app has only 1 role (minimal access), set confidence to MEDIUM
-    confidence_score = (
-        0.75 if (finance_role_count == 1 or scm_role_count == 1) else 0.95
-    )
-    confidence = (
-        ConfidenceLevel.MEDIUM
-        if (finance_role_count == 1 or scm_role_count == 1)
-        else ConfidenceLevel.HIGH
+    # Minimal access threshold: 5 or fewer menu items in an application
+    minimal_threshold = 5
+    has_minimal_access = (
+        finance_menu_count <= minimal_threshold or scm_menu_count <= minimal_threshold
     )
 
-    # Step 7: Check if user already has the combined license
-    # For now, assume if we have cross-app access and separate costs, not optimized
-    # (In a real system, we'd check the license_assignments table)
-    already_optimized = False
+    confidence_score = 0.75 if has_minimal_access else 0.95
+    confidence = ConfidenceLevel.MEDIUM if has_minimal_access else ConfidenceLevel.HIGH
+
+    # Step 7: Already-optimized detection is handled at Step 0 via current_licenses
+    # If we reach this point, user is not already optimized
 
     # Step 8: Build supporting factors
     supporting_factors = [
-        f"User has {finance_role_count} Finance role(s)",
-        f"User has {scm_role_count} SCM role(s)",
-        f"Combined Finance+SCM license saves $150/month vs. separate licenses",
+        f"User has {finance_menu_count} Finance menu item(s)",
+        f"User has {scm_menu_count} SCM menu item(s)",
+        f"Combined Finance+SCM license saves ${savings:.0f}/month vs. separate licenses",
     ]
 
     # Step 9: Check for risk factors (e.g., minimal access in one app)
     risk_factors: list[str] = []
-    if finance_role_count == 1:
-        risk_factors.append("Finance access is limited to 1 role - consider if truly needed")
-    if scm_role_count == 1:
-        risk_factors.append("SCM access is limited to 1 role - consider if truly needed")
+    if finance_menu_count <= minimal_threshold:
+        risk_factors.append(
+            f"Finance access is limited to {finance_menu_count} menu items - "
+            f"consider if truly needed"
+        )
+    if scm_menu_count <= minimal_threshold:
+        risk_factors.append(
+            f"SCM access is limited to {scm_menu_count} menu items - " f"consider if truly needed"
+        )
 
     # Step 10: Determine automation safety
     safe_to_automate = confidence == ConfidenceLevel.HIGH and not risk_factors
@@ -264,6 +285,13 @@ def _create_no_cross_app_recommendation(
             risk_factors=[],
             data_quality_notes=[],
         ),
+        savings=SavingsEstimate(
+            monthly_current_cost=0.0,
+            monthly_recommended_cost=0.0,
+            monthly_savings=0.0,
+            annual_savings=0.0,
+            confidence_adjusted_savings=0.0,
+        ),
         analysis_period_days=90,
         sample_size=0,
         data_completeness=1.0,
@@ -307,9 +335,7 @@ def _get_license_price(pricing_config: dict[str, Any], license_name: str) -> flo
     )
 
 
-def _get_combined_price(
-    pricing_config: dict[str, Any], app1: str, app2: str
-) -> float:
+def _get_combined_price(pricing_config: dict[str, Any], app1: str, app2: str) -> float:
     """Get the price for a combined license.
 
     For Finance+SCM, the current pricing is $210 (less than $180+$180).
@@ -336,3 +362,55 @@ def _get_combined_price(
     price1 = _get_license_price(pricing_config, app1)
     price2 = _get_license_price(pricing_config, app2)
     return price1 + price2
+
+
+def _create_already_optimized_recommendation(
+    user_id: str,
+    user_name: str,
+    current_licenses: list[str],
+) -> LicenseRecommendation:
+    """Create a NO_CHANGE recommendation for users already holding a combined license.
+
+    Args:
+        user_id: User identifier
+        user_name: User display name
+        current_licenses: Current license names (e.g., ['Finance+SCM'])
+
+    Returns:
+        LicenseRecommendation with NO_CHANGE action (already optimized).
+    """
+    license_str = ", ".join(current_licenses)
+    return LicenseRecommendation(
+        algorithm_id="4.3",
+        recommendation_id=str(uuid.uuid4()),
+        generated_at=datetime.now(UTC),
+        user_id=user_id,
+        user_name=user_name,
+        current_license=license_str,
+        current_license_cost_monthly=210.0,
+        action=RecommendationAction.NO_CHANGE,
+        confidence_score=0.95,
+        confidence_level=ConfidenceLevel.HIGH,
+        reason=RecommendationReason(
+            primary_factor=(
+                f"User already holds the optimal combined {license_str} license "
+                f"for their dual-application access"
+            ),
+            supporting_factors=["Combined license is already the most cost-effective option"],
+            risk_factors=[],
+            data_quality_notes=[],
+        ),
+        savings=SavingsEstimate(
+            monthly_current_cost=210.0,
+            monthly_recommended_cost=210.0,
+            monthly_savings=0.0,
+            annual_savings=0.0,
+            confidence_adjusted_savings=0.0,
+        ),
+        analysis_period_days=90,
+        sample_size=0,
+        data_completeness=1.0,
+        safe_to_automate=True,
+        requires_approval=False,
+        tags=["already_optimal"],
+    )

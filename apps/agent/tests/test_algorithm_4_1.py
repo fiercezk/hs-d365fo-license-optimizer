@@ -507,9 +507,9 @@ class TestIneligibleDeviceTypeNegativeCase:
         # -- Assert --
         # Desktop should not be recommended (filter check below)
         found_desk = any(opp.user_id == "DESK-HQ-01" for opp in opportunities)
-        assert not found_desk, (
-            "DESK-HQ-01 should not be recommended (Desktop type not in eligible list)"
-        )
+        assert (
+            not found_desk
+        ), "DESK-HQ-01 should not be recommended (Desktop type not in eligible list)"
 
 
 # ---------------------------------------------------------------------------
