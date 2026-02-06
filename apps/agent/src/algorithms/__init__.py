@@ -2,11 +2,18 @@
 
 Exported algorithms:
   - Algorithm 1.1: Role License Composition Analyzer
+"""Phase 1 & 2 algorithm implementations for license optimization.
+
+Exported algorithms:
+  Phase 1:
   - Algorithm 2.2: Read-Only User Detector
   - Algorithm 2.5: License Minority Detection
   - Algorithm 3.3: Privilege Creep Detector
   - Algorithm 3.4: Toxic Combination Detector
   - Algorithm 4.7: New User License Recommender
+
+  Phase 2:
+  - Algorithm 1.4: Component Removal Recommender
 """
 
 from .algorithm_1_1_role_composition_analyzer import (
@@ -14,6 +21,10 @@ from .algorithm_1_1_role_composition_analyzer import (
     RoleComposition,
     analyze_role_composition,
     analyze_roles_batch,
+from .algorithm_1_4_component_removal import (
+    ComponentRemovalCandidate,
+    ComponentRemovalResult,
+    recommend_component_removal,
 )
 from .algorithm_2_2_readonly_detector import detect_readonly_users
 from .algorithm_2_5_license_minority_detector import detect_license_minority_users
@@ -33,6 +44,11 @@ __all__ = [
     "RoleComposition",
     "analyze_role_composition",
     "analyze_roles_batch",
+    # Phase 2
+    "ComponentRemovalCandidate",
+    "ComponentRemovalResult",
+    "recommend_component_removal",
+    # Phase 1
     "detect_readonly_users",
     "detect_license_minority_users",
     "detect_privilege_creep",
