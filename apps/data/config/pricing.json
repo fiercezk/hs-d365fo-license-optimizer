@@ -1,0 +1,42 @@
+{
+  "version": "2026.1",
+  "currency": "USD",
+  "licenses": {
+    "Team Members": {
+      "pricePerUserPerMonth": 60.00,
+      "priority": 60,
+      "description": "Limited read-only access with self-service capabilities"
+    },
+    "Operations - Activity": {
+      "pricePerUserPerMonth": 30.00,
+      "priority": 30,
+      "description": "Add-on license for specific operational activities",
+      "isAddOn": true
+    },
+    "Operations": {
+      "pricePerUserPerMonth": 90.00,
+      "priority": 90,
+      "description": "Standard operations license"
+    },
+    "SCM": {
+      "pricePerUserPerMonth": 180.00,
+      "priority": 180,
+      "description": "Supply Chain Management full license"
+    },
+    "Finance": {
+      "pricePerUserPerMonth": 180.00,
+      "priority": 180,
+      "description": "Finance full license"
+    },
+    "Commerce": {
+      "pricePerUserPerMonth": 180.00,
+      "priority": 180,
+      "description": "Commerce full license"
+    },
+    "Device License": {
+      "pricePerUserPerMonth": 80.00,
+      "priority": 80,
+      "description": "Per-device license for shared terminals"
+    }
+  }
+}
