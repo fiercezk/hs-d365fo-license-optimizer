@@ -1,0 +1,100 @@
+{
+  "$schema": "./toxic-rules-schema.json",
+  "version": "1.0",
+  "created_date": "2026-02-06",
+  "description": "Toxic Combination Rules for Algorithm 3.4. Detects dangerous multi-role combinations that enable fraud beyond basic SoD violations. See Requirements/07 Algorithm 3.4.",
+  "total_rules": 5,
+
+  "rules": [
+    {
+      "rule_id": "TOXIC-001",
+      "risk_type": "Full Procure-to-Pay Control",
+      "description": "User can create vendors, process purchase orders, and approve payments. Enables fictitious vendor fraud and unauthorized disbursements.",
+      "roles": ["Purchasing agent", "Vendor master maintenance", "Accounts payable clerk"],
+      "severity": "CRITICAL",
+      "combined_privileges": [
+        "Create/modify vendor records",
+        "Create purchase orders",
+        "Process invoices",
+        "Approve payments",
+        "Execute payment runs"
+      ],
+      "fraud_scenario": "Create shell vendor → Place PO → Invoice → Approve payment → Disburse funds to own account",
+      "remediation": "Split roles: Separate vendor master, purchasing, and AP functions across different users with approval workflows",
+      "regulatory_reference": "SOX 404, COSO Principle 10, Big 4 Fraud Triangle",
+      "is_enabled": true
+    },
+    {
+      "rule_id": "TOXIC-002",
+      "risk_type": "Complete Order-to-Cash Control",
+      "description": "User controls entire revenue cycle: customer creation, sales orders, invoicing, and receivables. Enables revenue manipulation and cash theft.",
+      "roles": ["Sales order processor", "Customer master maintenance", "Accounts receivable clerk"],
+      "severity": "CRITICAL",
+      "combined_privileges": [
+        "Create/modify customer records",
+        "Create sales orders",
+        "Generate invoices",
+        "Receive payments",
+        "Adjust receivables"
+      ],
+      "fraud_scenario": "Create fake customer → Generate sales order → Invoice → Receive payment → Adjust AR to hide theft",
+      "remediation": "Segregate customer master, sales, and AR functions. Require independent approval for customer creation and AR adjustments",
+      "regulatory_reference": "SOX 404, COSO Principle 10",
+      "is_enabled": true
+    },
+    {
+      "rule_id": "TOXIC-003",
+      "risk_type": "Full General Ledger Control",
+      "description": "User can create journal entries, post to ledger, and approve entries. Enables financial statement manipulation and fraud concealment.",
+      "roles": ["General ledger clerk", "General ledger accountant", "General ledger approver"],
+      "severity": "HIGH",
+      "combined_privileges": [
+        "Create journal entries",
+        "Post to general ledger",
+        "Approve journal entries",
+        "Reverse posted entries",
+        "Close periods"
+      ],
+      "fraud_scenario": "Create fictitious journal entry → Post to GL → Self-approve → Manipulate financial results",
+      "remediation": "Require independent approval for journal entries. Separate posting and approval functions",
+      "regulatory_reference": "SOX 404, COSO Principle 12",
+      "is_enabled": true
+    },
+    {
+      "rule_id": "TOXIC-004",
+      "risk_type": "Complete Inventory Control",
+      "description": "User controls inventory management, warehouse operations, and sales. Enables inventory theft and shipment fraud.",
+      "roles": ["Inventory manager", "Warehouse worker", "Sales order processor"],
+      "severity": "HIGH",
+      "combined_privileges": [
+        "Adjust inventory quantities",
+        "Pick and ship orders",
+        "Create sales orders",
+        "Process returns",
+        "Perform cycle counts"
+      ],
+      "fraud_scenario": "Adjust inventory up → Create fake sales order → Ship to own address → Adjust inventory down to hide theft",
+      "remediation": "Segregate inventory adjustments, warehouse operations, and sales. Require approvals for inventory adjustments > threshold",
+      "regulatory_reference": "COSO Principle 10, Sarbanes-Oxley Section 404",
+      "is_enabled": true
+    },
+    {
+      "rule_id": "TOXIC-005",
+      "risk_type": "Full Cash Management Control",
+      "description": "User can reconcile bank accounts, process cash receipts, and access treasury functions. Enables cash theft and fraud concealment.",
+      "roles": ["Bank reconciliation clerk", "Cash receipts clerk", "Treasury analyst"],
+      "severity": "HIGH",
+      "combined_privileges": [
+        "Perform bank reconciliations",
+        "Process cash receipts",
+        "Execute bank transfers",
+        "Access online banking",
+        "Adjust cash accounts"
+      ],
+      "fraud_scenario": "Receive cash → Pocket funds → Adjust bank rec to hide shortage → Manipulate cash account",
+      "remediation": "Separate bank reconciliation, cash handling, and treasury functions. Require dual approval for transfers > $X",
+      "regulatory_reference": "SOX 404, COSO Principle 10",
+      "is_enabled": true
+    }
+  ]
+}
