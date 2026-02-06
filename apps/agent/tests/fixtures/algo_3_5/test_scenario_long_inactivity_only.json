@@ -1,0 +1,28 @@
+{
+  "scenario_name": "Long Inactivity Only: Active User With No Activity in 200 Days",
+  "description": "Active status user with valid manager and department, but no system activity in 200+ days. The inactivity threshold (180 days per spec) triggers orphan detection even though all organizational data looks normal.",
+
+  "user": {
+    "user_id": "USR-ORPHAN-006",
+    "name": "Alex Turner",
+    "email": "alex.turner@contoso.com",
+    "status": "Active",
+    "manager_id": "MGR-006",
+    "manager_status": "Active",
+    "department": "Warehouse",
+    "department_exists": true,
+    "current_license": "Operations",
+    "current_license_cost_monthly": 90.00,
+    "roles": ["Warehouse Worker"],
+    "role_count": 1,
+    "days_since_last_activity": 200
+  },
+
+  "expected_result": {
+    "is_orphaned": true,
+    "orphan_reasons": ["No activity in 200 days"],
+    "orphan_type": "INACTIVE",
+    "risk_level": "MEDIUM",
+    "recommendation": "Review account and consider disabling or removing license"
+  }
+}
