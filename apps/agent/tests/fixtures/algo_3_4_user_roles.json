@@ -1,0 +1,113 @@
+{
+  "description": "Test user-role assignments for Algorithm 3.4 (Toxic Combination Detector)",
+  "created_date": "2026-02-06",
+  "users": [
+    {
+      "user_id": "USR001",
+      "user_name": "Alice Johnson",
+      "email": "alice.johnson@contoso.com",
+      "company": "USMF",
+      "department": "Finance",
+      "roles": [
+        "Purchasing agent",
+        "Vendor master maintenance",
+        "Accounts payable clerk"
+      ],
+      "expected_toxic_match": "TOXIC-001",
+      "expected_risk": "Full Procure-to-Pay Control",
+      "expected_severity": "CRITICAL"
+    },
+    {
+      "user_id": "USR002",
+      "user_name": "Bob Martinez",
+      "email": "bob.martinez@contoso.com",
+      "company": "USMF",
+      "department": "Sales",
+      "roles": [
+        "Sales order processor",
+        "Customer master maintenance",
+        "Accounts receivable clerk"
+      ],
+      "expected_toxic_match": "TOXIC-002",
+      "expected_risk": "Complete Order-to-Cash Control",
+      "expected_severity": "CRITICAL"
+    },
+    {
+      "user_id": "USR003",
+      "user_name": "Carol Zhang",
+      "email": "carol.zhang@contoso.com",
+      "company": "USMF",
+      "department": "Finance",
+      "roles": [
+        "Purchasing agent",
+        "Vendor master maintenance"
+      ],
+      "expected_toxic_match": null,
+      "expected_risk": null,
+      "expected_severity": null,
+      "note": "Partial match (2 of 3 roles for TOXIC-001) - should NOT trigger alert"
+    },
+    {
+      "user_id": "USR004",
+      "user_name": "David Kim",
+      "email": "david.kim@contoso.com",
+      "company": "USMF",
+      "department": "Accounting",
+      "roles": [
+        "General ledger clerk",
+        "General ledger accountant",
+        "General ledger approver"
+      ],
+      "expected_toxic_match": "TOXIC-003",
+      "expected_risk": "Full General Ledger Control",
+      "expected_severity": "HIGH"
+    },
+    {
+      "user_id": "USR005",
+      "user_name": "Emma Wilson",
+      "email": "emma.wilson@contoso.com",
+      "company": "USMF",
+      "department": "Operations",
+      "roles": [
+        "Inventory manager",
+        "Warehouse worker",
+        "Sales order processor"
+      ],
+      "expected_toxic_match": "TOXIC-004",
+      "expected_risk": "Complete Inventory Control",
+      "expected_severity": "HIGH"
+    },
+    {
+      "user_id": "USR006",
+      "user_name": "Frank O'Brien",
+      "email": "frank.obrien@contoso.com",
+      "company": "USMF",
+      "department": "IT",
+      "roles": [
+        "System administrator",
+        "IT support analyst"
+      ],
+      "expected_toxic_match": null,
+      "expected_risk": null,
+      "expected_severity": null,
+      "note": "No toxic combinations - clean user"
+    },
+    {
+      "user_id": "USR007",
+      "user_name": "Grace Taylor",
+      "email": "grace.taylor@contoso.com",
+      "company": "USMF",
+      "department": "Treasury",
+      "roles": [
+        "Bank reconciliation clerk",
+        "Cash receipts clerk",
+        "Treasury analyst",
+        "General ledger clerk"
+      ],
+      "expected_toxic_match": "TOXIC-005",
+      "expected_risk": "Full Cash Management Control",
+      "expected_severity": "HIGH",
+      "note": "Has extra role (GL clerk) beyond toxic combination"
+    }
+  ]
+}

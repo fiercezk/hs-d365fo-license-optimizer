@@ -30,6 +30,7 @@ from ..models.output_schemas import (
     RecommendationReason,
     SavingsEstimate,
 )
+from ..utils.pricing import get_license_price
 
 # Forms whose write operations are considered self-service and acceptable
 # under the Team Members license tier.
@@ -55,22 +56,6 @@ _DEFAULT_LICENSE_PRIORITY: dict[str, int] = {
 
 # Write-type actions per the D365 FO telemetry schema.
 _WRITE_ACTIONS: frozenset[str] = frozenset({"Write", "Update", "Create", "Delete"})
-
-
-def _get_license_price(pricing_config: dict[str, Any], license_type: str) -> float:
-    """Retrieve the monthly price for a given license type from pricing config.
-
-    Args:
-        pricing_config: Parsed pricing.json dictionary.
-        license_type: License type name (e.g., "Commerce", "Team Members").
-
-    Returns:
-        Monthly price in USD.
-
-    Raises:
-        KeyError: If the license type is not found in the pricing config.
-    """
-    return float(pricing_config["licenses"][license_type]["pricePerUserPerMonth"])
 
 
 def _determine_current_license(
@@ -280,7 +265,7 @@ def detect_readonly_users(
 
         # Determine current license from highest-tier activity
         current_license: str = _determine_current_license(group_df, pricing_config)
-        current_cost: float = _get_license_price(pricing_config, current_license)
+        current_cost: float = get_license_price(pricing_config, current_license)
 
         # Assess confidence based on write operations
         write_df: pd.DataFrame = group_df[~is_read]
@@ -311,7 +296,7 @@ def detect_readonly_users(
             action = RecommendationAction.NO_CHANGE
 
         # Calculate savings
-        recommended_cost: float = _get_license_price(pricing_config, recommended_license)
+        recommended_cost: float = get_license_price(pricing_config, recommended_license)
         monthly_savings: float = max(current_cost - recommended_cost, 0.0)
         annual_savings: float = monthly_savings * 12.0
         confidence_adjusted: float = annual_savings * confidence_score

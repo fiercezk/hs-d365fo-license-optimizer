@@ -1,0 +1,25 @@
+{
+  "description": "12 months showing project-based rollout with staged growth (0→50→200→500 users)",
+  "scenario": "ERP system rollout with phased user adoption",
+  "months": [
+    {"date": "2025-02-01", "month_num": 2, "year": 2025, "user_count": 1000, "license_cost": 180000},
+    {"date": "2025-03-01", "month_num": 3, "year": 2025, "user_count": 1050, "license_cost": 189000},
+    {"date": "2025-04-01", "month_num": 4, "year": 2025, "user_count": 1100, "license_cost": 198000},
+    {"date": "2025-05-01", "month_num": 5, "year": 2025, "user_count": 1250, "license_cost": 225000},
+    {"date": "2025-06-01", "month_num": 6, "year": 2025, "user_count": 1300, "license_cost": 234000},
+    {"date": "2025-07-01", "month_num": 7, "year": 2025, "user_count": 1450, "license_cost": 261000},
+    {"date": "2025-08-01", "month_num": 8, "year": 2025, "user_count": 1500, "license_cost": 270000},
+    {"date": "2025-09-01", "month_num": 9, "year": 2025, "user_count": 1520, "license_cost": 273600},
+    {"date": "2025-10-01", "month_num": 10, "year": 2025, "user_count": 1540, "license_cost": 277200},
+    {"date": "2025-11-01", "month_num": 11, "year": 2025, "user_count": 1560, "license_cost": 280800},
+    {"date": "2025-12-01", "month_num": 12, "year": 2025, "user_count": 1580, "license_cost": 284400},
+    {"date": "2026-01-01", "month_num": 1, "year": 2026, "user_count": 1600, "license_cost": 288000}
+  ],
+  "expected_trend": {
+    "overall_growth_percent": 60.0,
+    "mom_average_percent": 3.98,
+    "trend_type": "GROWING",
+    "seasonal_patterns_count": 0,
+    "recommendation": "Procure 300 additional licenses for continued rollout"
+  }
+}

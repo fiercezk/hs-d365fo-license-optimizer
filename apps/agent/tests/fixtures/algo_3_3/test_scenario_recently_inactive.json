@@ -1,0 +1,34 @@
+{
+  "scenario_name": "Recently Inactive: Zero Activity for 95 Days (Medium Confidence)",
+  "description": "User with SCM license who has not logged in for 95 days. Meets the 90-day threshold but under 180 days, so MEDIUM confidence. Still a suspension candidate.",
+
+  "user": {
+    "user_id": "USR-INACTIVE-002",
+    "name": "Sarah Chen",
+    "email": "sarah.chen@contoso.com",
+    "current_license": "SCM",
+    "current_license_cost_monthly": 180.00,
+    "last_login_days_ago": 95,
+    "operation_count_90d": 0
+  },
+
+  "activity_summary": {
+    "analysis_period_days": 90,
+    "total_operations": 0,
+    "last_login_date": "2025-11-03",
+    "days_since_last_login": 95,
+    "login_count_90d": 0,
+    "operation_count_90d": 0
+  },
+
+  "expected_recommendation": {
+    "action": "remove_license",
+    "from_license": "SCM",
+    "to_license": null,
+    "confidence_level": "medium",
+    "confidence_score": 0.75,
+    "estimated_monthly_savings": 180.00,
+    "estimated_annual_savings": 2160.00,
+    "rationale": "User has zero activity in the last 95 days. Below 180-day HIGH confidence threshold, but exceeds 90-day inactivity threshold. Recommend suspension with review."
+  }
+}

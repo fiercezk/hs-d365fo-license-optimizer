@@ -1,0 +1,28 @@
+{
+  "description": "12 months with clear anomalies: sudden spike in month 6 and sudden drop in month 8",
+  "scenario": "Anomalies from unplanned events (acquisition, layoff)",
+  "months": [
+    {"date": "2025-02-01", "month_num": 2, "year": 2025, "user_count": 1000, "license_cost": 180000},
+    {"date": "2025-03-01", "month_num": 3, "year": 2025, "user_count": 1020, "license_cost": 183600},
+    {"date": "2025-04-01", "month_num": 4, "year": 2025, "user_count": 1040, "license_cost": 187200},
+    {"date": "2025-05-01", "month_num": 5, "year": 2025, "user_count": 1061, "license_cost": 190980},
+    {"date": "2025-06-01", "month_num": 6, "year": 2025, "user_count": 1350, "license_cost": 243000},
+    {"date": "2025-07-01", "month_num": 7, "year": 2025, "user_count": 1340, "license_cost": 241200},
+    {"date": "2025-08-01", "month_num": 8, "year": 2025, "user_count": 850, "license_cost": 153000},
+    {"date": "2025-09-01", "month_num": 9, "year": 2025, "user_count": 960, "license_cost": 172800},
+    {"date": "2025-10-01", "month_num": 10, "year": 2025, "user_count": 980, "license_cost": 176400},
+    {"date": "2025-11-01", "month_num": 11, "year": 2025, "user_count": 1000, "license_cost": 180000},
+    {"date": "2025-12-01", "month_num": 12, "year": 2025, "user_count": 1020, "license_cost": 183600},
+    {"date": "2026-01-01", "month_num": 1, "year": 2026, "user_count": 1040, "license_cost": 187200}
+  ],
+  "expected_trend": {
+    "overall_growth_percent": 4.0,
+    "mom_average_percent": 0.37,
+    "trend_type": "STABLE",
+    "anomalies_count": 2,
+    "anomalies": [
+      {"month": 6, "type": "USER_COUNT_ANOMALY", "description": "Sudden +8.5% spike (acquisition)"},
+      {"month": 8, "type": "USER_COUNT_ANOMALY", "description": "Sudden -16.7% drop (layoff)"}
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "scenario": "Multiple Minority Forms",
+  "description": "Jane Smith has Commerce + SCM + Finance. Usage: 89.3% Commerce, 8.9% SCM, 1.8% Finance. Both SCM and Finance are minorities.",
+  "user_id": "jane.smith@contoso.com",
+  "user_name": "Jane Smith",
+  "current_licenses": ["commerce", "scm", "finance"],
+  "analysis_period_days": 90,
+  "expected_outcome": {
+    "minority_licenses": [
+      {
+        "license": "scm",
+        "percentage": 8.9,
+        "below_threshold": true
+      },
+      {
+        "license": "finance",
+        "percentage": 1.8,
+        "below_threshold": true
+      }
+    ],
+    "recommendation_action": "review_with_user",
+    "confidence": "medium",
+    "expected_savings_monthly": 360.0,
+    "expected_savings_annual": 4320.0,
+    "expected_savings_percentage": 66.67
+  }
+}

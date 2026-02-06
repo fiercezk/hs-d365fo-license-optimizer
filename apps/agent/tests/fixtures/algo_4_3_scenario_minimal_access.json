@@ -1,0 +1,34 @@
+{
+  "scenario": "User with access to Finance and SCM but very limited menu items in one (minimal access justification)",
+  "user_id": "U005",
+  "user_name": "Edward Brown",
+  "current_licenses": ["Finance", "SCM"],
+  "current_monthly_cost": 360.00,
+  "security_roles": {
+    "Finance Accountant": {
+      "roles": ["Finance Accountant"],
+      "applications": ["Finance"],
+      "menu_items_count": 42
+    },
+    "SCM Viewer": {
+      "roles": ["SCM Viewer"],
+      "applications": ["SCM"],
+      "menu_items_count": 3
+    }
+  },
+  "expected_recommendation": {
+    "action": "remove_license",
+    "primary_reason": "User has roles in both Finance and SCM applications despite minimal SCM access (only 3 menu items)",
+    "recommended_license": "Finance + SCM combined",
+    "recommended_monthly_cost": 210.00,
+    "monthly_savings": 150.00,
+    "annual_savings": 1800.00,
+    "confidence": "medium",
+    "already_optimized": false,
+    "notes": "Even with minimal SCM access (3 menu items), the combined Finance+SCM license ($210) is still more cost-effective than separate licenses ($360)",
+    "risk_factors": [
+      "SCM access is minimal - consider if it could be removed entirely",
+      "If SCM role is removed, could downgrade to Finance-only ($180)"
+    ]
+  }
+}

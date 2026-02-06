@@ -1,0 +1,24 @@
+{
+  "description": "Steady 2% MoM growth over 12 months with no anomalies",
+  "scenario": "Stable organizational growth",
+  "months": [
+    {"date": "2025-02-01", "month_num": 2, "year": 2025, "user_count": 1000, "license_cost": 180000},
+    {"date": "2025-03-01", "month_num": 3, "year": 2025, "user_count": 1020, "license_cost": 183600},
+    {"date": "2025-04-01", "month_num": 4, "year": 2025, "user_count": 1040, "license_cost": 187200},
+    {"date": "2025-05-01", "month_num": 5, "year": 2025, "user_count": 1061, "license_cost": 190980},
+    {"date": "2025-06-01", "month_num": 6, "year": 2025, "user_count": 1082, "license_cost": 194760},
+    {"date": "2025-07-01", "month_num": 7, "year": 2025, "user_count": 1104, "license_cost": 198720},
+    {"date": "2025-08-01", "month_num": 8, "year": 2025, "user_count": 1126, "license_cost": 202680},
+    {"date": "2025-09-01", "month_num": 9, "year": 2025, "user_count": 1149, "license_cost": 206820},
+    {"date": "2025-10-01", "month_num": 10, "year": 2025, "user_count": 1172, "license_cost": 210960},
+    {"date": "2025-11-01", "month_num": 11, "year": 2025, "user_count": 1195, "license_cost": 215100},
+    {"date": "2025-12-01", "month_num": 12, "year": 2025, "user_count": 1219, "license_cost": 219420},
+    {"date": "2026-01-01", "month_num": 1, "year": 2026, "user_count": 1243, "license_cost": 223740}
+  ],
+  "expected_trend": {
+    "overall_growth_percent": 24.3,
+    "mom_average_percent": 2.0,
+    "trend_type": "GROWING",
+    "seasonal_patterns_count": 0
+  }
+}

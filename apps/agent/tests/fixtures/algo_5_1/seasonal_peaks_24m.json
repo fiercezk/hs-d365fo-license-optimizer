@@ -1,0 +1,42 @@
+{
+  "description": "24 months of data with consistent seasonal peaks in Nov-Dec (+200 users) and Aug-Sep (+100 users)",
+  "scenario": "Retail organization with peak seasons",
+  "months": [
+    {"date": "2024-02-01", "month_num": 2, "year": 2024, "user_count": 1000, "license_cost": 180000},
+    {"date": "2024-03-01", "month_num": 3, "year": 2024, "user_count": 1000, "license_cost": 180000},
+    {"date": "2024-04-01", "month_num": 4, "year": 2024, "user_count": 1000, "license_cost": 180000},
+    {"date": "2024-05-01", "month_num": 5, "year": 2024, "user_count": 1000, "license_cost": 180000},
+    {"date": "2024-06-01", "month_num": 6, "year": 2024, "user_count": 1000, "license_cost": 180000},
+    {"date": "2024-07-01", "month_num": 7, "year": 2024, "user_count": 1000, "license_cost": 180000},
+    {"date": "2024-08-01", "month_num": 8, "year": 2024, "user_count": 1100, "license_cost": 198000},
+    {"date": "2024-09-01", "month_num": 9, "year": 2024, "user_count": 1100, "license_cost": 198000},
+    {"date": "2024-10-01", "month_num": 10, "year": 2024, "user_count": 1000, "license_cost": 180000},
+    {"date": "2024-11-01", "month_num": 11, "year": 2024, "user_count": 1200, "license_cost": 216000},
+    {"date": "2024-12-01", "month_num": 12, "year": 2024, "user_count": 1200, "license_cost": 216000},
+    {"date": "2025-01-01", "month_num": 1, "year": 2025, "user_count": 1000, "license_cost": 180000},
+    {"date": "2025-02-01", "month_num": 2, "year": 2025, "user_count": 1000, "license_cost": 180000},
+    {"date": "2025-03-01", "month_num": 3, "year": 2025, "user_count": 1000, "license_cost": 180000},
+    {"date": "2025-04-01", "month_num": 4, "year": 2025, "user_count": 1000, "license_cost": 180000},
+    {"date": "2025-05-01", "month_num": 5, "year": 2025, "user_count": 1000, "license_cost": 180000},
+    {"date": "2025-06-01", "month_num": 6, "year": 2025, "user_count": 1000, "license_cost": 180000},
+    {"date": "2025-07-01", "month_num": 7, "year": 2025, "user_count": 1000, "license_cost": 180000},
+    {"date": "2025-08-01", "month_num": 8, "year": 2025, "user_count": 1100, "license_cost": 198000},
+    {"date": "2025-09-01", "month_num": 9, "year": 2025, "user_count": 1100, "license_cost": 198000},
+    {"date": "2025-10-01", "month_num": 10, "year": 2025, "user_count": 1000, "license_cost": 180000},
+    {"date": "2025-11-01", "month_num": 11, "year": 2025, "user_count": 1200, "license_cost": 216000},
+    {"date": "2025-12-01", "month_num": 12, "year": 2025, "user_count": 1200, "license_cost": 216000},
+    {"date": "2026-01-01", "month_num": 1, "year": 2026, "user_count": 1000, "license_cost": 180000}
+  ],
+  "expected_trend": {
+    "overall_growth_percent": 0.0,
+    "mom_average_percent": 0.0,
+    "trend_type": "STABLE",
+    "seasonal_patterns_count": 2,
+    "seasonal_details": [
+      {"month": 8, "name": "August", "type": "HIGH", "deviation": 10.0},
+      {"month": 9, "name": "September", "type": "HIGH", "deviation": 10.0},
+      {"month": 11, "name": "November", "type": "HIGH", "deviation": 20.0},
+      {"month": 12, "name": "December", "type": "HIGH", "deviation": 20.0}
+    ]
+  }
+}

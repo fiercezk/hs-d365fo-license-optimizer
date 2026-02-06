@@ -1,0 +1,31 @@
+security_role,aot_name,access_level,license_type,priority,entitled,not_entitled,security_type
+GL Clerk,GeneralJournalEntry,Read,Operations,90,1,0,MenuItemDisplay
+GL Clerk,GeneralJournalEntry,Write,Operations,90,1,0,MenuItemAction
+GL Clerk,LedgerInquiry,Read,Operations,90,1,0,MenuItemDisplay
+GL Clerk,TrialBalance,Read,Operations,90,1,0,MenuItemDisplay
+GL Clerk,AccountChart,Read,Operations,90,1,0,MenuItemDisplay
+AR Clerk,InvoiceEntry,Read,Operations,90,1,0,MenuItemDisplay
+AR Clerk,InvoiceEntry,Write,Operations,90,1,0,MenuItemAction
+AR Clerk,CustomerInquiry,Read,Operations,90,1,0,MenuItemDisplay
+AR Clerk,PaymentProcessing,Write,Finance,180,1,0,MenuItemAction
+AP Clerk,PurchaseInvoiceEntry,Read,Operations,90,1,0,MenuItemDisplay
+AP Clerk,PurchaseInvoiceEntry,Write,Operations,90,1,0,MenuItemAction
+AP Clerk,VendorInquiry,Read,Operations,90,1,0,MenuItemDisplay
+Accountant,GeneralJournalEntry,Read,Finance,180,1,0,MenuItemDisplay
+Accountant,GeneralJournalEntry,Write,Finance,180,1,0,MenuItemAction
+Accountant,LedgerInquiry,Read,Finance,180,1,0,MenuItemDisplay
+Accountant,TrialBalance,Read,Finance,180,1,0,MenuItemDisplay
+Accountant,InvoiceEntry,Read,Finance,180,1,0,MenuItemDisplay
+Accountant,CustomerInquiry,Read,Finance,180,1,0,MenuItemDisplay
+Accountant,VendorInquiry,Read,Finance,180,1,0,MenuItemDisplay
+HR Manager,EmployeeDirectory,Read,Team Members,60,1,0,MenuItemDisplay
+HR Manager,TimeEntry,Write,Team Members,60,1,0,MenuItemAction
+HR Manager,ExpenseApproval,Read,Team Members,60,1,0,MenuItemDisplay
+SCM Manager,InventoryInquiry,Read,SCM,180,1,0,MenuItemDisplay
+SCM Manager,PurchaseOrderEntry,Write,SCM,180,1,0,MenuItemAction
+SCM Manager,InventoryMovement,Write,SCM,180,1,0,MenuItemAction
+Warehouse Worker,InventoryReceiving,Write,Team Members,60,1,0,MenuItemAction
+Warehouse Worker,PickListMaintenance,Write,Team Members,60,1,0,MenuItemAction
+Operations Clerk,PurchaseOrderEntry,Read,Operations,90,1,0,MenuItemDisplay
+Operations Clerk,SalesOrderEntry,Read,Operations,90,1,0,MenuItemDisplay
+Operations Clerk,ShippingMonitor,Read,Operations,90,1,0,MenuItemDisplay

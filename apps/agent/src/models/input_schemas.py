@@ -12,7 +12,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 
 class AccessLevel(str, Enum):
@@ -71,7 +71,7 @@ class SecurityConfigRecord(BaseModel):
 
     @field_validator("priority")
     @classmethod
-    def validate_priority(cls, v: int, info) -> int:
+    def validate_priority(cls, v: int, info: ValidationInfo) -> int:
         """Validate priority matches typical D365 FO license costs."""
         valid_priorities = {20, 30, 60, 90, 180, 300}
         if v not in valid_priorities:
@@ -125,7 +125,7 @@ class UserActivityRecord(BaseModel):
 
     @field_validator("timestamp", mode="before")
     @classmethod
-    def parse_timestamp(cls, v):
+    def parse_timestamp(cls, v: datetime | str) -> datetime | str:
         """Parse timestamp from string if needed."""
         if isinstance(v, str):
             return datetime.fromisoformat(v.replace("Z", "+00:00"))
@@ -161,7 +161,7 @@ class AlgorithmInputParameters(BaseModel):
 
     @field_validator("date_range_end")
     @classmethod
-    def validate_date_range(cls, v: datetime, info) -> datetime:
+    def validate_date_range(cls, v: datetime, info: ValidationInfo) -> datetime:
         """Ensure end date is after start date."""
         if "date_range_start" in info.data and v <= info.data["date_range_start"]:
             raise ValueError("date_range_end must be after date_range_start")
@@ -189,3 +189,20 @@ class TeamMembersEligibleForm(BaseModel):
         default=None, description="When validation was performed"
     )
     notes: str | None = Field(default=None, description="Validation notes / exceptions")
+
+
+class SecurityFinding(BaseModel):
+    """Individual security finding for Algorithm 5.2 risk scoring.
+
+    Represents a detected security risk (SoD violation, privilege creep, etc.)
+    that contributes to the user's overall security risk score.
+    """
+
+    finding_type: str = Field(
+        description="Type of security finding (SoD_VIOLATION, PRIVILEGE_CREEP, "
+        "ANOMALOUS_CHANGE, ORPHANED_ACCOUNT, etc.)"
+    )
+    severity: str = Field(
+        description="Severity level (CRITICAL, HIGH, MEDIUM, LOW) " "- case insensitive"
+    )
+    description: str = Field(description="Detailed description of the security finding")

@@ -1,0 +1,40 @@
+user_id,user_name,email,company,department,role_id,role_name,assigned_date,status
+USER001,John Smith,john.smith@company.com,USMF,Accounts Payable,ROLE_AP_CLERK,Accounts payable clerk,2023-01-15,Active
+USER001,John Smith,john.smith@company.com,USMF,Accounts Payable,ROLE_VENDOR_MAINT,Vendor master maintenance,2023-01-15,Active
+USER002,Jane Doe,jane.doe@company.com,USMF,General Ledger,ROLE_GL_CLERK,General ledger clerk,2023-02-01,Active
+USER002,Jane Doe,jane.doe@company.com,USMF,General Ledger,ROLE_GL_MGR,Accounting manager,2023-02-01,Active
+USER003,Bob Johnson,bob.johnson@company.com,USMF,Purchasing,ROLE_PURCH_AGENT,Purchasing agent,2023-03-10,Active
+USER003,Bob Johnson,bob.johnson@company.com,USMF,Purchasing,ROLE_PURCH_MGR,Purchasing manager,2023-03-10,Active
+USER004,Alice Williams,alice.williams@company.com,USMF,Accounts Receivable,ROLE_AR_CLERK,Accounts receivable clerk,2023-04-05,Active
+USER005,Charlie Brown,charlie.brown@company.com,USMF,Cash Management,ROLE_PAYMENT_CLERK,Payment clerk,2023-05-20,Active
+USER005,Charlie Brown,charlie.brown@company.com,USMF,Cash Management,ROLE_BANK_RECON,Bank reconciliation clerk,2023-05-20,Active
+USER006,Diana Prince,diana.prince@company.com,USMF,Inventory,ROLE_WAREHOUSE_MGR,Warehouse manager,2023-06-12,Active
+USER006,Diana Prince,diana.prince@company.com,USMF,Inventory,ROLE_INV_CLERK,Inventory clerk,2023-06-12,Active
+USER007,Edward Norton,edward.norton@company.com,USMF,System Admin,ROLE_SYS_ADMIN,System administrator,2023-07-01,Active
+USER007,Edward Norton,edward.norton@company.com,USMF,System Admin,ROLE_SEC_ADMIN,Security administrator,2023-07-01,Active
+USER008,Fiona Green,fiona.green@company.com,USMF,Finance,ROLE_GL_CLERK,General ledger clerk,2023-08-15,Active
+USER008,Fiona Green,fiona.green@company.com,USMF,Finance,ROLE_CONTROLLER,Financial controller,2023-08-15,Active
+USER009,George Miller,george.miller@company.com,USMF,Accounts Receivable,ROLE_CUST_MAINT,Customer master maintenance,2023-09-01,Active
+USER009,George Miller,george.miller@company.com,USMF,Accounts Receivable,ROLE_AR_CLERK,Accounts receivable clerk,2023-09-01,Active
+USER010,Helen Clark,helen.clark@company.com,USMF,Procurement,ROLE_PURCH_AGENT,Purchasing agent,2023-10-10,Active
+USER010,Helen Clark,helen.clark@company.com,USMF,Procurement,ROLE_VENDOR_MAINT,Vendor master maintenance,2023-10-10,Active
+USER011,Ivan Murphy,ivan.murphy@company.com,USMF,Shipping,ROLE_SHIPPING_CLERK,Shipping clerk,2023-11-05,Active
+USER011,Ivan Murphy,ivan.murphy@company.com,USMF,Shipping,ROLE_RECEIVING_CLERK,Receiving clerk,2023-11-05,Active
+USER012,Julia Roberts,julia.roberts@company.com,USMF,Finance,ROLE_WAREHOUSE_WORKER,Warehouse worker,2024-01-15,Active
+USER012,Julia Roberts,julia.roberts@company.com,USMF,Finance,ROLE_INV_CLERK,Inventory clerk,2024-01-15,Active
+USER013,Kevin Hart,kevin.hart@company.com,USMF,Accounts Payable,ROLE_PURCH_AGENT,Purchasing agent,2024-02-20,Active
+USER013,Kevin Hart,kevin.hart@company.com,USMF,Accounts Payable,ROLE_AP_MGR,Accounts payable manager,2024-02-20,Active
+USER014,Laura Evans,laura.evans@company.com,USMF,Cash Management,ROLE_TREASURER,Treasurer,2024-03-10,Active
+USER014,Laura Evans,laura.evans@company.com,USMF,Cash Management,ROLE_PAYMENT_CLERK,Payment clerk,2024-03-10,Active
+USER015,Mark Davis,mark.davis@company.com,USMF,Finance,ROLE_ACCOUNTING_SUPERVISOR,Accounting supervisor,2024-04-15,Active
+USER015,Mark Davis,mark.davis@company.com,USMF,Finance,ROLE_CONTROLLER,Financial controller,2024-04-15,Active
+USER016,Nancy Wilson,nancy.wilson@company.com,USMF,Collections,ROLE_AR_CLERK,Accounts receivable clerk,2024-05-01,Active
+USER016,Nancy Wilson,nancy.wilson@company.com,USMF,Collections,ROLE_COLLECTIONS_AGENT,Collections agent,2024-05-01,Active
+USER017,Oscar Martinez,oscar.martinez@company.com,USMF,Requisitions,ROLE_REQUISITIONER,Requisitioner,2024-06-10,Active
+USER017,Oscar Martinez,oscar.martinez@company.com,USMF,Requisitions,ROLE_PURCH_MGR,Purchasing manager,2024-06-10,Active
+USER018,Pam Beesly,pam.beesly@company.com,USMF,Treasury,ROLE_TREASURER,Treasurer,2024-07-05,Active
+USER018,Pam Beesly,pam.beesly@company.com,USMF,Treasury,ROLE_BANK_RECON,Bank reconciliation clerk,2024-07-05,Active
+USER019,Quentin Tarantino,quentin.tarantino@company.com,USMF,Billing,ROLE_BILLING_CLERK,Billing clerk,2024-08-20,Active
+USER019,Quentin Tarantino,quentin.tarantino@company.com,USMF,Billing,ROLE_AR_CLERK,Accounts receivable clerk,2024-08-20,Active
+USER020,Rachel Green,rachel.green@company.com,USMF,Accounts Payable,ROLE_AP_CLERK,Accounts payable clerk,2024-09-15,Active
+USER020,Rachel Green,rachel.green@company.com,USMF,Accounts Payable,ROLE_PAYMENT_CLERK,Payment clerk,2024-09-15,Active

@@ -1,0 +1,9 @@
+user_id,user_name,email,company,department,role_id,role_name,assigned_date,status
+USR010,Mike Chen,mike.chen@contoso.com,USMF,Sales,ROLE_SM,Sales Manager,2024-01-15,Active
+USR010,Mike Chen,mike.chen@contoso.com,USMF,Sales,ROLE_SC,Sales Clerk,2024-03-01,Active
+USR011,Sarah Park,sarah.park@contoso.com,USMF,Warehouse,ROLE_WW,Warehouse Worker,2024-02-01,Active
+USR011,Sarah Park,sarah.park@contoso.com,USMF,Warehouse,ROLE_WS,Warehouse Supervisor,2024-04-15,Active
+USR012,Tom Wilson,tom.wilson@contoso.com,USMF,Finance,ROLE_FM,Finance Manager,2024-01-10,Active
+USR012,Tom Wilson,tom.wilson@contoso.com,USMF,Finance,ROLE_AP,AP Clerk,2024-01-10,Active
+USR013,Lisa Brown,lisa.brown@contoso.com,USMF,Procurement,ROLE_PA,Purchasing Agent,2024-05-01,Active
+USR014,Dave Miller,dave.miller@contoso.com,USMF,Sales,ROLE_SM,Sales Manager,2024-01-20,Active

@@ -1,0 +1,35 @@
+{
+  "scenario_name": "Leave of Absence: Known LOA Status",
+  "description": "User flagged as on leave of absence. Inactive for 120 days but expected to return. Algorithm should flag as inactive but attach LOA risk warning and recommend review instead of automatic suspension.",
+
+  "user": {
+    "user_id": "USR-LOA-001",
+    "name": "Robert Kim",
+    "email": "robert.kim@contoso.com",
+    "current_license": "SCM",
+    "current_license_cost_monthly": 180.00,
+    "last_login_days_ago": 120,
+    "operation_count_90d": 0,
+    "leave_of_absence": true
+  },
+
+  "activity_summary": {
+    "analysis_period_days": 90,
+    "total_operations": 0,
+    "last_login_date": "2025-10-09",
+    "days_since_last_login": 120,
+    "login_count_90d": 0,
+    "operation_count_90d": 0
+  },
+
+  "expected_recommendation": {
+    "action": "review_required",
+    "from_license": "SCM",
+    "to_license": null,
+    "confidence_level": "low",
+    "confidence_score": 0.55,
+    "estimated_monthly_savings": 180.00,
+    "estimated_annual_savings": 2160.00,
+    "rationale": "User is on leave of absence. Inactive for 120 days but return is expected. Recommend review with HR before license suspension."
+  }
+}

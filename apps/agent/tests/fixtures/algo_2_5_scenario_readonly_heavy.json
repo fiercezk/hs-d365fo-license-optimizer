@@ -1,0 +1,22 @@
+{
+  "scenario": "Read-Only Heavy Minority",
+  "description": "Alice Green has Operations + Finance. Finance usage is 12% (minority), but 95% read-only. Read-only conversion may eliminate license need.",
+  "user_id": "alice.green@contoso.com",
+  "user_name": "Alice Green",
+  "current_licenses": ["operations", "finance"],
+  "analysis_period_days": 90,
+  "expected_outcome": {
+    "minority_licenses": [
+      {
+        "license": "finance",
+        "percentage": 12.0,
+        "below_threshold": true
+      }
+    ],
+    "recommendation_action": "review_with_user",
+    "confidence": "medium",
+    "expected_savings_monthly": 150.0,
+    "expected_savings_annual": 1800.0,
+    "expected_savings_percentage": 50.0
+  }
+}

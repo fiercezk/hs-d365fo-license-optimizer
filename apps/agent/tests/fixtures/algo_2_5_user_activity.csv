@@ -1,0 +1,133 @@
+user_id,timestamp,menu_item,action,session_id,license_tier,feature
+john.doe@contoso.com,2025-11-01 09:00:00,PurchaseOrder,Read,sess-001,SCM,Procurement
+john.doe@contoso.com,2025-11-01 09:05:00,InventoryOnHand,Write,sess-001,SCM,Inventory
+john.doe@contoso.com,2025-11-01 09:10:00,WarehouseInventory,Read,sess-001,SCM,Warehouse
+john.doe@contoso.com,2025-11-01 09:15:00,ReceivingOrder,Write,sess-001,SCM,Procurement
+john.doe@contoso.com,2025-11-01 09:20:00,ShippingOrder,Read,sess-001,SCM,Warehouse
+john.doe@contoso.com,2025-11-02 09:00:00,ProductionOrder,Write,sess-002,SCM,Production
+john.doe@contoso.com,2025-11-02 09:05:00,WorkOrder,Read,sess-002,SCM,Production
+john.doe@contoso.com,2025-11-02 09:10:00,InventoryCount,Read,sess-002,SCM,Inventory
+john.doe@contoso.com,2025-11-02 09:15:00,VendorMaster,Read,sess-002,SCM,Procurement
+john.doe@contoso.com,2025-11-03 09:00:00,PurchaseOrder,Write,sess-003,SCM,Procurement
+john.doe@contoso.com,2025-11-03 09:05:00,ReceivingOrder,Read,sess-003,SCM,Procurement
+john.doe@contoso.com,2025-11-03 09:10:00,WarehouseInventory,Write,sess-003,SCM,Warehouse
+john.doe@contoso.com,2025-11-03 09:15:00,ShippingOrder,Read,sess-003,SCM,Warehouse
+john.doe@contoso.com,2025-11-04 09:00:00,ProductionOrder,Read,sess-004,SCM,Production
+john.doe@contoso.com,2025-11-04 09:05:00,InventoryOnHand,Write,sess-004,SCM,Inventory
+john.doe@contoso.com,2025-11-04 09:10:00,WorkOrder,Write,sess-004,SCM,Production
+john.doe@contoso.com,2025-11-05 09:00:00,PurchaseOrder,Read,sess-005,SCM,Procurement
+john.doe@contoso.com,2025-11-05 09:05:00,ReceivingOrder,Write,sess-005,SCM,Procurement
+john.doe@contoso.com,2025-11-05 09:10:00,WarehouseInventory,Read,sess-005,SCM,Warehouse
+john.doe@contoso.com,2025-11-05 09:15:00,ShippingOrder,Write,sess-005,SCM,Warehouse
+john.doe@contoso.com,2025-11-06 09:00:00,InventoryCount,Read,sess-006,SCM,Inventory
+john.doe@contoso.com,2025-11-06 09:05:00,ProductionOrder,Write,sess-006,SCM,Production
+john.doe@contoso.com,2025-11-06 09:10:00,InventoryOnHand,Read,sess-006,SCM,Inventory
+john.doe@contoso.com,2025-11-07 09:00:00,PurchaseOrder,Write,sess-007,SCM,Procurement
+john.doe@contoso.com,2025-11-07 09:05:00,WarehouseInventory,Read,sess-007,SCM,Warehouse
+john.doe@contoso.com,2025-11-07 09:10:00,ReceivingOrder,Read,sess-007,SCM,Procurement
+john.doe@contoso.com,2025-11-08 09:00:00,ShippingOrder,Write,sess-008,SCM,Warehouse
+john.doe@contoso.com,2025-11-08 09:05:00,ProductionOrder,Read,sess-008,SCM,Production
+john.doe@contoso.com,2025-11-08 09:10:00,InventoryOnHand,Write,sess-008,SCM,Inventory
+john.doe@contoso.com,2025-11-09 09:00:00,WorkOrder,Read,sess-009,SCM,Production
+john.doe@contoso.com,2025-11-10 09:00:00,VendorMaster,Write,sess-010,SCM,Procurement
+john.doe@contoso.com,2025-11-11 09:00:00,InventoryCount,Write,sess-011,SCM,Inventory
+john.doe@contoso.com,2025-11-12 09:00:00,PurchaseOrder,Read,sess-012,SCM,Procurement
+john.doe@contoso.com,2025-11-13 09:00:00,ReceivingOrder,Read,sess-013,SCM,Procurement
+john.doe@contoso.com,2025-11-14 09:00:00,WarehouseInventory,Write,sess-014,SCM,Warehouse
+john.doe@contoso.com,2025-11-15 09:00:00,ShippingOrder,Read,sess-015,SCM,Warehouse
+john.doe@contoso.com,2025-11-16 09:00:00,ProductionOrder,Write,sess-016,SCM,Production
+john.doe@contoso.com,2025-11-17 09:00:00,InventoryOnHand,Read,sess-017,SCM,Inventory
+john.doe@contoso.com,2025-11-18 09:00:00,WorkOrder,Write,sess-018,SCM,Production
+john.doe@contoso.com,2025-11-19 09:00:00,VendorMaster,Read,sess-019,SCM,Procurement
+john.doe@contoso.com,2025-11-20 09:00:00,InventoryCount,Read,sess-020,SCM,Inventory
+john.doe@contoso.com,2025-11-21 09:00:00,PurchaseOrder,Write,sess-021,SCM,Procurement
+john.doe@contoso.com,2025-11-22 09:00:00,ReceivingOrder,Read,sess-022,SCM,Procurement
+john.doe@contoso.com,2025-11-23 09:00:00,WarehouseInventory,Write,sess-023,SCM,Warehouse
+john.doe@contoso.com,2025-11-24 09:00:00,ShippingOrder,Read,sess-024,SCM,Warehouse
+john.doe@contoso.com,2025-11-25 09:00:00,ProductionOrder,Read,sess-025,SCM,Production
+john.doe@contoso.com,2025-11-26 09:00:00,InventoryOnHand,Write,sess-026,SCM,Inventory
+john.doe@contoso.com,2025-11-27 09:00:00,WorkOrder,Read,sess-027,SCM,Production
+john.doe@contoso.com,2025-11-28 09:00:00,VendorMaster,Write,sess-028,SCM,Procurement
+john.doe@contoso.com,2025-11-29 09:00:00,InventoryCount,Write,sess-029,SCM,Inventory
+john.doe@contoso.com,2025-11-30 09:00:00,PurchaseOrder,Read,sess-030,SCM,Procurement
+john.doe@contoso.com,2025-12-01 09:00:00,BankReconciliation,Read,sess-031,Finance,Cash Management
+john.doe@contoso.com,2025-12-02 09:00:00,GeneralJournalEntry,Read,sess-032,Finance,General Ledger
+john.doe@contoso.com,2025-12-03 09:00:00,BankReconciliation,Read,sess-033,Finance,Cash Management
+jane.smith@contoso.com,2025-11-01 09:00:00,RetailStore,Read,sess-001,Commerce,Retail
+jane.smith@contoso.com,2025-11-01 09:05:00,POSTerminal,Write,sess-001,Commerce,POS
+jane.smith@contoso.com,2025-11-01 09:10:00,RetailStore,Read,sess-001,Commerce,Retail
+jane.smith@contoso.com,2025-11-01 09:15:00,CustomerOrder,Write,sess-001,Commerce,E-commerce
+jane.smith@contoso.com,2025-11-02 09:00:00,RetailStore,Write,sess-002,Commerce,Retail
+jane.smith@contoso.com,2025-11-02 09:05:00,POSTerminal,Read,sess-002,Commerce,POS
+jane.smith@contoso.com,2025-11-02 09:10:00,RetailStore,Read,sess-002,Commerce,Retail
+jane.smith@contoso.com,2025-11-02 09:15:00,CustomerOrder,Read,sess-002,Commerce,E-commerce
+jane.smith@contoso.com,2025-11-03 09:00:00,RetailStore,Read,sess-003,Commerce,Retail
+jane.smith@contoso.com,2025-11-03 09:05:00,POSTerminal,Write,sess-003,Commerce,POS
+jane.smith@contoso.com,2025-11-03 09:10:00,RetailStore,Write,sess-003,Commerce,Retail
+jane.smith@contoso.com,2025-11-03 09:15:00,CustomerOrder,Read,sess-003,Commerce,E-commerce
+jane.smith@contoso.com,2025-11-04 09:00:00,RetailStore,Read,sess-004,Commerce,Retail
+jane.smith@contoso.com,2025-11-04 09:05:00,POSTerminal,Read,sess-004,Commerce,POS
+jane.smith@contoso.com,2025-11-04 09:10:00,RetailStore,Read,sess-004,Commerce,Retail
+jane.smith@contoso.com,2025-11-04 09:15:00,CustomerOrder,Write,sess-004,Commerce,E-commerce
+jane.smith@contoso.com,2025-11-05 09:00:00,RetailStore,Write,sess-005,Commerce,Retail
+jane.smith@contoso.com,2025-11-05 09:05:00,POSTerminal,Read,sess-005,Commerce,POS
+jane.smith@contoso.com,2025-11-05 09:10:00,RetailStore,Read,sess-005,Commerce,Retail
+jane.smith@contoso.com,2025-11-05 09:15:00,CustomerOrder,Read,sess-005,Commerce,E-commerce
+jane.smith@contoso.com,2025-11-06 09:00:00,RetailStore,Read,sess-006,Commerce,Retail
+jane.smith@contoso.com,2025-11-06 09:05:00,POSTerminal,Write,sess-006,Commerce,POS
+jane.smith@contoso.com,2025-11-06 09:10:00,RetailStore,Read,sess-006,Commerce,Retail
+jane.smith@contoso.com,2025-11-06 09:15:00,CustomerOrder,Write,sess-006,Commerce,E-commerce
+jane.smith@contoso.com,2025-11-07 09:00:00,RetailStore,Read,sess-007,Commerce,Retail
+jane.smith@contoso.com,2025-11-07 09:05:00,POSTerminal,Read,sess-007,Commerce,POS
+jane.smith@contoso.com,2025-11-07 09:10:00,RetailStore,Write,sess-007,Commerce,Retail
+jane.smith@contoso.com,2025-11-07 09:15:00,CustomerOrder,Read,sess-007,Commerce,E-commerce
+jane.smith@contoso.com,2025-11-08 09:00:00,RetailStore,Read,sess-008,Commerce,Retail
+jane.smith@contoso.com,2025-11-08 09:05:00,POSTerminal,Write,sess-008,Commerce,POS
+jane.smith@contoso.com,2025-11-08 09:10:00,RetailStore,Read,sess-008,Commerce,Retail
+jane.smith@contoso.com,2025-11-08 09:15:00,CustomerOrder,Read,sess-008,Commerce,E-commerce
+jane.smith@contoso.com,2025-11-09 09:00:00,WarehouseInventory,Read,sess-009,SCM,Warehouse
+jane.smith@contoso.com,2025-11-10 09:00:00,ShippingOrder,Read,sess-010,SCM,Warehouse
+jane.smith@contoso.com,2025-11-11 09:00:00,PurchaseRequisition,Read,sess-011,SCM,Procurement
+jane.smith@contoso.com,2025-11-12 09:00:00,VendorMaster,Read,sess-012,SCM,Procurement
+jane.smith@contoso.com,2025-11-13 09:00:00,BudgetInquiry,Read,sess-013,Finance,Budgeting
+mike.johnson@contoso.com,2025-11-01 09:00:00,ProductionOrder,Read,sess-001,SCM,Production
+mike.johnson@contoso.com,2025-11-01 09:05:00,ProductionOrder,Write,sess-001,SCM,Production
+mike.johnson@contoso.com,2025-11-01 09:10:00,WarehouseManagement,Read,sess-001,SCM,Warehouse
+mike.johnson@contoso.com,2025-11-01 09:15:00,WarehouseManagement,Write,sess-001,SCM,Warehouse
+mike.johnson@contoso.com,2025-11-02 09:00:00,ProductionOrder,Write,sess-002,SCM,Production
+mike.johnson@contoso.com,2025-11-02 09:05:00,ProductionOrder,Read,sess-002,SCM,Production
+mike.johnson@contoso.com,2025-11-02 09:10:00,WarehouseManagement,Write,sess-002,SCM,Warehouse
+mike.johnson@contoso.com,2025-11-02 09:15:00,WarehouseManagement,Read,sess-002,SCM,Warehouse
+mike.johnson@contoso.com,2025-11-03 09:00:00,InventoryCount,Read,sess-003,SCM,Inventory
+mike.johnson@contoso.com,2025-11-04 09:00:00,InventoryCount,Read,sess-004,SCM,Inventory
+mike.johnson@contoso.com,2025-11-05 09:00:00,InventoryCount,Read,sess-005,SCM,Inventory
+mike.johnson@contoso.com,2025-11-06 09:00:00,ShippingDetails,Read,sess-006,SCM,Warehouse
+mike.johnson@contoso.com,2025-11-07 09:00:00,GeneralJournalEntry,Read,sess-007,Finance,General Ledger
+mike.johnson@contoso.com,2025-11-08 09:00:00,CustomerList,Read,sess-008,Finance,Accounts Receivable
+mike.johnson@contoso.com,2025-11-09 09:00:00,VendorList,Read,sess-009,Finance,Accounts Payable
+mike.johnson@contoso.com,2025-11-10 09:00:00,BankReconciliation,Read,sess-010,Finance,Cash Management
+mike.johnson@contoso.com,2025-11-11 09:00:00,GeneralJournalEntry,Write,sess-011,Finance,General Ledger
+mike.johnson@contoso.com,2025-11-12 09:00:00,CustomerList,Write,sess-012,Finance,Accounts Receivable
+mike.johnson@contoso.com,2025-11-13 09:00:00,VendorList,Write,sess-013,Finance,Accounts Payable
+alice.green@contoso.com,2025-11-01 09:00:00,ProjectTimeEntry,Read,sess-001,Operations,Projects
+alice.green@contoso.com,2025-11-01 09:05:00,ProjectTimeEntry,Write,sess-001,Operations,Projects
+alice.green@contoso.com,2025-11-01 09:10:00,TaskManagement,Read,sess-001,Operations,Tasks
+alice.green@contoso.com,2025-11-01 09:15:00,TaskManagement,Write,sess-001,Operations,Tasks
+alice.green@contoso.com,2025-11-02 09:00:00,ProjectTimeEntry,Read,sess-002,Operations,Projects
+alice.green@contoso.com,2025-11-02 09:05:00,ProjectTimeEntry,Write,sess-002,Operations,Projects
+alice.green@contoso.com,2025-11-02 09:10:00,TaskManagement,Read,sess-002,Operations,Tasks
+alice.green@contoso.com,2025-11-02 09:15:00,TaskManagement,Write,sess-002,Operations,Tasks
+alice.green@contoso.com,2025-11-03 09:00:00,ProjectTimeEntry,Read,sess-003,Operations,Projects
+alice.green@contoso.com,2025-11-03 09:05:00,ProjectTimeEntry,Write,sess-003,Operations,Projects
+alice.green@contoso.com,2025-11-03 09:10:00,TaskManagement,Read,sess-003,Operations,Tasks
+alice.green@contoso.com,2025-11-03 09:15:00,TaskManagement,Write,sess-003,Operations,Tasks
+alice.green@contoso.com,2025-11-04 09:00:00,ProjectTimeEntry,Read,sess-004,Operations,Projects
+alice.green@contoso.com,2025-11-04 09:05:00,ProjectTimeEntry,Read,sess-004,Operations,Projects
+alice.green@contoso.com,2025-11-04 09:10:00,TaskManagement,Read,sess-004,Operations,Tasks
+alice.green@contoso.com,2025-11-04 09:15:00,TaskManagement,Read,sess-004,Operations,Tasks
+alice.green@contoso.com,2025-11-05 09:00:00,GeneralJournalEntry,Read,sess-005,Finance,General Ledger
+bob.wilson@contoso.com,2025-11-01 09:00:00,PurchaseOrder,Read,sess-001,SCM,Procurement
+bob.wilson@contoso.com,2025-11-01 09:05:00,InventoryOnHand,Write,sess-001,SCM,Inventory
+bob.wilson@contoso.com,2025-11-01 09:10:00,WarehouseInventory,Read,sess-001,SCM,Warehouse
+bob.wilson@contoso.com,2025-11-02 09:00:00,ReceivingOrder,Write,sess-002,SCM,Procurement
+bob.wilson@contoso.com,2025-11-03 09:00:00,ShippingOrder,Read,sess-003,SCM,Warehouse

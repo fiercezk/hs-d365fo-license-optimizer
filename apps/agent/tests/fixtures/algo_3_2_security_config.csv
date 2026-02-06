@@ -1,0 +1,47 @@
+securityrole,AOTName,AccessLevel,LicenseType,Priority,Entitled,NotEntitled,securitytype
+Sales Manager,SalesOrder,Write,Operations,90,1,0,MenuItemDisplay
+Sales Manager,SalesInvoice,Write,Operations,90,1,0,MenuItemDisplay
+Sales Manager,CustomerList,Read,Team Members,60,1,0,MenuItemDisplay
+Sales Manager,SalesReport,Read,Team Members,60,1,0,MenuItemDisplay
+Sales Manager,SalesQuote,Write,Operations,90,1,0,MenuItemDisplay
+Sales Manager,SalesReturn,Write,Operations,90,1,0,MenuItemDisplay
+Sales Manager,SalesForecast,Read,Team Members,60,1,0,MenuItemDisplay
+Sales Manager,SalesTarget,Write,Operations,90,1,0,MenuItemAction
+Sales Manager,CustomerCredit,Write,Operations,90,1,0,MenuItemAction
+Sales Manager,SalesDiscount,Write,Operations,90,1,0,MenuItemAction
+Sales Clerk,SalesOrder,Write,Operations,90,1,0,MenuItemDisplay
+Sales Clerk,CustomerList,Read,Team Members,60,1,0,MenuItemDisplay
+Sales Clerk,SalesReport,Read,Team Members,60,1,0,MenuItemDisplay
+Sales Clerk,SalesQuote,Write,Operations,90,1,0,MenuItemDisplay
+Sales Clerk,SalesReturn,Write,Operations,90,1,0,MenuItemDisplay
+Sales Clerk,SalesForecast,Read,Team Members,60,1,0,MenuItemDisplay
+Finance Manager,GeneralJournalEntry,Write,Finance,180,1,0,MenuItemDisplay
+Finance Manager,BankReconciliation,Write,Finance,180,1,0,MenuItemAction
+Finance Manager,VendorList,Read,Team Members,60,1,0,MenuItemDisplay
+Finance Manager,CustomerList,Read,Team Members,60,1,0,MenuItemDisplay
+Finance Manager,FinancialReport,Read,Team Members,60,1,0,MenuItemDisplay
+Finance Manager,BudgetEntry,Write,Finance,180,1,0,MenuItemDisplay
+Finance Manager,CashManagement,Write,Finance,180,1,0,MenuItemAction
+Finance Manager,TaxReport,Read,Team Members,60,1,0,MenuItemDisplay
+Finance Manager,AuditTrail,Read,Team Members,60,1,0,MenuItemDisplay
+Finance Manager,LedgerApproval,Write,Finance,180,1,0,MenuItemAction
+AP Clerk,VendorInvoice,Write,Finance,180,1,0,MenuItemDisplay
+AP Clerk,VendorList,Read,Team Members,60,1,0,MenuItemDisplay
+AP Clerk,PaymentJournal,Write,Finance,180,1,0,MenuItemAction
+AP Clerk,VendorPayment,Write,Finance,180,1,0,MenuItemAction
+Warehouse Worker,WHSMobileApp,Write,SCM,180,1,0,MenuItemDisplay
+Warehouse Worker,InventoryOnHand,Read,Team Members,60,1,0,MenuItemDisplay
+Warehouse Worker,PickingList,Write,SCM,180,1,0,MenuItemAction
+Warehouse Worker,ShipmentTracking,Read,Team Members,60,1,0,MenuItemDisplay
+Warehouse Supervisor,WHSMobileApp,Write,SCM,180,1,0,MenuItemDisplay
+Warehouse Supervisor,InventoryOnHand,Read,Team Members,60,1,0,MenuItemDisplay
+Warehouse Supervisor,PickingList,Write,SCM,180,1,0,MenuItemAction
+Warehouse Supervisor,ShipmentTracking,Read,Team Members,60,1,0,MenuItemDisplay
+Warehouse Supervisor,WarehouseReport,Read,Team Members,60,1,0,MenuItemDisplay
+Warehouse Supervisor,InventoryAdjustment,Write,SCM,180,1,0,MenuItemDisplay
+Warehouse Supervisor,WarehouseConfig,Write,SCM,180,1,0,MenuItemAction
+Warehouse Supervisor,StaffSchedule,Write,SCM,180,1,0,MenuItemAction
+Purchasing Agent,PurchaseOrder,Write,SCM,180,1,0,MenuItemDisplay
+Purchasing Agent,VendorList,Read,Team Members,60,1,0,MenuItemDisplay
+Purchasing Agent,InventoryOnHand,Read,Team Members,60,1,0,MenuItemDisplay
+Purchasing Agent,PurchaseRequisition,Write,SCM,180,1,0,MenuItemDisplay
