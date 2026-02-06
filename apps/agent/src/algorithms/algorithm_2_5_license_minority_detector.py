@@ -30,36 +30,10 @@ from ..models.output_schemas import (
     RecommendationReason,
     SavingsEstimate,
 )
+from ..utils.pricing import get_license_price
 
 # Write-type actions per D365 FO telemetry schema
 _WRITE_ACTIONS: frozenset[str] = frozenset({"Write", "Update", "Create", "Delete"})
-
-
-def _get_license_price(pricing_config: dict[str, Any], license_type: str) -> float:
-    """Retrieve the monthly price for a given license type.
-
-    Args:
-        pricing_config: Parsed pricing.json dictionary.
-        license_type: License type name (e.g., "scm", "finance", normalized).
-
-    Returns:
-        Monthly price in USD.
-
-    Raises:
-        KeyError: If license type not found in pricing config.
-    """
-    # Try exact match first (with capitalization)
-    license_normalized = license_type.strip()
-
-    # Look for matching license in config (case-insensitive key matching)
-    for key, config in pricing_config["licenses"].items():
-        if key.lower().replace(" ", "_").replace("-", "_") == license_normalized.lower().replace(
-            " ", "_"
-        ).replace("-", "_"):
-            return float(config["pricePerUserPerMonth"])
-
-    # If no match found, raise error
-    raise KeyError(f"License type '{license_type}' not found in pricing config")
 
 
 def _get_form_to_license_mapping(
@@ -76,14 +50,15 @@ def _get_form_to_license_mapping(
     Returns:
         Dictionary mapping menu_item (form) to LicenseType.
     """
-    mapping = {}
-    for _, row in user_activity.iterrows():
-        form = str(row["menu_item"]).strip()
-        license_type = str(row["license_tier"]).strip()
-        if form and license_type:
-            # Store the license type for this form
-            # If form appears with multiple licenses, use the most recent
-            mapping[form] = license_type
+    # Vectorized: build mapping from the last occurrence of each menu_item
+    # (equivalent to iterating and overwriting, i.e. "most recent wins")
+    df = user_activity[["menu_item", "license_tier"]].copy()
+    df["menu_item"] = df["menu_item"].astype(str).str.strip()
+    df["license_tier"] = df["license_tier"].astype(str).str.strip()
+    df = df[(df["menu_item"] != "") & (df["license_tier"] != "")]
+    # drop_duplicates(keep='last') mirrors the iterrows overwrite semantics
+    df = df.drop_duplicates(subset="menu_item", keep="last")
+    mapping: dict[str, str] = dict(zip(df["menu_item"], df["license_tier"]))
     return mapping
 
 
@@ -120,47 +95,41 @@ def _calculate_usage_by_license(
             }
         }
     """
+    # Vectorized approach: map menu_item -> license, then groupby license
+    df = user_activity[["menu_item", "action"]].copy()
+    df["menu_item"] = df["menu_item"].astype(str).str.strip()
+    df["license_type"] = df["menu_item"].map(form_to_license)
+
+    # Drop rows with no license mapping
+    df = df.dropna(subset=["license_type"])
+    if df.empty:
+        return {}
+
+    df["license_norm"] = df["license_type"].apply(_normalize_license_name)
+    df["action"] = df["action"].fillna("").astype(str).str.strip()
+    df["is_write"] = df["action"].isin(_WRITE_ACTIONS)
+
+    # Aggregate per license
+    grouped = df.groupby("license_norm")
+    access_counts = grouped.size()
+    write_counts = grouped["is_write"].sum()
+    unique_forms = grouped["menu_item"].agg(lambda x: sorted(x.unique().tolist()))
+
+    total_accesses = int(access_counts.sum())
+
     usage_by_license: dict[str, dict[str, Any]] = {}
-
-    # Map each activity to its license
-    for _, activity in user_activity.iterrows():
-        menu_item = str(activity["menu_item"]).strip()
-        license_type = form_to_license.get(menu_item)
-
-        if not license_type:
-            continue
-
-        license_norm = _normalize_license_name(license_type)
-        if license_norm not in usage_by_license:
-            usage_by_license[license_norm] = {
-                "form_count": 0,
-                "access_count": 0,
-                "forms": set(),
-                "read_count": 0,
-                "write_count": 0,
-            }
-
-        # Add form to set (for unique count)
-        usage_by_license[license_norm]["forms"].add(menu_item)
-        # Increment access count
-        usage_by_license[license_norm]["access_count"] += 1
-        # Track read vs write
-        action = str(activity.get("action", "")).strip()
-        if action in _WRITE_ACTIONS:
-            usage_by_license[license_norm]["write_count"] += 1
-        else:
-            usage_by_license[license_norm]["read_count"] += 1
-
-    # Convert form sets to lists and calculate percentages
-    total_accesses = sum(stats["access_count"] for stats in usage_by_license.values())
-
-    for license_type, stats in usage_by_license.items():
-        stats["form_count"] = len(stats["forms"])
-        stats["forms"] = sorted(list(stats["forms"]))
-        if total_accesses > 0:
-            stats["percentage"] = (stats["access_count"] / total_accesses) * 100
-        else:
-            stats["percentage"] = 0.0
+    for license_norm in access_counts.index:
+        ac = int(access_counts[license_norm])
+        wc = int(write_counts[license_norm])
+        forms_list = unique_forms[license_norm]
+        usage_by_license[license_norm] = {
+            "form_count": len(forms_list),
+            "access_count": ac,
+            "forms": forms_list,
+            "read_count": ac - wc,
+            "write_count": wc,
+            "percentage": (ac / total_accesses) * 100 if total_accesses > 0 else 0.0,
+        }
 
     return usage_by_license
 
@@ -317,12 +286,9 @@ def detect_license_minority_users(
     # Build form-to-license mapping from activity data
     form_to_license = _get_form_to_license_mapping(user_activity)
 
-    # Process each unique user
-    for user_id in user_activity["user_id"].unique():
-        user_data = user_activity[user_activity["user_id"] == user_id].copy()
-
-        if user_data.empty:
-            continue
+    # Process each unique user via groupby (avoids O(U*N) repeated filtering)
+    for raw_user_id, user_data in user_activity.groupby("user_id", sort=False):
+        user_id = str(raw_user_id)
 
         # Calculate usage by license
         usage_by_license = _calculate_usage_by_license(user_data, form_to_license)
@@ -359,7 +325,7 @@ def detect_license_minority_users(
         # Calculate current and recommended costs
         try:
             current_cost = sum(
-                _get_license_price(pricing_config, lic) for lic in usage_by_license.keys()
+                get_license_price(pricing_config, lic) for lic in usage_by_license.keys()
             )
         except KeyError:
             # Skip if pricing data incomplete
@@ -367,7 +333,7 @@ def detect_license_minority_users(
 
         # Recommended: remove minority licenses
         recommended_cost = current_cost - sum(
-            _get_license_price(pricing_config, m["license"]) for m in minority_licenses
+            get_license_price(pricing_config, m["license"]) for m in minority_licenses
         )
 
         monthly_savings = current_cost - recommended_cost
