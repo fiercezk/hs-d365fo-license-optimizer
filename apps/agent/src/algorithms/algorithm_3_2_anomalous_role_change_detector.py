@@ -98,6 +98,10 @@ def detect_anomalous_role_changes(
     common_approvers: dict[str, set[str]] = {}  # role_name -> set of common approvers
     service_account_usage_frequency: dict[str, int] = {}  # service_account -> usage_count
 
+    # Pre-convert timestamps to datetime ONCE (avoids O(N^2) pd.to_datetime in loop)
+    role_changes = role_changes.copy()
+    role_changes["_parsed_timestamp"] = pd.to_datetime(role_changes["timestamp"])
+
     # Process each role change
     for _, change in role_changes.iterrows():
         anomaly_score: int = 0
@@ -191,8 +195,8 @@ def detect_anomalous_role_changes(
         one_hour_ago = timestamp - timedelta(hours=1)
         recent_changes = role_changes[
             (role_changes["user_affected"] == user_affected)
-            & (pd.to_datetime(role_changes["timestamp"]) >= one_hour_ago)
-            & (pd.to_datetime(role_changes["timestamp"]) <= timestamp)
+            & (role_changes["_parsed_timestamp"] >= one_hour_ago)
+            & (role_changes["_parsed_timestamp"] <= timestamp)
         ]
         rapid_change_count = len(recent_changes)
 
