@@ -62,6 +62,136 @@ pytest tests/test_algorithm_2_2.py::test_readonly_user_downgrade -v
 
 ---
 
+# Phase 2 Development Workflow (23 Algorithms)
+
+**Status:** Phase 1 complete (11 algorithms on main), Phase 2 in progress (23 algorithms remaining)
+
+**Branch Strategy:** Feature branches from main (one branch per algorithm)
+
+---
+
+## Feature Branch Workflow
+
+**Pattern:**
+```
+main (production)
+├─ feature/algo-1-4 ← Component Removal Recommender
+├─ feature/algo-3-5 ← Orphaned Account Detector
+├─ feature/algo-2-1 ← Permission vs. Usage Analyzer
+└─ feature/algo-1-1 ← Role License Composition Analyzer
+```
+
+**Step-by-Step:**
+
+1. **Start new algorithm from main:**
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b feature/algo-X-Y
+   ```
+
+2. **Develop with TDD:**
+   - Write tests first (`tests/test_algorithm_X_Y.py`)
+   - Implement algorithm (`src/algorithms/algorithm_X_Y_name.py`)
+   - Add one import to `src/algorithms/__init__.py`
+   - Run tests: `pytest tests/test_algorithm_X_Y.py -v`
+
+3. **Push and create PR:**
+   ```bash
+   git add .
+   git commit -m "feat: implement Algorithm X.Y (Name)"
+   git push -u origin feature/algo-X-Y
+   # Create PR: feature/algo-X-Y → main
+   ```
+
+4. **Rebase before PR (if main advanced):**
+   ```bash
+   git fetch origin
+   git rebase origin/main
+   git push -f origin feature/algo-X-Y
+   ```
+
+---
+
+## Dual Code Review Process
+
+**Gate 1: Pre-Merge Review (Branch Validation)**
+
+Run on feature branch BEFORE PR approval:
+
+**Automated Checks (Required):**
+- [ ] All tests pass: `pytest`
+- [ ] Type safety: `mypy src/`
+- [ ] Linting: `ruff check src/ tests/`
+- [ ] Formatting: `black --check src/ tests/`
+- [ ] Single algorithm scope (1 algorithm + tests + fixtures only)
+- [ ] One line added to `__init__.py` (import statement only)
+
+**Manual Review Checklist (Required):**
+- [ ] Code follows TDD (tests written first, evident from git history)
+- [ ] Algorithm matches Requirements doc pseudocode (cite section)
+- [ ] Test coverage comprehensive (5+ scenarios: obvious case, edge cases, no-action case)
+- [ ] Docstrings complete (Google style, Args/Returns documented)
+- [ ] No hardcoded values (pricing in config, thresholds parameterized)
+- [ ] Pydantic models used for all inputs/outputs
+- [ ] No code duplication (extract shared logic to utils/)
+
+**Council Code Review (Recommended):**
+```bash
+# Run Council code review before PR
+# Reviews: Security, Performance, Maintainability, Code Quality, QA
+# (Council skill TBD - may require custom implementation)
+```
+
+**Gate 2: Post-Merge Review (Integration Validation)**
+
+Run on main AFTER PR merge:
+
+**Automated Checks (Required):**
+- [ ] Full test suite passes: `cd apps/agent && pytest` (all 175+ tests)
+- [ ] No regressions in existing algorithms
+- [ ] Type safety on full codebase: `mypy src/`
+- [ ] All algorithms importable: `python -c "from src.algorithms import *"`
+
+**Integration Smoke Tests:**
+```bash
+# Verify all Phase 1 algorithms still work
+pytest tests/test_algorithm_2_2.py tests/test_algorithm_2_5.py tests/test_algorithm_3_1.py -v
+
+# Verify new algorithm integrates
+pytest tests/test_algorithm_X_Y.py -v
+```
+
+**Post-Merge Review (Optional but Recommended):**
+- [ ] Review merged state on main for integration issues
+- [ ] Check for import conflicts or circular dependencies
+- [ ] Verify `__init__.py` has clean, alphabetical imports
+- [ ] Run Council review on merged main branch
+
+---
+
+## Conflict Prevention Rules
+
+1. **One algorithm per branch** - Branch naming: `feature/algo-X-Y`
+2. **__init__.py strategy** - Only ADD one import line per PR (never modify existing)
+3. **Schema changes** - Prefer existing Phase 1 schemas. If new schema needed, coordinate in PR description
+4. **Merge frequently** - Don't batch PRs. Merge as soon as Gate 1 passes
+5. **Independent tests** - Each algorithm's tests use isolated fixtures, no shared state
+
+---
+
+## Quality Gates Summary
+
+| Gate | When | What | Blocker? |
+|------|------|------|----------|
+| **Automated Tests** | Pre-merge | pytest, mypy, ruff, black | ✅ YES |
+| **Manual Review** | Pre-merge | TDD, coverage, docstrings, no duplication | ✅ YES |
+| **Council Review** | Pre-merge | 5-expert code review | ⚠️ Recommended |
+| **Integration Tests** | Post-merge | Full suite on main, no regressions | ✅ YES |
+| **Post-Merge Review** | Post-merge | Integration validation | ⚠️ Recommended |
+
+---
+
 # Code Style
 
 **Line Length:** 100 characters (configured in pyproject.toml)
