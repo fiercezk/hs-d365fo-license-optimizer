@@ -1,3 +1,6 @@
+"""Algorithm implementations for license optimization.
+Exported algorithms:
+  - Algorithm 1.1: Role License Composition Analyzer
 """Phase 1 & 2 algorithm implementations for license optimization.
 
 Exported algorithms:
@@ -6,12 +9,27 @@ Exported algorithms:
   - Algorithm 2.5: License Minority Detection
   - Algorithm 3.3: Privilege Creep Detector
   - Algorithm 3.4: Toxic Combination Detector
+  - Algorithm 3.7: Service Account Analyzer
   - Algorithm 4.7: New User License Recommender
 
   Phase 2:
+  - Algorithm 3.5: Orphaned Account Detector
+  - Algorithm 2.1: Permission vs. Usage Analyzer
+"""
+
+from .algorithm_2_1_permission_usage_analyzer import analyze_permission_usage
   - Algorithm 1.4: Component Removal Recommender
 """
 
+from .algorithm_1_2_user_segment_analyzer import (
+    UserSegmentAnalysis,
+    UserSegmentDetail,
+    analyze_user_segments,
+from .algorithm_1_1_role_composition_analyzer import (
+    LicenseCompositionEntry,
+    RoleComposition,
+    analyze_role_composition,
+    analyze_roles_batch,
 from .algorithm_1_4_component_removal import (
     ComponentRemovalCandidate,
     ComponentRemovalResult,
@@ -24,6 +42,17 @@ from .algorithm_3_4_toxic_combination_detector import (
     detect_toxic_combinations,
     detect_toxic_combinations_batch,
 )
+from .algorithm_3_7_service_account_analyzer import (
+    ServiceAccountAnalysis,
+    ServiceAccountConfig,
+    ServiceAccountFinding,
+    analyze_service_accounts,
+from .algorithm_3_5_orphaned_account_detector import (
+    detect_orphaned_accounts,
+    OrphanedAccountResult,
+    OrphanType,
+    UserDirectoryRecord,
+)
 from .algorithm_4_7_new_user_license_recommender import (
     NewUserLicenseRecommender,
     LicenseRecommendationOption,
@@ -31,6 +60,19 @@ from .algorithm_4_7_new_user_license_recommender import (
 )
 
 __all__ = [
+    "UserSegmentAnalysis",
+    "UserSegmentDetail",
+    "analyze_user_segments",
+    # Phase 2
+    "detect_orphaned_accounts",
+    "OrphanedAccountResult",
+    "OrphanType",
+    "UserDirectoryRecord",
+    "analyze_permission_usage",
+    "LicenseCompositionEntry",
+    "RoleComposition",
+    "analyze_role_composition",
+    "analyze_roles_batch",
     # Phase 2
     "ComponentRemovalCandidate",
     "ComponentRemovalResult",
@@ -41,6 +83,10 @@ __all__ = [
     "detect_privilege_creep",
     "detect_toxic_combinations",
     "detect_toxic_combinations_batch",
+    "ServiceAccountAnalysis",
+    "ServiceAccountConfig",
+    "ServiceAccountFinding",
+    "analyze_service_accounts",
     "NewUserLicenseRecommender",
     "LicenseRecommendationOption",
     "suggest_license_for_new_user",
