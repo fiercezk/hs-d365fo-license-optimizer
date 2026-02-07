@@ -510,3 +510,65 @@ pytest && mypy src/ && ruff check src/ tests/
 ---
 
 **Last Updated:** 2026-02-07 (All 34 Algorithms Complete - v1.0.0-complete Released - 521 Tests Passing)
+
+---
+
+## Infrastructure & Deployment Status (2026-02-07)
+
+### ✅ Completed
+
+**Algorithm Portfolio:**
+- All 34 algorithms implemented and tested (521/521 tests passing)
+- v1.0.0-complete tagged and released
+- Portfolio validation system active (prevents missing algorithms)
+
+**Infrastructure Code:**
+- Azure Bicep templates created (`/infrastructure/`)
+  - 7 modules: Functions, Container Apps, SQL, Static Web Apps, OpenAI, ACR, Key Vault
+  - Deployment script with --what-if support
+  - Cost estimate: $70-145/month
+- Next.js web application scaffolded (`/apps/web/`)
+  - 5 core pages: Dashboard, Algorithms, Wizard, Recommendations, Admin
+  - TanStack Query, shadcn/ui, TypeScript
+  - API routes with mock data
+- Data integration layer (`/apps/agent/src/integrations/`)
+  - D365 FO OData client (with OAuth, pagination, delta sync)
+  - Azure App Insights KQL client
+  - Data transformation layer
+
+### 🔄 In Progress
+
+**Deployment:**
+- Azure infrastructure: Ready to deploy (needs subscription details)
+- Web application: Ready for development server (`cd apps/web && bun install && bun dev`)
+- Data integration: Ready to connect (needs D365 credentials)
+
+### 📋 Next Steps
+
+1. **Deploy Azure Infrastructure:**
+   ```bash
+   cd infrastructure
+   # Preview deployment
+   ./deploy.sh --environment dev --what-if
+   # Deploy
+   ./deploy.sh --environment dev
+   ```
+
+2. **Configure Data Integration:**
+   - Set up D365 FO OAuth app registration
+   - Configure App Insights connection string
+   - Update environment variables
+
+3. **Develop Web Application:**
+   - Implement dashboard charts (Recharts)
+   - Add authentication (MSAL)
+   - Connect to live API
+   - Database schema migrations
+
+---
+
+**Project Milestones:**
+- ✅ Phase 1: All 34 algorithms implemented (2026-02-07)
+- 🔄 Phase 2: Infrastructure code created (2026-02-07)
+- ⏳ Phase 3: Azure deployment (pending subscription)
+- ⏳ Phase 4: Production launch (pending)

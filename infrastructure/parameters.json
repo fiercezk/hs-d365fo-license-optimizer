@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": {
+      "value": "d365licagent"
+    },
+    "location": {
+      "value": "eastus2"
+    },
+    "environment": {
+      "value": "dev"
+    },
+    "sqlAdminLogin": {
+      "value": "<REPLACE_WITH_SQL_ADMIN_USERNAME>"
+    },
+    "sqlAdminPassword": {
+      "value": "<REPLACE_WITH_SQL_ADMIN_PASSWORD>"
+    },
+    "openAiModelName": {
+      "value": "gpt-4o-mini"
+    },
+    "openAiModelVersion": {
+      "value": "2024-07-18"
+    },
+    "openAiCapacity": {
+      "value": 30
+    },
+    "tags": {
+      "value": {
+        "project": "D365FOLicenseAgent",
+        "environment": "dev",
+        "managedBy": "bicep",
+        "costCenter": "<REPLACE_WITH_COST_CENTER>"
+      }
+    }
+  }
+}
