@@ -1,44 +1,82 @@
-"""Algorithm implementations for license optimization.
+"""D365 FO License & Security Optimization Agent - Algorithm Implementations."""
 
-Exported algorithms:
-  - Algorithm 1.1: Role License Composition Analyzer
-  - Algorithm 2.2: Read-Only User Detector
-  - Algorithm 2.5: License Minority Detection
-  - Algorithm 3.3: Privilege Creep Detector
-  - Algorithm 3.4: Toxic Combination Detector
-  - Algorithm 4.7: New User License Recommender
-"""
-
-from .algorithm_1_1_role_composition_analyzer import (
-    LicenseCompositionEntry,
-    RoleComposition,
-    analyze_role_composition,
-    analyze_roles_batch,
+# Phase 1 Algorithms
+from .algorithm_2_2_readonly_detector import (
+    ReadOnlyAnalysis,
+    analyze_readonly_users,
 )
-from .algorithm_2_2_readonly_detector import detect_readonly_users
-from .algorithm_2_5_license_minority_detector import detect_license_minority_users
-from .algorithm_3_3_privilege_creep_detector import detect_privilege_creep
+from .algorithm_2_5_license_minority_detector import (
+    LicenseMinorityAnalysis,
+    analyze_license_minority,
+)
+from .algorithm_3_1_sod_violation_detector import (
+    SoDViolationAnalysis,
+    detect_sod_violations,
+)
+from .algorithm_3_2_anomalous_role_change_detector import (
+    AnomalousRoleChangeAnalysis,
+    detect_anomalous_role_changes,
+)
+from .algorithm_3_3_privilege_creep_detector import (
+    PrivilegeCreepAnalysis,
+    detect_privilege_creep,
+)
 from .algorithm_3_4_toxic_combination_detector import (
+    ToxicCombinationAnalysis,
     detect_toxic_combinations,
-    detect_toxic_combinations_batch,
+)
+from .algorithm_4_1_device_license_detector import (
+    DeviceLicenseAnalysis,
+    analyze_device_license_opportunities,
+)
+from .algorithm_4_3_cross_app_analyzer import (
+    CrossAppAnalysis,
+    analyze_cross_app_licenses,
 )
 from .algorithm_4_7_new_user_license_recommender import (
-    NewUserLicenseRecommender,
-    LicenseRecommendationOption,
-    suggest_license_for_new_user,
+    NewUserLicenseRecommendation,
+    recommend_new_user_license,
+)
+from .algorithm_5_1_license_trend_analyzer import (
+    LicenseTrendAnalysis,
+    analyze_license_trends,
+)
+from .algorithm_5_2_security_risk_scorer import (
+    SecurityRiskAnalysis,
+    score_security_risks,
+)
+
+# Phase 2 Algorithms
+# Algorithm 1.1
+# Algorithm 1.2
+from .algorithm_1_2_user_segment_analyzer import (
+    UserSegmentAnalysis,
+    analyze_user_segments,
 )
 
 __all__ = [
-    "LicenseCompositionEntry",
-    "RoleComposition",
-    "analyze_role_composition",
-    "analyze_roles_batch",
-    "detect_readonly_users",
-    "detect_license_minority_users",
+    # Phase 1
+    "ReadOnlyAnalysis",
+    "analyze_readonly_users",
+    "LicenseMinorityAnalysis",
+    "analyze_license_minority",
+    "SoDViolationAnalysis",
+    "detect_sod_violations",
+    "AnomalousRoleChangeAnalysis",
+    "detect_anomalous_role_changes",
+    "PrivilegeCreepAnalysis",
     "detect_privilege_creep",
+    "ToxicCombinationAnalysis",
     "detect_toxic_combinations",
-    "detect_toxic_combinations_batch",
-    "NewUserLicenseRecommender",
-    "LicenseRecommendationOption",
-    "suggest_license_for_new_user",
+    "DeviceLicenseAnalysis",
+    "analyze_device_license_opportunities",
+    "CrossAppAnalysis",
+    "analyze_cross_app_licenses",
+    "NewUserLicenseRecommendation",
+    "recommend_new_user_license",
+    "LicenseTrendAnalysis",
+    "analyze_license_trends",
+    "SecurityRiskAnalysis",
+    "score_security_risks",
+    # Phase 2 exports will be added dynamically
 ]
