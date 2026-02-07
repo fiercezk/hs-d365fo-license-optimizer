@@ -37,7 +37,7 @@ import pandas as pd
 
 from src.algorithms.algorithm_2_6_cross_role_optimizer import (
     CrossRoleOptimization,
-    CrossRoleOptimizationResult,  # noqa: F401 -- alias import verified
+    CrossRoleOptimizationResult,
     optimize_cross_role_licenses,
 )
 
