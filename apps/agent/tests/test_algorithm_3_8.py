@@ -36,10 +36,8 @@ from __future__ import annotations
 from typing import Any
 
 import pandas as pd
-import pytest
 
 from src.algorithms.algorithm_3_8_access_review_automation import (
-    AccessReviewItem,
     AccessReviewCampaign,
     ReviewAction,
     generate_access_review,

@@ -33,7 +33,6 @@ import pandas as pd
 
 from src.algorithms.algorithm_1_2_user_segment_analyzer import (
     UserSegmentAnalysis,
-    UserSegmentDetail,
     analyze_user_segments,
 )
 

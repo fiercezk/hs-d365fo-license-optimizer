@@ -36,10 +36,8 @@ from __future__ import annotations
 from typing import Any
 
 import pandas as pd
-import pytest
 
 from src.algorithms.algorithm_3_9_entra_d365_license_sync import (
-    LicenseMismatch,
     LicenseSyncAnalysis,
     MismatchType,
     validate_entra_d365_license_sync,

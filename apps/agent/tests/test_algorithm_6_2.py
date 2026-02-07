@@ -35,10 +35,8 @@ from __future__ import annotations
 from typing import Any
 
 import pandas as pd
-import pytest
 
 from src.algorithms.algorithm_6_2_permission_explosion_detector import (
-    PermissionExplosionFinding,
     PermissionExplosionAnalysis,
     detect_permission_explosions,
 )

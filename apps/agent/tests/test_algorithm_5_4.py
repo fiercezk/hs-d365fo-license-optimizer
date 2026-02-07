@@ -35,10 +35,8 @@ from __future__ import annotations
 from typing import Any
 
 import pandas as pd
-import pytest
 
 from src.algorithms.algorithm_5_4_contractor_access_tracker import (
-    ContractorFinding,
     ContractorAccessAnalysis,
     track_contractor_access,
 )

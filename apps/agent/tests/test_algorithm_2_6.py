@@ -37,7 +37,6 @@ import pandas as pd
 
 from src.algorithms.algorithm_2_6_cross_role_optimizer import (
     CrossRoleOptimization,
-    CrossRoleOptimizationResult,
     optimize_cross_role_licenses,
 )
 

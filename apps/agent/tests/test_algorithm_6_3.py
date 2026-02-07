@@ -34,7 +34,6 @@ from typing import Any
 import pandas as pd
 
 from src.algorithms.algorithm_6_3_duplicate_role_consolidator import (
-    DuplicateRolePair,
     DuplicateRoleAnalysis,
     detect_duplicate_roles,
 )

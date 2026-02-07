@@ -31,14 +31,11 @@ Key behaviors:
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
 from typing import Any
 
 import pandas as pd
-import pytest
 
 from src.algorithms.algorithm_3_6_emergency_account_monitor import (
-    EmergencyAccountAlert,
     EmergencyAccountAnalysis,
     EmergencyAccountConfig,
     monitor_emergency_accounts,

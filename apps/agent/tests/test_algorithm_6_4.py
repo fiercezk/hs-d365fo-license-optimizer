@@ -36,10 +36,8 @@ from __future__ import annotations
 from typing import Any
 
 import pandas as pd
-import pytest
 
 from src.algorithms.algorithm_6_4_role_hierarchy_optimizer import (
-    HierarchyFinding,
     HierarchyAnalysis,
     optimize_role_hierarchy,
 )

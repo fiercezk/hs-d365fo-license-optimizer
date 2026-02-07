@@ -39,7 +39,6 @@ from typing import Any
 from src.algorithms.algorithm_7_4_roi_calculator import (
     OptimizationRecommendationInput,
     ROIAnalysis,
-    ROISummary,
     calculate_roi,
 )
 

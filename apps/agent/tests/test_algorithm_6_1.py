@@ -35,7 +35,6 @@ from typing import Any
 import pandas as pd
 
 from src.algorithms.algorithm_6_1_stale_role_detector import (
-    StaleRole,
     StaleRoleAnalysis,
     detect_stale_roles,
 )

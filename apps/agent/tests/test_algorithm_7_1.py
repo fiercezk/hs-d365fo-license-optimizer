@@ -41,7 +41,6 @@ from typing import Any
 import pandas as pd
 
 from src.algorithms.algorithm_7_1_license_utilization_trend import (
-    LicenseUtilization,
     LicenseUtilizationAnalysis,
     analyze_license_utilization,
 )
