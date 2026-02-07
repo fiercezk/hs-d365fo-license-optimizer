@@ -1,7 +1,4 @@
 """Algorithm implementations for license optimization.
-Exported algorithms:
-  - Algorithm 1.1: Role License Composition Analyzer
-"""Phase 1 & 2 algorithm implementations for license optimization.
 
 Exported algorithms:
   Phase 1:
@@ -11,14 +8,7 @@ Exported algorithms:
   - Algorithm 3.4: Toxic Combination Detector
   - Algorithm 3.7: Service Account Analyzer
   - Algorithm 4.7: New User License Recommender
-
-  Phase 2:
-  - Algorithm 3.5: Orphaned Account Detector
-  - Algorithm 2.1: Permission vs. Usage Analyzer
-"""
-
-from .algorithm_2_1_permission_usage_analyzer import analyze_permission_usage
-  - Algorithm 1.4: Component Removal Recommender
+  - Algorithm 7.4: ROI Calculator
 """
 
 from .algorithm_1_2_user_segment_analyzer import (
@@ -58,6 +48,12 @@ from .algorithm_4_7_new_user_license_recommender import (
     LicenseRecommendationOption,
     suggest_license_for_new_user,
 )
+from .algorithm_7_4_roi_calculator import (
+    OptimizationRecommendationInput,
+    ROIAnalysis,
+    ROISummary,
+    calculate_roi,
+)
 
 __all__ = [
     "UserSegmentAnalysis",
@@ -90,4 +86,8 @@ __all__ = [
     "NewUserLicenseRecommender",
     "LicenseRecommendationOption",
     "suggest_license_for_new_user",
+    "OptimizationRecommendationInput",
+    "ROIAnalysis",
+    "ROISummary",
+    "calculate_roi",
 ]
