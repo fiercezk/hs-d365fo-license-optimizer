@@ -1,6 +1,6 @@
 """Phase 1 & 2 algorithm implementations for license optimization.
 
-This module exports all 25 implemented algorithms.
+This module exports all 32 implemented algorithms.
 """
 
 # Cost Optimization Algorithms (1.x, 2.x)
@@ -26,10 +26,17 @@ from .algorithm_3_7_service_account_analyzer import *  # noqa: F403, F401
 from .algorithm_3_8_access_review_automation import *  # noqa: F403, F401
 from .algorithm_3_9_entra_d365_sync_validator import *  # noqa: F403, F401
 
-# Role Management & Analytics Algorithms (4.x, 5.x)
+# Role Management & Analytics Algorithms (4.x, 5.x, 6.x, 7.x)
 from .algorithm_4_1_device_license_detector import *  # noqa: F403, F401
+from .algorithm_4_2_license_attach_optimizer import *  # noqa: F403, F401
 from .algorithm_4_3_cross_app_analyzer import *  # noqa: F403, F401
 from .algorithm_4_7_new_user_license_recommender import *  # noqa: F403, F401
 from .algorithm_5_1_license_trend_analyzer import *  # noqa: F403, F401
 from .algorithm_5_2_security_risk_scorer import *  # noqa: F403, F401
+from .algorithm_5_3_time_based_access_analyzer import *  # noqa: F403, F401
 from .algorithm_5_4_contractor_access_tracker import *  # noqa: F403, F401
+from .algorithm_6_1_stale_role_detector import *  # noqa: F403, F401
+from .algorithm_6_3_duplicate_role_consolidator import *  # noqa: F403, F401
+from .algorithm_7_1_license_utilization_trend import *  # noqa: F403, F401
+from .algorithm_7_2_cost_allocation_engine import *  # noqa: F403, F401
+from .algorithm_7_4_roi_calculator import *  # noqa: F403, F401
