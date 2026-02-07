@@ -34,9 +34,12 @@ from __future__ import annotations
 from typing import Any
 
 import pandas as pd
+import pytest
 
 from src.algorithms.algorithm_3_7_service_account_analyzer import (
+    ServiceAccountFinding,
     ServiceAccountAnalysis,
+    ServiceAccountConfig,
     analyze_service_accounts,
 )
 
