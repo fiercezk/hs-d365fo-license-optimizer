@@ -7,6 +7,7 @@ Exported algorithms:
   - Algorithm 3.4: Toxic Combination Detector
   - Algorithm 4.2: License Attach Optimizer
   - Algorithm 4.7: New User License Recommender
+  - Algorithm 5.3: Time-Based Access Analyzer
 """
 
 from .algorithm_2_2_readonly_detector import detect_readonly_users
@@ -26,6 +27,11 @@ from .algorithm_4_7_new_user_license_recommender import (
     LicenseRecommendationOption,
     suggest_license_for_new_user,
 )
+from .algorithm_5_3_time_based_access_analyzer import (
+    TimeBasedAccessAlert,
+    TimeBasedAccessAnalysis,
+    analyze_time_based_access,
+)
 
 __all__ = [
     "detect_readonly_users",
@@ -39,4 +45,7 @@ __all__ = [
     "NewUserLicenseRecommender",
     "LicenseRecommendationOption",
     "suggest_license_for_new_user",
+    "TimeBasedAccessAlert",
+    "TimeBasedAccessAnalysis",
+    "analyze_time_based_access",
 ]
