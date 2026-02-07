@@ -35,14 +35,13 @@ from __future__ import annotations
 from typing import Any
 
 import pandas as pd
-import pytest
+import pytest  # noqa: F401
 
 from src.algorithms.algorithm_6_2_permission_explosion_detector import (
-    PermissionExplosionFinding,
+    PermissionExplosionFinding,  # noqa: F401
     PermissionExplosionAnalysis,
     detect_permission_explosions,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -106,9 +105,7 @@ def _build_user_role_assignments(
     """
     records: list[dict[str, str]] = []
     for uid, role in assignments:
-        records.append(
-            {"user_id": uid, "role_name": role, "status": "Active"}
-        )
+        records.append({"user_id": uid, "role_name": role, "status": "Active"})
     return pd.DataFrame(records)
 
 
@@ -132,8 +129,7 @@ def _generate_large_role_config(
         List of tuples suitable for _build_security_config.
     """
     return [
-        (role_name, f"MenuItem_{i:04d}", access_level, license_type, priority)
-        for i in range(count)
+        (role_name, f"MenuItem_{i:04d}", access_level, license_type, priority) for i in range(count)
     ]
 
 
@@ -153,12 +149,8 @@ class TestExcessiveMenuItems:
         # -- Arrange --
         config_rows = _generate_large_role_config("MegaRole", 600)
         sec_config = _build_security_config(config_rows)
-        role_defs = _build_role_definitions(
-            [{"role_name": "MegaRole", "role_type": "Custom"}]
-        )
-        assignments = _build_user_role_assignments(
-            [("USR-A", "MegaRole"), ("USR-B", "MegaRole")]
-        )
+        role_defs = _build_role_definitions([{"role_name": "MegaRole", "role_type": "Custom"}])
+        assignments = _build_user_role_assignments([("USR-A", "MegaRole"), ("USR-B", "MegaRole")])
 
         # -- Act --
         result: PermissionExplosionAnalysis = detect_permission_explosions(
@@ -169,9 +161,9 @@ class TestExcessiveMenuItems:
 
         # -- Assert --
         explosion_findings = [
-            f for f in result.findings
-            if f.role_name == "MegaRole"
-            and "explosion" in f.finding_type.lower()
+            f
+            for f in result.findings
+            if f.role_name == "MegaRole" and "explosion" in f.finding_type.lower()
         ]
         assert len(explosion_findings) >= 1
         assert explosion_findings[0].severity in ("HIGH", "CRITICAL")
@@ -182,9 +174,7 @@ class TestExcessiveMenuItems:
         # -- Arrange --
         config_rows = _generate_large_role_config("SmallRole", 30)
         sec_config = _build_security_config(config_rows)
-        role_defs = _build_role_definitions(
-            [{"role_name": "SmallRole", "role_type": "Custom"}]
-        )
+        role_defs = _build_role_definitions([{"role_name": "SmallRole", "role_type": "Custom"}])
         assignments = _build_user_role_assignments([("USR-A", "SmallRole")])
 
         # -- Act --
@@ -196,9 +186,9 @@ class TestExcessiveMenuItems:
 
         # -- Assert --
         explosion_findings = [
-            f for f in result.findings
-            if f.role_name == "SmallRole"
-            and "explosion" in f.finding_type.lower()
+            f
+            for f in result.findings
+            if f.role_name == "SmallRole" and "explosion" in f.finding_type.lower()
         ]
         assert len(explosion_findings) == 0
 
@@ -216,9 +206,7 @@ class TestConfigurableThreshold:
         # -- Arrange --
         config_rows = _generate_large_role_config("ModerateRole", 250)
         sec_config = _build_security_config(config_rows)
-        role_defs = _build_role_definitions(
-            [{"role_name": "ModerateRole", "role_type": "Custom"}]
-        )
+        role_defs = _build_role_definitions([{"role_name": "ModerateRole", "role_type": "Custom"}])
         assignments = _build_user_role_assignments([("USR-A", "ModerateRole")])
 
         # -- Act --
@@ -230,9 +218,7 @@ class TestConfigurableThreshold:
         )
 
         # -- Assert --
-        findings_for_role = [
-            f for f in result.findings if f.role_name == "ModerateRole"
-        ]
+        findings_for_role = [f for f in result.findings if f.role_name == "ModerateRole"]
         assert len(findings_for_role) >= 1
 
     def test_default_threshold_skips_moderate_roles(self) -> None:
@@ -240,9 +226,7 @@ class TestConfigurableThreshold:
         # -- Arrange --
         config_rows = _generate_large_role_config("ModerateRole", 250)
         sec_config = _build_security_config(config_rows)
-        role_defs = _build_role_definitions(
-            [{"role_name": "ModerateRole", "role_type": "Custom"}]
-        )
+        role_defs = _build_role_definitions([{"role_name": "ModerateRole", "role_type": "Custom"}])
         assignments = _build_user_role_assignments([("USR-A", "ModerateRole")])
 
         # -- Act --
@@ -255,9 +239,9 @@ class TestConfigurableThreshold:
 
         # -- Assert --
         explosion_findings = [
-            f for f in result.findings
-            if f.role_name == "ModerateRole"
-            and "explosion" in f.finding_type.lower()
+            f
+            for f in result.findings
+            if f.role_name == "ModerateRole" and "explosion" in f.finding_type.lower()
         ]
         assert len(explosion_findings) == 0
 
@@ -285,9 +269,7 @@ class TestExcessiveWriteAccess:
             config_rows.append(("WriteHeavy", f"Read_{i}", "Read", "Finance", 180))
 
         sec_config = _build_security_config(config_rows)
-        role_defs = _build_role_definitions(
-            [{"role_name": "WriteHeavy", "role_type": "Custom"}]
-        )
+        role_defs = _build_role_definitions([{"role_name": "WriteHeavy", "role_type": "Custom"}])
         assignments = _build_user_role_assignments([("USR-A", "WriteHeavy")])
 
         # -- Act --
@@ -299,9 +281,9 @@ class TestExcessiveWriteAccess:
 
         # -- Assert --
         write_findings = [
-            f for f in result.findings
-            if "write" in f.finding_type.lower()
-            or "write" in f.description.lower()
+            f
+            for f in result.findings
+            if "write" in f.finding_type.lower() or "write" in f.description.lower()
         ]
         assert len(write_findings) >= 1
         assert write_findings[0].severity in ("HIGH", "CRITICAL")
@@ -316,9 +298,7 @@ class TestExcessiveWriteAccess:
             config_rows.append(("Balanced", f"Read_{i}", "Read", "Finance", 180))
 
         sec_config = _build_security_config(config_rows)
-        role_defs = _build_role_definitions(
-            [{"role_name": "Balanced", "role_type": "Custom"}]
-        )
+        role_defs = _build_role_definitions([{"role_name": "Balanced", "role_type": "Custom"}])
         assignments = _build_user_role_assignments([("USR-A", "Balanced")])
 
         # -- Act --
@@ -330,9 +310,9 @@ class TestExcessiveWriteAccess:
 
         # -- Assert --
         write_findings = [
-            f for f in result.findings
-            if "write" in f.finding_type.lower()
-            and f.role_name == "Balanced"
+            f
+            for f in result.findings
+            if "write" in f.finding_type.lower() and f.role_name == "Balanced"
         ]
         assert len(write_findings) == 0
 
@@ -360,9 +340,7 @@ class TestCrossTierExplosion:
             ("CrossTier", "ComItem_A", "Write", "Commerce", 180),
         ]
         sec_config = _build_security_config(config_rows)
-        role_defs = _build_role_definitions(
-            [{"role_name": "CrossTier", "role_type": "Custom"}]
-        )
+        role_defs = _build_role_definitions([{"role_name": "CrossTier", "role_type": "Custom"}])
         assignments = _build_user_role_assignments([("USR-A", "CrossTier")])
 
         # -- Act --
@@ -374,9 +352,9 @@ class TestCrossTierExplosion:
 
         # -- Assert --
         tier_findings = [
-            f for f in result.findings
-            if "tier" in f.finding_type.lower()
-            or "cross" in f.finding_type.lower()
+            f
+            for f in result.findings
+            if "tier" in f.finding_type.lower() or "cross" in f.finding_type.lower()
         ]
         assert len(tier_findings) >= 1
         assert tier_findings[0].severity in ("MEDIUM", "HIGH")
@@ -384,14 +362,9 @@ class TestCrossTierExplosion:
     def test_single_tier_not_flagged(self) -> None:
         """Role within single license tier should not flag cross-tier."""
         # -- Arrange --
-        config_rows = [
-            ("SingleTier", f"Item_{i}", "Write", "Finance", 180)
-            for i in range(10)
-        ]
+        config_rows = [("SingleTier", f"Item_{i}", "Write", "Finance", 180) for i in range(10)]
         sec_config = _build_security_config(config_rows)
-        role_defs = _build_role_definitions(
-            [{"role_name": "SingleTier", "role_type": "Custom"}]
-        )
+        role_defs = _build_role_definitions([{"role_name": "SingleTier", "role_type": "Custom"}])
         assignments = _build_user_role_assignments([("USR-A", "SingleTier")])
 
         # -- Act --
@@ -403,9 +376,9 @@ class TestCrossTierExplosion:
 
         # -- Assert --
         tier_findings = [
-            f for f in result.findings
-            if "tier" in f.finding_type.lower()
-            or "cross" in f.finding_type.lower()
+            f
+            for f in result.findings
+            if "tier" in f.finding_type.lower() or "cross" in f.finding_type.lower()
         ]
         assert len(tier_findings) == 0
 
@@ -456,10 +429,10 @@ class TestStatisticalOutlier:
 
         # -- Assert --
         outlier_findings = [
-            f for f in result.findings
+            f
+            for f in result.findings
             if f.role_name == "Outlier"
-            and ("outlier" in f.finding_type.lower()
-                 or "average" in f.description.lower())
+            and ("outlier" in f.finding_type.lower() or "average" in f.description.lower())
         ]
         assert len(outlier_findings) >= 1
 
@@ -477,9 +450,7 @@ class TestSplittingRecommendations:
         # -- Arrange --
         config_rows = _generate_large_role_config("SplitMe", 700)
         sec_config = _build_security_config(config_rows)
-        role_defs = _build_role_definitions(
-            [{"role_name": "SplitMe", "role_type": "Custom"}]
-        )
+        role_defs = _build_role_definitions([{"role_name": "SplitMe", "role_type": "Custom"}])
         assignments = _build_user_role_assignments([("USR-A", "SplitMe")])
 
         # -- Act --
@@ -490,10 +461,7 @@ class TestSplittingRecommendations:
         )
 
         # -- Assert --
-        split_findings = [
-            f for f in result.findings
-            if f.role_name == "SplitMe"
-        ]
+        split_findings = [f for f in result.findings if f.role_name == "SplitMe"]
         assert len(split_findings) >= 1
         assert "split" in split_findings[0].recommendation.lower() or (
             "separate" in split_findings[0].recommendation.lower()
@@ -513,9 +481,7 @@ class TestUsersAffectedCount:
         # -- Arrange --
         config_rows = _generate_large_role_config("PopularBig", 600)
         sec_config = _build_security_config(config_rows)
-        role_defs = _build_role_definitions(
-            [{"role_name": "PopularBig", "role_type": "Custom"}]
-        )
+        role_defs = _build_role_definitions([{"role_name": "PopularBig", "role_type": "Custom"}])
         assignments = _build_user_role_assignments(
             [
                 ("USR-A", "PopularBig"),
@@ -550,9 +516,8 @@ class TestResultsSorted:
     def test_largest_role_first(self) -> None:
         """Roles with most menu items should appear first."""
         # -- Arrange --
-        config_rows = (
-            _generate_large_role_config("BigRole", 800)
-            + _generate_large_role_config("MedRole", 550)
+        config_rows = _generate_large_role_config("BigRole", 800) + _generate_large_role_config(
+            "MedRole", 550
         )
         sec_config = _build_security_config(config_rows)
         role_defs = _build_role_definitions(
@@ -561,9 +526,7 @@ class TestResultsSorted:
                 {"role_name": "MedRole", "role_type": "Custom"},
             ]
         )
-        assignments = _build_user_role_assignments(
-            [("USR-A", "BigRole"), ("USR-B", "MedRole")]
-        )
+        assignments = _build_user_role_assignments([("USR-A", "BigRole"), ("USR-B", "MedRole")])
 
         # -- Act --
         result = detect_permission_explosions(
@@ -573,14 +536,9 @@ class TestResultsSorted:
         )
 
         # -- Assert --
-        explosion_findings = [
-            f for f in result.findings if "explosion" in f.finding_type.lower()
-        ]
+        explosion_findings = [f for f in result.findings if "explosion" in f.finding_type.lower()]
         if len(explosion_findings) >= 2:
-            assert (
-                explosion_findings[0].menu_item_count
-                >= explosion_findings[1].menu_item_count
-            )
+            assert explosion_findings[0].menu_item_count >= explosion_findings[1].menu_item_count
 
 
 # ---------------------------------------------------------------------------
@@ -623,9 +581,7 @@ class TestSummaryStatistics:
         # -- Arrange --
         config_rows = _generate_large_role_config("TestRole", 100)
         sec_config = _build_security_config(config_rows)
-        role_defs = _build_role_definitions(
-            [{"role_name": "TestRole", "role_type": "Custom"}]
-        )
+        role_defs = _build_role_definitions([{"role_name": "TestRole", "role_type": "Custom"}])
         assignments = _build_user_role_assignments([("USR-A", "TestRole")])
 
         # -- Act --
@@ -654,9 +610,7 @@ class TestFindingModelStructure:
         # -- Arrange --
         config_rows = _generate_large_role_config("ModelRole", 600)
         sec_config = _build_security_config(config_rows)
-        role_defs = _build_role_definitions(
-            [{"role_name": "ModelRole", "role_type": "Custom"}]
-        )
+        role_defs = _build_role_definitions([{"role_name": "ModelRole", "role_type": "Custom"}])
         assignments = _build_user_role_assignments([("USR-A", "ModelRole")])
 
         # -- Act --

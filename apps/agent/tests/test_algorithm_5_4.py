@@ -29,19 +29,16 @@ Key behaviors:
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any
 
 import pandas as pd
-import pytest
 
 from src.algorithms.algorithm_5_4_contractor_access_tracker import (
-    ContractorAccessFinding,
     ContractorAccessReport,
     FindingSeverity,
     track_contractor_access,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -153,9 +150,7 @@ class TestExpiredContractActiveAccess:
                 }
             ]
         )
-        activity = _build_activity_data(
-            [("CTR-002", "2026-01-20 10:00:00", "FormA", "Read")]
-        )
+        activity = _build_activity_data([("CTR-002", "2026-01-20 10:00:00", "FormA", "Read")])
 
         result = track_contractor_access(
             contractor_records=contractors,
@@ -179,9 +174,7 @@ class TestExpiredContractActiveAccess:
                 }
             ]
         )
-        activity = _build_activity_data(
-            [("CTR-003", "2026-01-15 10:00:00", "FormA", "Read")]
-        )
+        activity = _build_activity_data([("CTR-003", "2026-01-15 10:00:00", "FormA", "Read")])
 
         result = track_contractor_access(
             contractor_records=contractors,
@@ -256,9 +249,7 @@ class TestActiveContractInactiveUser:
             ]
         )
         # Activity only 60 days ago -- stale
-        activity = _build_activity_data(
-            [("CTR-005", "2025-12-01 10:00:00", "FormA", "Read")]
-        )
+        activity = _build_activity_data([("CTR-005", "2025-12-01 10:00:00", "FormA", "Read")])
 
         result = track_contractor_access(
             contractor_records=contractors,
@@ -284,9 +275,7 @@ class TestActiveContractInactiveUser:
             ]
         )
         # Activity 20 days ago
-        activity = _build_activity_data(
-            [("CTR-006", "2026-01-18 10:00:00", "FormA", "Read")]
-        )
+        activity = _build_activity_data([("CTR-006", "2026-01-18 10:00:00", "FormA", "Read")])
 
         # Default threshold (30 days) -- 20 days is within threshold
         result_default = track_contractor_access(
@@ -295,9 +284,7 @@ class TestActiveContractInactiveUser:
             reference_date=datetime(2026, 2, 7),
         )
         inactive_findings_default = [
-            f
-            for f in result_default.findings
-            if f.finding_type == "INACTIVE_CONTRACTOR"
+            f for f in result_default.findings if f.finding_type == "INACTIVE_CONTRACTOR"
         ]
         assert len(inactive_findings_default) == 0
 
@@ -309,9 +296,7 @@ class TestActiveContractInactiveUser:
             reference_date=datetime(2026, 2, 7),
         )
         inactive_findings_strict = [
-            f
-            for f in result_strict.findings
-            if f.finding_type == "INACTIVE_CONTRACTOR"
+            f for f in result_strict.findings if f.finding_type == "INACTIVE_CONTRACTOR"
         ]
         assert len(inactive_findings_strict) == 1
 
@@ -352,9 +337,7 @@ class TestContractorHighPrivilege:
         )
 
         high_priv_findings = [
-            f
-            for f in result.findings
-            if f.finding_type == "HIGH_PRIVILEGE_CONTRACTOR"
+            f for f in result.findings if f.finding_type == "HIGH_PRIVILEGE_CONTRACTOR"
         ]
         assert len(high_priv_findings) >= 1
         assert high_priv_findings[0].severity == FindingSeverity.MEDIUM
@@ -383,9 +366,7 @@ class TestContractExpiringSoon:
                 }
             ]
         )
-        activity = _build_activity_data(
-            [("CTR-008", "2026-02-05 10:00:00", "FormA", "Write")]
-        )
+        activity = _build_activity_data([("CTR-008", "2026-02-05 10:00:00", "FormA", "Write")])
 
         result = track_contractor_access(
             contractor_records=contractors,
@@ -394,9 +375,7 @@ class TestContractExpiringSoon:
         )
 
         expiring_findings = [
-            f
-            for f in result.findings
-            if f.finding_type == "CONTRACT_EXPIRING_SOON"
+            f for f in result.findings if f.finding_type == "CONTRACT_EXPIRING_SOON"
         ]
         assert len(expiring_findings) >= 1
         assert expiring_findings[0].severity == FindingSeverity.LOW
@@ -414,9 +393,7 @@ class TestContractExpiringSoon:
                 }
             ]
         )
-        activity = _build_activity_data(
-            [("CTR-009", "2026-02-05 10:00:00", "FormA", "Read")]
-        )
+        activity = _build_activity_data([("CTR-009", "2026-02-05 10:00:00", "FormA", "Read")])
 
         # Default window (30 days) -- 53 days out, no finding
         result_default = track_contractor_access(
@@ -425,9 +402,7 @@ class TestContractExpiringSoon:
             reference_date=datetime(2026, 2, 7),
         )
         expiring_default = [
-            f
-            for f in result_default.findings
-            if f.finding_type == "CONTRACT_EXPIRING_SOON"
+            f for f in result_default.findings if f.finding_type == "CONTRACT_EXPIRING_SOON"
         ]
         assert len(expiring_default) == 0
 
@@ -439,9 +414,7 @@ class TestContractExpiringSoon:
             reference_date=datetime(2026, 2, 7),
         )
         expiring_wide = [
-            f
-            for f in result_wide.findings
-            if f.finding_type == "CONTRACT_EXPIRING_SOON"
+            f for f in result_wide.findings if f.finding_type == "CONTRACT_EXPIRING_SOON"
         ]
         assert len(expiring_wide) == 1
 
@@ -629,12 +602,8 @@ class TestSeveritySorting:
         assert len(result.findings) >= 2
         severities = [f.severity for f in result.findings]
         # CRITICAL should come before MEDIUM
-        critical_idx = next(
-            i for i, s in enumerate(severities) if s == FindingSeverity.CRITICAL
-        )
-        medium_idx = next(
-            i for i, s in enumerate(severities) if s == FindingSeverity.MEDIUM
-        )
+        critical_idx = next(i for i, s in enumerate(severities) if s == FindingSeverity.CRITICAL)
+        medium_idx = next(i for i, s in enumerate(severities) if s == FindingSeverity.MEDIUM)
         assert critical_idx < medium_idx
 
 
@@ -681,10 +650,7 @@ class TestReportSummary:
         assert hasattr(result, "medium_count")
         assert hasattr(result, "low_count")
         assert result.total_findings == (
-            result.critical_count
-            + result.high_count
-            + result.medium_count
-            + result.low_count
+            result.critical_count + result.high_count + result.medium_count + result.low_count
         )
 
     def test_report_has_total_cost_impact(self) -> None:
@@ -699,9 +665,7 @@ class TestReportSummary:
                 }
             ]
         )
-        activity = _build_activity_data(
-            [("CTR-COST", "2026-01-15 10:00:00", "FormA", "Read")]
-        )
+        activity = _build_activity_data([("CTR-COST", "2026-01-15 10:00:00", "FormA", "Read")])
 
         result = track_contractor_access(
             contractor_records=contractors,
@@ -731,9 +695,7 @@ class TestFindingModelStructure:
                 }
             ]
         )
-        activity = _build_activity_data(
-            [("CTR-MODEL", "2026-01-15 10:00:00", "FormA", "Read")]
-        )
+        activity = _build_activity_data([("CTR-MODEL", "2026-01-15 10:00:00", "FormA", "Read")])
 
         result = track_contractor_access(
             contractor_records=contractors,

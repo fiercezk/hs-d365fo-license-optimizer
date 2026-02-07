@@ -23,7 +23,7 @@ See Requirements/08-Algorithm-Review-Summary.md.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime
 from enum import Enum
 
 import pandas as pd
@@ -61,9 +61,7 @@ class ContractorAccessFinding(BaseModel):
     severity: FindingSeverity = Field(description="Finding severity level")
     description: str = Field(description="Human-readable finding description")
     recommendation: str = Field(description="Recommended remediation action")
-    monthly_cost_impact: float = Field(
-        description="Monthly license cost at risk (USD)", ge=0
-    )
+    monthly_cost_impact: float = Field(description="Monthly license cost at risk (USD)", ge=0)
     contract_end: str = Field(description="Contract end date (ISO 8601)")
     days_overdue: int | None = Field(
         default=None,
@@ -79,28 +77,16 @@ class ContractorAccessReport(BaseModel):
     """Complete output from Algorithm 5.4: Contractor Access Tracker."""
 
     algorithm_id: str = Field(default="5.4", description="Algorithm identifier")
-    total_contractors_analyzed: int = Field(
-        description="Number of contractors analyzed", ge=0
-    )
-    total_findings: int = Field(
-        description="Total number of findings", ge=0
-    )
+    total_contractors_analyzed: int = Field(description="Number of contractors analyzed", ge=0)
+    total_findings: int = Field(description="Total number of findings", ge=0)
     findings: list[ContractorAccessFinding] = Field(
         description="List of contractor access findings",
         default_factory=list,
     )
-    critical_count: int = Field(
-        default=0, description="Number of CRITICAL findings", ge=0
-    )
-    high_count: int = Field(
-        default=0, description="Number of HIGH findings", ge=0
-    )
-    medium_count: int = Field(
-        default=0, description="Number of MEDIUM findings", ge=0
-    )
-    low_count: int = Field(
-        default=0, description="Number of LOW findings", ge=0
-    )
+    critical_count: int = Field(default=0, description="Number of CRITICAL findings", ge=0)
+    high_count: int = Field(default=0, description="Number of HIGH findings", ge=0)
+    medium_count: int = Field(default=0, description="Number of MEDIUM findings", ge=0)
+    low_count: int = Field(default=0, description="Number of LOW findings", ge=0)
     total_monthly_cost_impact: float = Field(
         default=0.0,
         description="Total monthly cost impact across all findings (USD)",
@@ -144,13 +130,13 @@ def track_contractor_access(
         expiry_warning_days: Days before contract end to trigger warning
             (default 30).
         reference_date: Date to use as "now" for calculations (default:
-            datetime.utcnow()). Primarily for testability.
+            datetime.now(UTC)). Primarily for testability.
 
     Returns:
         ContractorAccessReport with findings sorted by severity then cost.
     """
     if reference_date is None:
-        reference_date = datetime.utcnow()
+        reference_date = datetime.now(UTC).replace(tzinfo=None)
 
     findings: list[ContractorAccessFinding] = []
 
@@ -211,8 +197,6 @@ def track_contractor_access(
 
         # --- Finding: EXPIRED_CONTRACT_ACTIVE_ACCESS (CRITICAL) ---
         if is_expired and has_any_activity:
-            # Check if activity happened at all (even if not "recent")
-            # The key issue is: expired contract + account still active
             findings.append(
                 ContractorAccessFinding(
                     user_id=user_id,
@@ -292,8 +276,6 @@ def track_contractor_access(
 
         # --- Finding: INACTIVE_CONTRACTOR (MEDIUM) ---
         if not has_recent_activity and not is_expired:
-            # Only flag if they have no recent activity
-            # (either no activity at all, or activity older than threshold)
             if days_since_activity is None or days_since_activity > inactivity_threshold_days:
                 findings.append(
                     ContractorAccessFinding(
@@ -337,7 +319,7 @@ def track_contractor_access(
                         "contract will be renewed. If not, prepare access "
                         "revocation for the contract end date."
                     ),
-                    monthly_cost_impact=0.0,  # Not yet a cost issue
+                    monthly_cost_impact=0.0,
                     contract_end=contract_end_str,
                     days_until_expiry=days_until_expiry,
                 )

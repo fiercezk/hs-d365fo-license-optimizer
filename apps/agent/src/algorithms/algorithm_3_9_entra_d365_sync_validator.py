@@ -33,7 +33,6 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 
-
 # ---------------------------------------------------------------------------
 # License tier priority map -- used to compare license levels
 # Higher value = more capable / more expensive license
@@ -292,11 +291,11 @@ def validate_entra_d365_sync(
             )
 
     # --- Pass 2: Check all D365 FO users with roles for M2 ---
-    for user_id, d365_record in d365_map.items():
-        d365_roles = d365_record.get("roles", [])
-        d365_status = d365_record.get("d365_status", "Active")
-        theoretical_license = d365_record.get("theoretical_license")
-        user_name = d365_record.get("user_name", "")
+    for user_id, d365_rec in d365_map.items():
+        d365_roles = d365_rec.get("roles", [])
+        d365_status = d365_rec.get("d365_status", "Active")
+        theoretical_license = d365_rec.get("theoretical_license")
+        user_name = d365_rec.get("user_name", "")
 
         # Skip users without roles (no compliance requirement)
         if not d365_roles:
@@ -306,9 +305,9 @@ def validate_entra_d365_sync(
         if d365_status == "Disabled":
             continue
 
-        entra_record = entra_map.get(user_id)
+        matching_entra: dict[str, Any] | None = entra_map.get(user_id)
 
-        if entra_record is None:
+        if matching_entra is None:
             # M2: Compliance Gap -- has D365 roles but NO Entra license
             mismatches.append(
                 MismatchRecord(
@@ -329,8 +328,8 @@ def validate_entra_d365_sync(
             )
         else:
             # Check if Entra tier is LOWER than theoretical (under-licensed)
-            entra_license = entra_record["license_type"]
-            entra_tier = _get_tier_priority(entra_license)
+            m2_entra_license: str = matching_entra["license_type"]
+            entra_tier = _get_tier_priority(m2_entra_license)
             theoretical_tier = _get_tier_priority(theoretical_license)
 
             if theoretical_license is not None and entra_tier < theoretical_tier:
@@ -339,14 +338,14 @@ def validate_entra_d365_sync(
                         user_id=user_id,
                         user_name=user_name,
                         mismatch_type=MismatchType.M2_COMPLIANCE_GAP,
-                        entra_license=entra_license,
+                        entra_license=m2_entra_license,
                         d365_theoretical_license=theoretical_license,
                         d365_roles=d365_roles,
                         d365_status=d365_status,
                         severity="HIGH",
                         monthly_cost_impact=0.0,
                         recommendation=(
-                            f"Upgrade Entra license from {entra_license} to "
+                            f"Upgrade Entra license from {m2_entra_license} to "
                             f"{theoretical_license}. Current license is insufficient "
                             f"for assigned D365 FO roles."
                         ),
@@ -364,12 +363,8 @@ def validate_entra_d365_sync(
     # Build summary counts
     ghost_count = sum(1 for m in mismatches if m.mismatch_type == MismatchType.M1_GHOST_LICENSE)
     gap_count = sum(1 for m in mismatches if m.mismatch_type == MismatchType.M2_COMPLIANCE_GAP)
-    over_count = sum(
-        1 for m in mismatches if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED
-    )
-    stale_count = sum(
-        1 for m in mismatches if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT
-    )
+    over_count = sum(1 for m in mismatches if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED)
+    stale_count = sum(1 for m in mismatches if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT)
     total_monthly = sum(m.monthly_cost_impact for m in mismatches)
 
     return EntraD365SyncReport(
