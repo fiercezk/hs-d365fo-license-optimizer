@@ -41,7 +41,6 @@ from typing import Any
 import pandas as pd
 
 from src.algorithms.algorithm_4_2_license_attach_optimizer import (
-    AttachOptimization,
     AttachOptimizationResult,
     optimize_license_attach,
 )

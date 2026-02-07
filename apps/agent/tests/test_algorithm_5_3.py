@@ -34,7 +34,6 @@ from typing import Any
 import pandas as pd
 
 from src.algorithms.algorithm_5_3_time_based_access_analyzer import (
-    TimeBasedAccessAlert,
     TimeBasedAccessAnalysis,
     analyze_time_based_access,
 )
