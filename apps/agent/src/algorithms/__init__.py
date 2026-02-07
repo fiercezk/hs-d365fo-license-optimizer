@@ -1,6 +1,6 @@
 """Phase 1 & 2 algorithm implementations for license optimization.
 
-This module exports all 32 implemented algorithms.
+This module exports all 34 implemented algorithms.
 """
 
 # Cost Optimization Algorithms (1.x, 2.x)
@@ -36,7 +36,9 @@ from .algorithm_5_2_security_risk_scorer import *  # noqa: F403, F401
 from .algorithm_5_3_time_based_access_analyzer import *  # noqa: F403, F401
 from .algorithm_5_4_contractor_access_tracker import *  # noqa: F403, F401
 from .algorithm_6_1_stale_role_detector import *  # noqa: F403, F401
+from .algorithm_6_2_permission_explosion_detector import *  # noqa: F403, F401
 from .algorithm_6_3_duplicate_role_consolidator import *  # noqa: F403, F401
+from .algorithm_6_4_role_hierarchy_optimizer import *  # noqa: F403, F401
 from .algorithm_7_1_license_utilization_trend import *  # noqa: F403, F401
 from .algorithm_7_2_cost_allocation_engine import *  # noqa: F403, F401
 from .algorithm_7_4_roi_calculator import *  # noqa: F403, F401
