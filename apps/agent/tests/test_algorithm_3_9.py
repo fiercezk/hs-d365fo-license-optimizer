@@ -2,9 +2,9 @@
 
 TDD RED phase -- these tests are written BEFORE the implementation exists.
 They will fail with ImportError until
-src/algorithms/algorithm_3_9_entra_d365_license_sync.py is implemented.
+src/algorithms/algorithm_3_9_entra_d365_sync_validator.py is implemented.
 
-Specification: Requirements/07-Advanced-Algorithms-Expansion.md, lines 1530-1692
+Specification: Requirements/07-Advanced-Algorithms-Expansion.md
 (Algorithm 3.9: Entra-D365 License Sync Validator).
 
 Algorithm 3.9 detects mismatches between tenant-level Entra ID licensing and
@@ -13,36 +13,34 @@ D365 FO role-based licensing. Licenses exist at two independent levels
 that can drift out of sync.
 
 Mismatch Types:
-  M1 - Ghost License:      Entra license assigned, no D365 FO roles
-  M2 - Compliance Gap:     D365 FO roles requiring higher license than Entra assignment
-  M3 - Over-Provisioned:   Entra license tier > theoretical license from roles
-  M4 - Stale Entitlement:  D365 FO user disabled but Entra license still active
+  - M1 Ghost License: Entra license assigned, no D365 FO roles
+  - M2 Compliance Gap: D365 FO roles present, no/wrong Entra license
+  - M3 Over-Provisioned: Entra license tier > theoretical D365 requirement
+  - M4 Stale Entitlement: D365 FO user disabled, Entra license still active
 
 Key behaviors:
-  - M1: User has Entra D365 license but zero D365 FO roles = Ghost License (MEDIUM)
-  - M2: User has D365 FO roles requiring Finance but only Team Members in Entra = HIGH
-  - M2: User has D365 FO roles but no Entra license at all = HIGH
-  - M3: User has Enterprise Entra license but roles only need Team Members = MEDIUM
-  - M4: User disabled in D365 FO but still has active Entra license = MEDIUM
-  - No mismatch: Entra license matches theoretical license = no finding
-  - Cost impact calculated per mismatch (savings for M1/M3/M4, zero for M2)
-  - SKU-to-license mapping table is configurable per tenant
-  - Results sorted by severity then savings descending
-  - Empty input = zero mismatches, no errors
+  - M1 Ghost = Entra license present, zero D365 FO roles => MEDIUM severity
+  - M2 Compliance Gap = D365 roles present, no Entra license => HIGH severity
+  - M2 Under-licensed = Entra tier < theoretical tier => HIGH severity
+  - M3 Over-Provisioned = Entra tier > theoretical tier => MEDIUM severity
+  - M4 Stale = D365 FO disabled, Entra license active => MEDIUM severity
+  - Savings calculated using shared pricing utility
+  - Empty input = empty mismatch list
+  - Results sorted by severity (HIGH first), then savings descending
+  - algorithm_id = "3.9"
 """
 
 from __future__ import annotations
 
 from typing import Any
 
-import pandas as pd
 import pytest
 
-from src.algorithms.algorithm_3_9_entra_d365_license_sync import (
-    LicenseMismatch,
-    LicenseSyncAnalysis,
+from src.algorithms.algorithm_3_9_entra_d365_sync_validator import (
+    EntraD365SyncReport,
+    MismatchRecord,
     MismatchType,
-    validate_entra_d365_license_sync,
+    validate_entra_d365_sync,
 )
 
 
@@ -50,551 +48,560 @@ from src.algorithms.algorithm_3_9_entra_d365_license_sync import (
 # Helpers
 # ---------------------------------------------------------------------------
 
-# Standard SKU mapping for tests
-DEFAULT_SKU_MAPPING = {
-    "SKU-FINANCE": "Finance",
-    "SKU-SCM": "SCM",
-    "SKU-COMMERCE": "Commerce",
-    "SKU-TEAM": "Team Members",
-    "SKU-FINANCE-SCM": "Finance + SCM",
+# License tier priority (higher = more expensive/capable)
+LICENSE_TIER_PRIORITY: dict[str, int] = {
+    "Team Members": 60,
+    "Operations": 90,
+    "Finance": 180,
+    "SCM": 180,
+    "Commerce": 180,
+}
+
+DEFAULT_SKU_MAP: dict[str, str] = {
+    "guid-finance": "Finance",
+    "guid-scm": "SCM",
+    "guid-commerce": "Commerce",
+    "guid-team-members": "Team Members",
+    "guid-operations": "Operations",
+}
+
+DEFAULT_PRICING: dict[str, Any] = {
+    "licenses": {
+        "team_members": {
+            "name": "Team Members",
+            "pricePerUserPerMonth": 60.00,
+        },
+        "operations": {
+            "name": "Operations",
+            "pricePerUserPerMonth": 90.00,
+        },
+        "finance": {
+            "name": "Finance",
+            "pricePerUserPerMonth": 180.00,
+        },
+        "scm": {
+            "name": "SCM",
+            "pricePerUserPerMonth": 180.00,
+        },
+        "commerce": {
+            "name": "Commerce",
+            "pricePerUserPerMonth": 180.00,
+        },
+    }
 }
 
 
-def _build_entra_license_data(
-    users: list[dict[str, Any]],
-) -> pd.DataFrame:
-    """Build synthetic Entra ID license data DataFrame.
+def _build_entra_licenses(
+    records: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Build synthetic Entra license records.
 
     Args:
-        users: List of dicts with keys:
-            user_id, user_name, email, entra_sku_id, entra_sku_name,
-            entra_license_type, entra_status.
+        records: List of dicts with keys:
+            user_id, user_name, email, sku_id, sku_name, license_type.
     """
-    records: list[dict[str, Any]] = []
-    for u in users:
-        records.append(
+    result: list[dict[str, Any]] = []
+    for r in records:
+        result.append(
             {
-                "user_id": u.get("user_id", "USR-001"),
-                "user_name": u.get("user_name", "Test User"),
-                "email": u.get("email", "test@contoso.com"),
-                "entra_sku_id": u.get("entra_sku_id", "SKU-FINANCE"),
-                "entra_sku_name": u.get(
-                    "entra_sku_name", "Dynamics 365 Finance"
-                ),
-                "entra_license_type": u.get("entra_license_type", "Finance"),
-                "entra_status": u.get("entra_status", "Active"),
+                "user_id": r.get("user_id", "USR-001"),
+                "user_name": r.get("user_name", "Test User"),
+                "email": r.get("email", "test@contoso.com"),
+                "sku_id": r.get("sku_id", "guid-finance"),
+                "sku_name": r.get("sku_name", "Dynamics 365 Finance"),
+                "license_type": r.get("license_type", "Finance"),
+                "account_enabled": r.get("account_enabled", True),
             }
         )
-    return pd.DataFrame(records)
+    return result
 
 
-def _build_d365_user_roles(
-    users: list[dict[str, Any]],
-) -> pd.DataFrame:
-    """Build synthetic D365 FO user-role data DataFrame.
+def _build_d365_users(
+    records: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Build synthetic D365 FO user records with role assignments.
 
     Args:
-        users: List of dicts with keys:
-            user_id, user_name, email, roles (list), role_count,
+        records: List of dicts with keys:
+            user_id, user_name, email, roles, status,
             theoretical_license, d365_status.
     """
-    records: list[dict[str, Any]] = []
-    for u in users:
-        records.append(
+    result: list[dict[str, Any]] = []
+    for r in records:
+        result.append(
             {
-                "user_id": u.get("user_id", "USR-001"),
-                "user_name": u.get("user_name", "Test User"),
-                "email": u.get("email", "test@contoso.com"),
-                "roles": u.get("roles", ["Accountant"]),
-                "role_count": u.get("role_count", len(u.get("roles", ["Accountant"]))),
-                "theoretical_license": u.get("theoretical_license", "Finance"),
-                "d365_status": u.get("d365_status", "Active"),
+                "user_id": r.get("user_id", "USR-001"),
+                "user_name": r.get("user_name", "Test User"),
+                "email": r.get("email", "test@contoso.com"),
+                "roles": r.get("roles", []),
+                "d365_status": r.get("d365_status", "Active"),
+                "theoretical_license": r.get("theoretical_license", "Finance"),
             }
         )
-    return pd.DataFrame(records)
-
-
-def _build_sku_mapping(
-    mapping: dict[str, str] | None = None,
-) -> dict[str, str]:
-    """Build SKU-to-license mapping table."""
-    return mapping or DEFAULT_SKU_MAPPING.copy()
+    return result
 
 
 # ---------------------------------------------------------------------------
-# License tier ordering for tests
-# ---------------------------------------------------------------------------
-
-LICENSE_TIER_ORDER = {
-    "Team Members": 1,
-    "Operations": 2,
-    "Finance": 3,
-    "SCM": 3,
-    "Commerce": 3,
-    "Finance + SCM": 4,
-}
-
-
-# ---------------------------------------------------------------------------
-# Test: M1 - Ghost License (Entra license, no D365 FO roles)
+# Test: M1 Ghost License -- Entra license but no D365 FO roles
 # ---------------------------------------------------------------------------
 
 
 class TestM1GhostLicense:
-    """Test scenario: User has Entra D365 license but zero D365 FO roles.
+    """Test scenario: User has Entra D365 license but no D365 FO roles.
 
-    Ghost licenses waste spend. Recommendation: remove Entra license
-    or assign D365 FO roles.
+    This represents wasted spend -- the user is paying for a license
+    they are not using in D365 FO.
     """
 
     def test_ghost_license_detected(self) -> None:
-        """User with Entra license but no D365 FO roles = M1 Ghost License."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
+        """Entra license + zero D365 roles = M1_GHOST_LICENSE mismatch."""
+        entra = _build_entra_licenses(
             [
                 {
                     "user_id": "USR-GHOST",
-                    "entra_license_type": "Finance",
-                    "entra_sku_id": "SKU-FINANCE",
+                    "license_type": "Finance",
+                    "sku_id": "guid-finance",
                 }
             ]
         )
-        d365_data = _build_d365_user_roles([])  # No D365 FO roles at all
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result: LicenseSyncAnalysis = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
-        )
-
-        # -- Assert --
-        m1_mismatches = [
-            m for m in result.mismatches
-            if m.mismatch_type == MismatchType.M1_GHOST_LICENSE
-        ]
-        assert len(m1_mismatches) >= 1
-        assert m1_mismatches[0].user_id == "USR-GHOST"
-
-    def test_ghost_license_severity_medium(self) -> None:
-        """Ghost license should be MEDIUM severity."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
-            [{"user_id": "USR-GHOST", "entra_license_type": "Finance"}]
-        )
-        d365_data = _build_d365_user_roles([])
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
-        )
-
-        # -- Assert --
-        m1 = [m for m in result.mismatches if m.mismatch_type == MismatchType.M1_GHOST_LICENSE]
-        assert len(m1) >= 1
-        assert m1[0].severity == "MEDIUM"
-
-    def test_ghost_license_includes_cost_savings(self) -> None:
-        """Ghost license mismatch should report full license cost as savings."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
-            [{"user_id": "USR-GHOST", "entra_license_type": "Finance"}]
-        )
-        d365_data = _build_d365_user_roles([])
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
-        )
-
-        # -- Assert --
-        m1 = [m for m in result.mismatches if m.mismatch_type == MismatchType.M1_GHOST_LICENSE]
-        assert len(m1) >= 1
-        assert m1[0].monthly_cost_impact > 0
-
-    def test_user_with_roles_not_ghost(self) -> None:
-        """User with both Entra license and D365 FO roles = NOT ghost."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
-            [{"user_id": "USR-OK", "entra_license_type": "Finance"}]
-        )
-        d365_data = _build_d365_user_roles(
+        d365 = _build_d365_users(
             [
                 {
-                    "user_id": "USR-OK",
-                    "roles": ["Accountant"],
-                    "theoretical_license": "Finance",
+                    "user_id": "USR-GHOST",
+                    "roles": [],
+                    "theoretical_license": None,
+                    "d365_status": "Active",
                 }
             ]
         )
-        sku_mapping = _build_sku_mapping()
 
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+        result: EntraD365SyncReport = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
         )
 
-        # -- Assert --
-        m1 = [m for m in result.mismatches if m.mismatch_type == MismatchType.M1_GHOST_LICENSE]
-        ghost_for_user = [m for m in m1 if m.user_id == "USR-OK"]
-        assert len(ghost_for_user) == 0
+        ghost = [m for m in result.mismatches if m.mismatch_type == MismatchType.M1_GHOST_LICENSE]
+        assert len(ghost) >= 1
+        assert ghost[0].user_id == "USR-GHOST"
+        assert ghost[0].severity == "MEDIUM"
+
+    def test_ghost_license_savings_calculated(self) -> None:
+        """M1 Ghost License savings = full license cost (user pays for nothing)."""
+        entra = _build_entra_licenses(
+            [
+                {
+                    "user_id": "USR-GHOST",
+                    "license_type": "Finance",
+                }
+            ]
+        )
+        d365 = _build_d365_users(
+            [
+                {
+                    "user_id": "USR-GHOST",
+                    "roles": [],
+                    "theoretical_license": None,
+                }
+            ]
+        )
+
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
+        )
+
+        ghost = [m for m in result.mismatches if m.mismatch_type == MismatchType.M1_GHOST_LICENSE]
+        assert len(ghost) >= 1
+        assert ghost[0].monthly_cost_impact == pytest.approx(180.0, abs=0.01)
+
+    def test_ghost_license_recommendation(self) -> None:
+        """M1 should recommend removing Entra license or assigning roles."""
+        entra = _build_entra_licenses(
+            [
+                {
+                    "user_id": "USR-GHOST",
+                    "license_type": "Team Members",
+                }
+            ]
+        )
+        d365 = _build_d365_users(
+            [
+                {
+                    "user_id": "USR-GHOST",
+                    "roles": [],
+                    "theoretical_license": None,
+                }
+            ]
+        )
+
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
+        )
+
+        ghost = [m for m in result.mismatches if m.mismatch_type == MismatchType.M1_GHOST_LICENSE]
+        assert len(ghost) >= 1
+        assert ghost[0].recommendation is not None
+        assert len(ghost[0].recommendation) > 0
 
 
 # ---------------------------------------------------------------------------
-# Test: M2 - Compliance Gap (D365 FO roles need higher license than Entra)
+# Test: M2 Compliance Gap -- D365 roles but no/wrong Entra license
 # ---------------------------------------------------------------------------
 
 
 class TestM2ComplianceGap:
-    """Test scenario: User has D365 FO roles requiring a license tier
-    higher than what is assigned in Entra (or no Entra license at all).
+    """Test scenario: User has D365 FO roles but no or wrong Entra license.
 
-    Compliance gap = audit risk. No savings, but must be fixed.
+    This is a compliance risk -- the user is using D365 FO without proper
+    licensing at the Entra level.
     """
 
-    def test_no_entra_license_compliance_gap(self) -> None:
-        """User with D365 FO roles but no Entra license = M2 Compliance Gap."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data([])  # No Entra licenses
-        d365_data = _build_d365_user_roles(
+    def test_missing_entra_license_detected(self) -> None:
+        """D365 roles + no Entra license = M2_COMPLIANCE_GAP."""
+        entra = _build_entra_licenses([])
+        d365 = _build_d365_users(
             [
                 {
                     "user_id": "USR-GAP",
+                    "roles": ["Accountant", "FinanceManager"],
+                    "theoretical_license": "Finance",
+                    "d365_status": "Active",
+                }
+            ]
+        )
+
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
+        )
+
+        gaps = [m for m in result.mismatches if m.mismatch_type == MismatchType.M2_COMPLIANCE_GAP]
+        assert len(gaps) >= 1
+        assert gaps[0].user_id == "USR-GAP"
+        assert gaps[0].severity == "HIGH"
+
+    def test_under_licensed_detected(self) -> None:
+        """Entra tier < theoretical tier = M2_COMPLIANCE_GAP."""
+        entra = _build_entra_licenses(
+            [
+                {
+                    "user_id": "USR-UNDER",
+                    "license_type": "Team Members",
+                }
+            ]
+        )
+        d365 = _build_d365_users(
+            [
+                {
+                    "user_id": "USR-UNDER",
                     "roles": ["Accountant"],
                     "theoretical_license": "Finance",
                     "d365_status": "Active",
                 }
             ]
         )
-        sku_mapping = _build_sku_mapping()
 
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
         )
 
-        # -- Assert --
-        m2 = [m for m in result.mismatches if m.mismatch_type == MismatchType.M2_COMPLIANCE_GAP]
-        assert len(m2) >= 1
-        assert m2[0].user_id == "USR-GAP"
+        gaps = [m for m in result.mismatches if m.mismatch_type == MismatchType.M2_COMPLIANCE_GAP]
+        assert len(gaps) >= 1
+        assert gaps[0].user_id == "USR-UNDER"
+        assert gaps[0].severity == "HIGH"
 
-    def test_wrong_entra_license_compliance_gap(self) -> None:
-        """User with Team Members Entra license but Finance roles = M2."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
+    def test_compliance_gap_zero_savings(self) -> None:
+        """M2 Compliance Gap has zero savings (it is a compliance issue, not cost)."""
+        entra = _build_entra_licenses([])
+        d365 = _build_d365_users(
             [
                 {
-                    "user_id": "USR-WRONG",
-                    "entra_license_type": "Team Members",
-                    "entra_sku_id": "SKU-TEAM",
-                }
-            ]
-        )
-        d365_data = _build_d365_user_roles(
-            [
-                {
-                    "user_id": "USR-WRONG",
-                    "roles": ["Accountant", "FinanceManager"],
+                    "user_id": "USR-GAP",
+                    "roles": ["Accountant"],
                     "theoretical_license": "Finance",
                 }
             ]
         )
-        sku_mapping = _build_sku_mapping()
 
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
         )
 
-        # -- Assert --
-        m2 = [
-            m for m in result.mismatches
+        gaps = [m for m in result.mismatches if m.mismatch_type == MismatchType.M2_COMPLIANCE_GAP]
+        assert len(gaps) >= 1
+        assert gaps[0].monthly_cost_impact == pytest.approx(0.0, abs=0.01)
+
+    def test_matching_license_no_compliance_gap(self) -> None:
+        """Entra license matching theoretical tier should NOT produce M2."""
+        entra = _build_entra_licenses(
+            [
+                {
+                    "user_id": "USR-OK",
+                    "license_type": "Finance",
+                }
+            ]
+        )
+        d365 = _build_d365_users(
+            [
+                {
+                    "user_id": "USR-OK",
+                    "roles": ["Accountant"],
+                    "theoretical_license": "Finance",
+                    "d365_status": "Active",
+                }
+            ]
+        )
+
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
+        )
+
+        gaps = [
+            m
+            for m in result.mismatches
             if m.mismatch_type == MismatchType.M2_COMPLIANCE_GAP
-            and m.user_id == "USR-WRONG"
+            and m.user_id == "USR-OK"
         ]
-        assert len(m2) >= 1
-
-    def test_compliance_gap_severity_high(self) -> None:
-        """Compliance gap should be HIGH severity."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data([])
-        d365_data = _build_d365_user_roles(
-            [{"user_id": "USR-GAP", "theoretical_license": "Finance"}]
-        )
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
-        )
-
-        # -- Assert --
-        m2 = [m for m in result.mismatches if m.mismatch_type == MismatchType.M2_COMPLIANCE_GAP]
-        assert len(m2) >= 1
-        assert m2[0].severity == "HIGH"
-
-    def test_compliance_gap_zero_savings(self) -> None:
-        """Compliance gap has no savings (it's a cost to fix)."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data([])
-        d365_data = _build_d365_user_roles(
-            [{"user_id": "USR-GAP", "theoretical_license": "Finance"}]
-        )
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
-        )
-
-        # -- Assert --
-        m2 = [m for m in result.mismatches if m.mismatch_type == MismatchType.M2_COMPLIANCE_GAP]
-        assert len(m2) >= 1
-        assert m2[0].monthly_cost_impact == 0
+        assert len(gaps) == 0
 
 
 # ---------------------------------------------------------------------------
-# Test: M3 - Over-Provisioned (Entra license > theoretical license)
+# Test: M3 Over-Provisioned -- Entra tier > theoretical D365 requirement
 # ---------------------------------------------------------------------------
 
 
 class TestM3OverProvisioned:
-    """Test scenario: User has enterprise Entra license but roles only
-    need Team Members. Entra license tier exceeds what D365 FO requires.
+    """Test scenario: Entra license tier exceeds actual D365 FO need.
+
+    User has an enterprise Entra license (Finance, $180/mo) but only
+    needs Team Members ($60/mo) based on their D365 FO roles.
     """
 
     def test_over_provisioned_detected(self) -> None:
-        """Finance Entra license with Team Members roles = M3 Over-Provisioned."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
+        """Entra Finance + D365 only needs Team Members = M3_OVER_PROVISIONED."""
+        entra = _build_entra_licenses(
             [
                 {
                     "user_id": "USR-OVER",
-                    "entra_license_type": "Finance",
-                    "entra_sku_id": "SKU-FINANCE",
+                    "license_type": "Finance",
                 }
             ]
         )
-        d365_data = _build_d365_user_roles(
+        d365 = _build_d365_users(
             [
                 {
                     "user_id": "USR-OVER",
-                    "roles": ["TeamMemberRole"],
+                    "roles": ["BasicReader"],
                     "theoretical_license": "Team Members",
+                    "d365_status": "Active",
                 }
             ]
         )
-        sku_mapping = _build_sku_mapping()
 
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
         )
 
-        # -- Assert --
-        m3 = [
-            m for m in result.mismatches
+        over = [
+            m
+            for m in result.mismatches
             if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED
-            and m.user_id == "USR-OVER"
         ]
-        assert len(m3) >= 1
+        assert len(over) >= 1
+        assert over[0].user_id == "USR-OVER"
+        assert over[0].severity == "MEDIUM"
 
-    def test_over_provisioned_severity_medium(self) -> None:
-        """Over-provisioned should be MEDIUM severity."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
-            [{"user_id": "USR-OVER", "entra_license_type": "Finance"}]
+    def test_over_provisioned_savings(self) -> None:
+        """M3 savings = difference between Entra tier cost and theoretical cost."""
+        entra = _build_entra_licenses(
+            [
+                {
+                    "user_id": "USR-OVER",
+                    "license_type": "Finance",
+                }
+            ]
         )
-        d365_data = _build_d365_user_roles(
-            [{"user_id": "USR-OVER", "theoretical_license": "Team Members"}]
-        )
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
-        )
-
-        # -- Assert --
-        m3 = [m for m in result.mismatches if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED]
-        assert len(m3) >= 1
-        assert m3[0].severity == "MEDIUM"
-
-    def test_over_provisioned_includes_tier_diff_savings(self) -> None:
-        """Savings = cost(Entra license) - cost(theoretical license)."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
-            [{"user_id": "USR-OVER", "entra_license_type": "Finance"}]
-        )
-        d365_data = _build_d365_user_roles(
-            [{"user_id": "USR-OVER", "theoretical_license": "Team Members"}]
-        )
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+        d365 = _build_d365_users(
+            [
+                {
+                    "user_id": "USR-OVER",
+                    "roles": ["BasicReader"],
+                    "theoretical_license": "Team Members",
+                    "d365_status": "Active",
+                }
+            ]
         )
 
-        # -- Assert --
-        m3 = [m for m in result.mismatches if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED]
-        assert len(m3) >= 1
-        # Finance ($180) - Team Members ($60) = $120 savings
-        assert m3[0].monthly_cost_impact > 0
-
-    def test_matching_license_not_over_provisioned(self) -> None:
-        """Matching Entra and theoretical license = no M3 mismatch."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
-            [{"user_id": "USR-MATCH", "entra_license_type": "Finance"}]
-        )
-        d365_data = _build_d365_user_roles(
-            [{"user_id": "USR-MATCH", "theoretical_license": "Finance"}]
-        )
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
         )
 
-        # -- Assert --
-        m3_for_user = [
-            m for m in result.mismatches
+        over = [
+            m
+            for m in result.mismatches
+            if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED
+        ]
+        assert len(over) >= 1
+        # Finance ($180) - Team Members ($60) = $120
+        assert over[0].monthly_cost_impact == pytest.approx(120.0, abs=0.01)
+
+    def test_same_tier_not_over_provisioned(self) -> None:
+        """Same Entra tier and theoretical tier should NOT produce M3."""
+        entra = _build_entra_licenses(
+            [
+                {
+                    "user_id": "USR-MATCH",
+                    "license_type": "Finance",
+                }
+            ]
+        )
+        d365 = _build_d365_users(
+            [
+                {
+                    "user_id": "USR-MATCH",
+                    "roles": ["Accountant"],
+                    "theoretical_license": "Finance",
+                    "d365_status": "Active",
+                }
+            ]
+        )
+
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
+        )
+
+        over = [
+            m
+            for m in result.mismatches
             if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED
             and m.user_id == "USR-MATCH"
         ]
-        assert len(m3_for_user) == 0
+        assert len(over) == 0
 
 
 # ---------------------------------------------------------------------------
-# Test: M4 - Stale Entitlement (D365 FO disabled, Entra license active)
+# Test: M4 Stale Entitlement -- Disabled D365 FO user with active Entra license
 # ---------------------------------------------------------------------------
 
 
 class TestM4StaleEntitlement:
-    """Test scenario: User disabled in D365 FO but still has Entra license.
+    """Test scenario: D365 FO user is disabled but Entra license is still active.
 
-    Stale entitlements waste license spend and pose security risk.
+    The user cannot log into D365 FO, yet the organization is still paying
+    for the Entra license.
     """
 
     def test_stale_entitlement_detected(self) -> None:
-        """Disabled D365 FO user with active Entra license = M4 Stale."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
+        """Disabled D365 user + active Entra license = M4_STALE_ENTITLEMENT."""
+        entra = _build_entra_licenses(
             [
                 {
                     "user_id": "USR-STALE",
-                    "entra_license_type": "Finance",
-                    "entra_status": "Active",
+                    "license_type": "Finance",
                 }
             ]
         )
-        d365_data = _build_d365_user_roles(
+        d365 = _build_d365_users(
             [
                 {
                     "user_id": "USR-STALE",
-                    "roles": [],
-                    "theoretical_license": "None",
+                    "roles": ["Accountant"],
+                    "theoretical_license": "Finance",
                     "d365_status": "Disabled",
                 }
             ]
         )
-        sku_mapping = _build_sku_mapping()
 
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
         )
 
-        # -- Assert --
-        m4 = [
-            m for m in result.mismatches
+        stale = [
+            m
+            for m in result.mismatches
             if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT
-            and m.user_id == "USR-STALE"
         ]
-        assert len(m4) >= 1
+        assert len(stale) >= 1
+        assert stale[0].user_id == "USR-STALE"
+        assert stale[0].severity == "MEDIUM"
 
-    def test_stale_entitlement_severity_medium(self) -> None:
-        """Stale entitlement should be MEDIUM severity."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
-            [{"user_id": "USR-STALE", "entra_license_type": "Finance"}]
+    def test_stale_entitlement_savings(self) -> None:
+        """M4 savings = full Entra license cost (user is disabled)."""
+        entra = _build_entra_licenses(
+            [
+                {
+                    "user_id": "USR-STALE",
+                    "license_type": "SCM",
+                }
+            ]
         )
-        d365_data = _build_d365_user_roles(
-            [{"user_id": "USR-STALE", "d365_status": "Disabled"}]
-        )
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
-        )
-
-        # -- Assert --
-        m4 = [m for m in result.mismatches if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT]
-        assert len(m4) >= 1
-        assert m4[0].severity == "MEDIUM"
-
-    def test_stale_entitlement_includes_full_license_cost(self) -> None:
-        """Stale entitlement savings = full Entra license cost."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
-            [{"user_id": "USR-STALE", "entra_license_type": "Finance"}]
-        )
-        d365_data = _build_d365_user_roles(
-            [{"user_id": "USR-STALE", "d365_status": "Disabled"}]
-        )
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+        d365 = _build_d365_users(
+            [
+                {
+                    "user_id": "USR-STALE",
+                    "roles": [],
+                    "theoretical_license": None,
+                    "d365_status": "Disabled",
+                }
+            ]
         )
 
-        # -- Assert --
-        m4 = [m for m in result.mismatches if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT]
-        assert len(m4) >= 1
-        assert m4[0].monthly_cost_impact > 0
-
-    def test_active_d365_user_not_stale(self) -> None:
-        """Active D365 FO user should not be flagged as stale entitlement."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
-            [{"user_id": "USR-ACTIVE", "entra_license_type": "Finance"}]
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
         )
-        d365_data = _build_d365_user_roles(
+
+        stale = [
+            m
+            for m in result.mismatches
+            if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT
+        ]
+        assert len(stale) >= 1
+        assert stale[0].monthly_cost_impact == pytest.approx(180.0, abs=0.01)
+
+    def test_active_user_not_stale(self) -> None:
+        """Active D365 user should NOT produce M4_STALE_ENTITLEMENT."""
+        entra = _build_entra_licenses(
+            [
+                {
+                    "user_id": "USR-ACTIVE",
+                    "license_type": "Finance",
+                }
+            ]
+        )
+        d365 = _build_d365_users(
             [
                 {
                     "user_id": "USR-ACTIVE",
@@ -604,213 +611,156 @@ class TestM4StaleEntitlement:
                 }
             ]
         )
-        sku_mapping = _build_sku_mapping()
 
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
         )
 
-        # -- Assert --
-        m4_for_user = [
-            m for m in result.mismatches
+        stale = [
+            m
+            for m in result.mismatches
             if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT
             and m.user_id == "USR-ACTIVE"
         ]
-        assert len(m4_for_user) == 0
+        assert len(stale) == 0
 
 
 # ---------------------------------------------------------------------------
-# Test: No Mismatch (Perfectly Synced)
+# Test: Multi-User Scenario
 # ---------------------------------------------------------------------------
 
 
-class TestNoMismatch:
-    """Test scenario: Entra license matches theoretical D365 FO license."""
+class TestMultiUserSync:
+    """Test scenario: Multiple users with mixed mismatch types."""
 
-    def test_synced_user_no_mismatches(self) -> None:
-        """User with matching Entra and D365 FO licenses = zero mismatches."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
-            [{"user_id": "USR-SYNCED", "entra_license_type": "Finance"}]
-        )
-        d365_data = _build_d365_user_roles(
+    def test_multi_user_all_mismatch_types(self) -> None:
+        """Process multiple users with different mismatch types."""
+        entra = _build_entra_licenses(
             [
-                {
-                    "user_id": "USR-SYNCED",
-                    "roles": ["Accountant"],
-                    "theoretical_license": "Finance",
-                    "d365_status": "Active",
-                }
+                # M1: Ghost (has Entra, no D365 roles)
+                {"user_id": "USR-A", "license_type": "Finance"},
+                # M3: Over-provisioned (Finance but needs Team Members)
+                {"user_id": "USR-B", "license_type": "Finance"},
+                # M4: Stale (disabled in D365)
+                {"user_id": "USR-C", "license_type": "SCM"},
+                # OK: Properly synced
+                {"user_id": "USR-D", "license_type": "Finance"},
             ]
         )
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
-        )
-
-        # -- Assert --
-        user_mismatches = [m for m in result.mismatches if m.user_id == "USR-SYNCED"]
-        assert len(user_mismatches) == 0
-
-
-# ---------------------------------------------------------------------------
-# Test: Configurable SKU Mapping
-# ---------------------------------------------------------------------------
-
-
-class TestConfigurableSKUMapping:
-    """Test scenario: Custom SKU-to-license mapping per tenant."""
-
-    def test_custom_sku_mapping_used(self) -> None:
-        """Custom SKU mapping should override default mapping."""
-        # -- Arrange --
-        custom_mapping = {
-            "CUSTOM-SKU-FIN": "Finance",
-            "CUSTOM-SKU-TM": "Team Members",
-        }
-        entra_data = _build_entra_license_data(
+        d365 = _build_d365_users(
             [
+                {"user_id": "USR-A", "roles": [], "theoretical_license": None},
                 {
-                    "user_id": "USR-CUSTOM",
-                    "entra_sku_id": "CUSTOM-SKU-FIN",
-                    "entra_license_type": "Finance",
-                }
-            ]
-        )
-        d365_data = _build_d365_user_roles(
-            [
-                {
-                    "user_id": "USR-CUSTOM",
-                    "roles": ["Accountant"],
-                    "theoretical_license": "Finance",
-                }
-            ]
-        )
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=custom_mapping,
-        )
-
-        # -- Assert --
-        user_mismatches = [m for m in result.mismatches if m.user_id == "USR-CUSTOM"]
-        assert len(user_mismatches) == 0
-
-
-# ---------------------------------------------------------------------------
-# Test: Batch Processing Multiple Users
-# ---------------------------------------------------------------------------
-
-
-class TestBatchProcessing:
-    """Test scenario: Process multiple users with different mismatch types."""
-
-    def test_multiple_mismatch_types_detected(self) -> None:
-        """Batch should detect M1, M2, M3, M4 across different users."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
-            [
-                {"user_id": "USR-M1", "entra_license_type": "Finance"},
-                {"user_id": "USR-M3", "entra_license_type": "Finance"},
-                {"user_id": "USR-M4", "entra_license_type": "SCM"},
-            ]
-        )
-        d365_data = _build_d365_user_roles(
-            [
-                # USR-M1: has Entra but no D365 roles (Ghost)
-                # USR-M2: has D365 roles but no Entra license (Compliance Gap)
-                {
-                    "user_id": "USR-M2",
-                    "roles": ["Accountant"],
-                    "theoretical_license": "Finance",
-                    "d365_status": "Active",
-                },
-                # USR-M3: Over-provisioned (Finance Entra, Team Members needed)
-                {
-                    "user_id": "USR-M3",
-                    "roles": ["BasicViewer"],
+                    "user_id": "USR-B",
+                    "roles": ["BasicReader"],
                     "theoretical_license": "Team Members",
-                    "d365_status": "Active",
                 },
-                # USR-M4: Stale (disabled in D365 but has Entra license)
                 {
-                    "user_id": "USR-M4",
-                    "roles": [],
-                    "theoretical_license": "None",
+                    "user_id": "USR-C",
+                    "roles": ["SCMPlanner"],
+                    "theoretical_license": "SCM",
                     "d365_status": "Disabled",
                 },
+                {
+                    "user_id": "USR-D",
+                    "roles": ["Accountant"],
+                    "theoretical_license": "Finance",
+                },
+                # M2: Compliance gap (has D365 roles, no Entra license)
+                {
+                    "user_id": "USR-E",
+                    "roles": ["Buyer"],
+                    "theoretical_license": "SCM",
+                },
             ]
         )
-        sku_mapping = _build_sku_mapping()
 
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
         )
 
-        # -- Assert --
         types_found = {m.mismatch_type for m in result.mismatches}
         assert MismatchType.M1_GHOST_LICENSE in types_found
         assert MismatchType.M2_COMPLIANCE_GAP in types_found
         assert MismatchType.M3_OVER_PROVISIONED in types_found
         assert MismatchType.M4_STALE_ENTITLEMENT in types_found
 
+    def test_total_savings_aggregated(self) -> None:
+        """Report should aggregate total potential savings."""
+        entra = _build_entra_licenses(
+            [
+                {"user_id": "USR-A", "license_type": "Finance"},
+                {"user_id": "USR-B", "license_type": "Finance"},
+            ]
+        )
+        d365 = _build_d365_users(
+            [
+                {"user_id": "USR-A", "roles": [], "theoretical_license": None},
+                {
+                    "user_id": "USR-B",
+                    "roles": ["BasicReader"],
+                    "theoretical_license": "Team Members",
+                },
+            ]
+        )
+
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
+        )
+
+        # USR-A Ghost: $180 savings, USR-B Over-provisioned: $120 savings
+        assert result.total_monthly_savings == pytest.approx(300.0, abs=0.01)
+        assert result.total_annual_savings == pytest.approx(3600.0, abs=0.01)
+
 
 # ---------------------------------------------------------------------------
-# Test: Results Sorted by Severity then Savings
+# Test: Sorting -- HIGH severity first, then savings descending
 # ---------------------------------------------------------------------------
 
 
-class TestResultsSorted:
-    """Test scenario: Results sorted by severity (HIGH first) then savings."""
+class TestSorting:
+    """Test scenario: Mismatches sorted by severity then savings."""
 
     def test_high_severity_before_medium(self) -> None:
-        """HIGH severity mismatches should appear before MEDIUM."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
+        """HIGH severity mismatches should come before MEDIUM severity."""
+        entra = _build_entra_licenses(
             [
-                {"user_id": "USR-MEDIUM", "entra_license_type": "Finance"},
+                # M1 Ghost (MEDIUM)
+                {"user_id": "USR-GHOST", "license_type": "Finance"},
             ]
         )
-        d365_data = _build_d365_user_roles(
+        d365 = _build_d365_users(
             [
-                # M2 (HIGH) user has roles but no Entra license
+                {"user_id": "USR-GHOST", "roles": [], "theoretical_license": None},
+                # M2 Compliance Gap (HIGH)
                 {
-                    "user_id": "USR-HIGH",
+                    "user_id": "USR-GAP",
                     "roles": ["Accountant"],
                     "theoretical_license": "Finance",
-                    "d365_status": "Active",
                 },
-                # USR-MEDIUM is ghost (MEDIUM)
             ]
         )
-        sku_mapping = _build_sku_mapping()
 
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
         )
 
-        # -- Assert --
         if len(result.mismatches) >= 2:
-            severity_order = {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}
-            for i in range(len(result.mismatches) - 1):
-                current = severity_order.get(result.mismatches[i].severity, 4)
-                next_val = severity_order.get(result.mismatches[i + 1].severity, 4)
-                assert current <= next_val
+            # HIGH severity items should come first
+            first = result.mismatches[0]
+            assert first.severity == "HIGH"
 
 
 # ---------------------------------------------------------------------------
@@ -821,93 +771,117 @@ class TestResultsSorted:
 class TestEmptyInput:
     """Test scenario: Empty input data."""
 
-    def test_empty_entra_and_d365_no_mismatches(self) -> None:
-        """Empty data should produce zero mismatches."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data([])
-        d365_data = _build_d365_user_roles([])
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+    def test_empty_entra_and_d365(self) -> None:
+        """No users at all should produce empty report."""
+        result = validate_entra_d365_sync(
+            entra_licenses=[],
+            d365_users=[],
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
         )
 
-        # -- Assert --
         assert len(result.mismatches) == 0
-        assert result.total_users_analyzed == 0
+        assert result.total_monthly_savings == pytest.approx(0.0, abs=0.01)
+        assert result.total_annual_savings == pytest.approx(0.0, abs=0.01)
 
-
-# ---------------------------------------------------------------------------
-# Test: Summary Statistics
-# ---------------------------------------------------------------------------
-
-
-class TestSummaryStatistics:
-    """Test scenario: Result includes summary statistics."""
-
-    def test_summary_counts_populated(self) -> None:
-        """Summary should count mismatches by type."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
-            [{"user_id": "USR-GHOST", "entra_license_type": "Finance"}]
-        )
-        d365_data = _build_d365_user_roles([])
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+    def test_empty_entra_with_d365_users(self) -> None:
+        """D365 users with no Entra licenses = compliance gaps."""
+        entra = _build_entra_licenses([])
+        d365 = _build_d365_users(
+            [
+                {
+                    "user_id": "USR-001",
+                    "roles": ["Accountant"],
+                    "theoretical_license": "Finance",
+                }
+            ]
         )
 
-        # -- Assert --
-        assert hasattr(result, "total_users_analyzed")
-        assert hasattr(result, "total_mismatches")
-        assert hasattr(result, "total_monthly_savings")
-        assert hasattr(result, "ghost_license_count")
-        assert hasattr(result, "compliance_gap_count")
-        assert hasattr(result, "over_provisioned_count")
-        assert hasattr(result, "stale_entitlement_count")
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
+        )
+
+        gaps = [m for m in result.mismatches if m.mismatch_type == MismatchType.M2_COMPLIANCE_GAP]
+        assert len(gaps) >= 1
+
+    def test_entra_only_no_d365(self) -> None:
+        """Entra licenses with no D365 users = ghost licenses."""
+        entra = _build_entra_licenses(
+            [
+                {"user_id": "USR-001", "license_type": "Finance"},
+            ]
+        )
+        d365 = _build_d365_users([])
+
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
+        )
+
+        ghost = [m for m in result.mismatches if m.mismatch_type == MismatchType.M1_GHOST_LICENSE]
+        assert len(ghost) >= 1
 
 
 # ---------------------------------------------------------------------------
-# Test: Mismatch Output Model Structure
+# Test: Report Model Structure
 # ---------------------------------------------------------------------------
 
 
-class TestMismatchModelStructure:
-    """Test scenario: Verify mismatch output model has required fields."""
+class TestReportModelStructure:
+    """Test scenario: Verify report and mismatch have required fields."""
 
     def test_mismatch_has_required_fields(self) -> None:
-        """LicenseMismatch should have all spec-required fields."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data(
-            [{"user_id": "USR-MODEL", "entra_license_type": "Finance"}]
+        """MismatchRecord should have all spec-required fields."""
+        entra = _build_entra_licenses(
+            [{"user_id": "USR-FIELD", "license_type": "Finance"}]
         )
-        d365_data = _build_d365_user_roles([])
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+        d365 = _build_d365_users(
+            [{"user_id": "USR-FIELD", "roles": [], "theoretical_license": None}]
         )
 
-        # -- Assert --
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
+        )
+
         assert len(result.mismatches) >= 1
-        m = result.mismatches[0]
-        assert hasattr(m, "user_id")
-        assert hasattr(m, "mismatch_type")
-        assert hasattr(m, "entra_license")
-        assert hasattr(m, "d365_theoretical_license")
-        assert hasattr(m, "severity")
-        assert hasattr(m, "monthly_cost_impact")
-        assert hasattr(m, "recommendation")
+        item = result.mismatches[0]
+        assert hasattr(item, "user_id")
+        assert hasattr(item, "user_name")
+        assert hasattr(item, "mismatch_type")
+        assert hasattr(item, "entra_license")
+        assert hasattr(item, "d365_theoretical_license")
+        assert hasattr(item, "d365_roles")
+        assert hasattr(item, "d365_status")
+        assert hasattr(item, "severity")
+        assert hasattr(item, "monthly_cost_impact")
+        assert hasattr(item, "recommendation")
+
+    def test_report_has_summary_fields(self) -> None:
+        """EntraD365SyncReport should have summary aggregation fields."""
+        result = validate_entra_d365_sync(
+            entra_licenses=[],
+            d365_users=[],
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
+        )
+
+        assert hasattr(result, "algorithm_id")
+        assert hasattr(result, "mismatches")
+        assert hasattr(result, "total_monthly_savings")
+        assert hasattr(result, "total_annual_savings")
+        assert hasattr(result, "ghost_count")
+        assert hasattr(result, "compliance_gap_count")
+        assert hasattr(result, "over_provisioned_count")
+        assert hasattr(result, "stale_count")
+        assert hasattr(result, "total_users_analyzed")
 
 
 # ---------------------------------------------------------------------------
@@ -919,18 +893,148 @@ class TestAlgorithmMetadata:
     """Test scenario: Verify algorithm_id is '3.9'."""
 
     def test_algorithm_id_is_3_9(self) -> None:
-        """LicenseSyncAnalysis should carry algorithm_id '3.9'."""
-        # -- Arrange --
-        entra_data = _build_entra_license_data([])
-        d365_data = _build_d365_user_roles([])
-        sku_mapping = _build_sku_mapping()
-
-        # -- Act --
-        result = validate_entra_d365_license_sync(
-            entra_license_data=entra_data,
-            d365_user_roles=d365_data,
-            sku_mapping=sku_mapping,
+        """EntraD365SyncReport should carry algorithm_id '3.9'."""
+        result = validate_entra_d365_sync(
+            entra_licenses=[],
+            d365_users=[],
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
         )
 
-        # -- Assert --
         assert result.algorithm_id == "3.9"
+
+
+# ---------------------------------------------------------------------------
+# Test: Counts by Mismatch Type
+# ---------------------------------------------------------------------------
+
+
+class TestMismatchCounts:
+    """Test scenario: Verify mismatch counts in report summary."""
+
+    def test_counts_reflect_mismatches(self) -> None:
+        """Report summary counts should match actual mismatch list."""
+        entra = _build_entra_licenses(
+            [
+                {"user_id": "USR-A", "license_type": "Finance"},
+                {"user_id": "USR-B", "license_type": "SCM"},
+            ]
+        )
+        d365 = _build_d365_users(
+            [
+                # USR-A: ghost (no roles)
+                {"user_id": "USR-A", "roles": [], "theoretical_license": None},
+                # USR-B: stale (disabled)
+                {
+                    "user_id": "USR-B",
+                    "roles": [],
+                    "theoretical_license": None,
+                    "d365_status": "Disabled",
+                },
+                # USR-C: compliance gap (has D365 roles, no Entra)
+                {
+                    "user_id": "USR-C",
+                    "roles": ["Buyer"],
+                    "theoretical_license": "SCM",
+                },
+            ]
+        )
+
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
+        )
+
+        ghost_actual = len(
+            [m for m in result.mismatches if m.mismatch_type == MismatchType.M1_GHOST_LICENSE]
+        )
+        gap_actual = len(
+            [m for m in result.mismatches if m.mismatch_type == MismatchType.M2_COMPLIANCE_GAP]
+        )
+        over_actual = len(
+            [m for m in result.mismatches if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED]
+        )
+        stale_actual = len(
+            [m for m in result.mismatches if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT]
+        )
+
+        assert result.ghost_count == ghost_actual
+        assert result.compliance_gap_count == gap_actual
+        assert result.over_provisioned_count == over_actual
+        assert result.stale_count == stale_actual
+
+
+# ---------------------------------------------------------------------------
+# Test: D365 Users without roles not flagged as M2
+# ---------------------------------------------------------------------------
+
+
+class TestNoRolesNoComplianceGap:
+    """Users with no D365 roles and no Entra license = no mismatch."""
+
+    def test_no_roles_no_entra_no_mismatch(self) -> None:
+        """User with no roles and no Entra license is not a mismatch."""
+        entra = _build_entra_licenses([])
+        d365 = _build_d365_users(
+            [
+                {
+                    "user_id": "USR-EMPTY",
+                    "roles": [],
+                    "theoretical_license": None,
+                }
+            ]
+        )
+
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
+        )
+
+        user_mismatches = [m for m in result.mismatches if m.user_id == "USR-EMPTY"]
+        assert len(user_mismatches) == 0
+
+
+# ---------------------------------------------------------------------------
+# Test: Perfectly Synced Users -- No Mismatches
+# ---------------------------------------------------------------------------
+
+
+class TestPerfectSync:
+    """Test scenario: All users perfectly synced between Entra and D365."""
+
+    def test_all_synced_no_mismatches(self) -> None:
+        """All users match: no mismatches produced."""
+        entra = _build_entra_licenses(
+            [
+                {"user_id": "USR-1", "license_type": "Finance"},
+                {"user_id": "USR-2", "license_type": "Team Members"},
+            ]
+        )
+        d365 = _build_d365_users(
+            [
+                {
+                    "user_id": "USR-1",
+                    "roles": ["Accountant"],
+                    "theoretical_license": "Finance",
+                },
+                {
+                    "user_id": "USR-2",
+                    "roles": ["BasicReader"],
+                    "theoretical_license": "Team Members",
+                },
+            ]
+        )
+
+        result = validate_entra_d365_sync(
+            entra_licenses=entra,
+            d365_users=d365,
+            sku_mapping=DEFAULT_SKU_MAP,
+            pricing_config=DEFAULT_PRICING,
+        )
+
+        assert len(result.mismatches) == 0
+        assert result.total_monthly_savings == pytest.approx(0.0, abs=0.01)

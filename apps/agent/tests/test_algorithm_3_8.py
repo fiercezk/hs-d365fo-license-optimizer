@@ -45,7 +45,6 @@ from src.algorithms.algorithm_3_8_access_review_automation import (
     generate_access_review,
 )
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -184,9 +183,7 @@ class TestUnusedRoleRevoke:
             ]
         )
         activity = _build_activity_data([])
-        sec_config = _build_security_config(
-            [("FinanceManager", "BudgetApproval")]
-        )
+        sec_config = _build_security_config([("FinanceManager", "BudgetApproval")])
 
         # -- Act --
         result = generate_access_review(
@@ -226,13 +223,9 @@ class TestDecliningUsageReview:
             ]
         )
         # Role has 20 menu items but user only uses 1
-        sec_config_rows = [
-            ("FullAccountant", f"MenuItem_{i}") for i in range(20)
-        ]
+        sec_config_rows = [("FullAccountant", f"MenuItem_{i}") for i in range(20)]
         sec_config = _build_security_config(sec_config_rows)
-        activity = _build_activity_data(
-            [("USR-002", "2026-01-15 10:00:00", "MenuItem_0", "Read")]
-        )
+        activity = _build_activity_data([("USR-002", "2026-01-15 10:00:00", "MenuItem_0", "Read")])
 
         # -- Act --
         result = generate_access_review(
@@ -384,8 +377,7 @@ class TestHighPrivilegeEscalate:
 
         # -- Assert --
         escalated = [
-            i for i in result.review_items
-            if i.recommended_action == ReviewAction.ESCALATE
+            i for i in result.review_items if i.recommended_action == ReviewAction.ESCALATE
         ]
         assert len(escalated) == 0
 
@@ -415,9 +407,7 @@ class TestNewAssignmentDefer:
             ]
         )
         activity = _build_activity_data([])
-        sec_config = _build_security_config(
-            [("NewRole", "FormA")]
-        )
+        sec_config = _build_security_config([("NewRole", "FormA")])
 
         # -- Act --
         result = generate_access_review(
@@ -444,9 +434,7 @@ class TestNewAssignmentDefer:
             ]
         )
         activity = _build_activity_data([])
-        sec_config = _build_security_config(
-            [("OldRole", "FormA")]
-        )
+        sec_config = _build_security_config([("OldRole", "FormA")])
 
         # -- Act --
         result = generate_access_review(
@@ -507,9 +495,7 @@ class TestMultiUserCampaign:
             ]
         )
         activity = _build_activity_data([])
-        sec_config = _build_security_config(
-            [("RoleA", "FormA"), ("RoleB", "FormB")]
-        )
+        sec_config = _build_security_config([("RoleA", "FormA"), ("RoleB", "FormB")])
 
         # -- Act --
         result = generate_access_review(
@@ -584,13 +570,9 @@ class TestConfigurableReviewPeriod:
         assignments = _build_user_role_assignments(
             [{"user_id": "USR-PER", "role_name": "PeriodRole", "assigned_date": "2025-01-01"}]
         )
-        sec_config = _build_security_config(
-            [("PeriodRole", "FormA")]
-        )
+        sec_config = _build_security_config([("PeriodRole", "FormA")])
         # Activity 45 days ago -- within 60-day window but outside 30-day
-        activity = _build_activity_data(
-            [("USR-PER", "2025-12-24 10:00:00", "FormA", "Write")]
-        )
+        activity = _build_activity_data([("USR-PER", "2025-12-24 10:00:00", "FormA", "Write")])
 
         # -- Act --
         result_60 = generate_access_review(
