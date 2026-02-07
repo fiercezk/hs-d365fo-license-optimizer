@@ -1,8 +1,8 @@
-"""Phase 1 algorithm implementations for license optimization.
+"""Algorithm implementations for license optimization.
 
 Exported algorithms:
   - Algorithm 2.2: Read-Only User Detector
-  - Algorithm 2.3: Role Segmentation by Usage Pattern
+  - Algorithm 2.4: Multi-Role Optimizer
   - Algorithm 2.5: License Minority Detection
   - Algorithm 3.3: Privilege Creep Detector
   - Algorithm 3.4: Toxic Combination Detector
@@ -10,9 +10,10 @@ Exported algorithms:
 """
 
 from .algorithm_2_2_readonly_detector import detect_readonly_users
-from .algorithm_2_3_role_usage_segmentation import (
-    RoleUsageSegmentation,
-    analyze_role_usage_segmentation,
+from .algorithm_2_4_multi_role_optimizer import (
+    MultiRoleOptimization,
+    optimize_multi_role_user,
+    optimize_multi_role_users_batch,
 )
 from .algorithm_2_5_license_minority_detector import detect_license_minority_users
 from .algorithm_3_3_privilege_creep_detector import detect_privilege_creep
@@ -28,8 +29,9 @@ from .algorithm_4_7_new_user_license_recommender import (
 
 __all__ = [
     "detect_readonly_users",
-    "RoleUsageSegmentation",
-    "analyze_role_usage_segmentation",
+    "MultiRoleOptimization",
+    "optimize_multi_role_user",
+    "optimize_multi_role_users_batch",
     "detect_license_minority_users",
     "detect_privilege_creep",
     "detect_toxic_combinations",
