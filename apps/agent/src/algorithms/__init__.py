@@ -1,6 +1,7 @@
-"""Phase 1 algorithm implementations for license optimization.
+"""Algorithm implementations for license optimization.
 
 Exported algorithms:
+  - Algorithm 1.1: Role License Composition Analyzer
   - Algorithm 2.2: Read-Only User Detector
   - Algorithm 2.5: License Minority Detection
   - Algorithm 3.3: Privilege Creep Detector
@@ -8,6 +9,12 @@ Exported algorithms:
   - Algorithm 4.7: New User License Recommender
 """
 
+from .algorithm_1_1_role_composition_analyzer import (
+    LicenseCompositionEntry,
+    RoleComposition,
+    analyze_role_composition,
+    analyze_roles_batch,
+)
 from .algorithm_2_2_readonly_detector import detect_readonly_users
 from .algorithm_2_5_license_minority_detector import detect_license_minority_users
 from .algorithm_3_3_privilege_creep_detector import detect_privilege_creep
@@ -22,6 +29,10 @@ from .algorithm_4_7_new_user_license_recommender import (
 )
 
 __all__ = [
+    "LicenseCompositionEntry",
+    "RoleComposition",
+    "analyze_role_composition",
+    "analyze_roles_batch",
     "detect_readonly_users",
     "detect_license_minority_users",
     "detect_privilege_creep",
