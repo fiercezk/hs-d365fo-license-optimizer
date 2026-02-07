@@ -196,6 +196,13 @@ export interface SecurityAlert {
   detectedAt: string;
 }
 
+export interface CostTrendDataPoint {
+  date: string; // ISO 8601 date string
+  actualCost: number;
+  forecastCost?: number;
+  targetCost?: number;
+}
+
 // ============================================================================
 // Report Models (GET /api/v1/reports/{reportType})
 // ============================================================================

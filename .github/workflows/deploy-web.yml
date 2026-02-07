@@ -1,0 +1,82 @@
+# Web Application Deployment to Azure Static Web Apps
+#
+# Builds and deploys the Next.js application to Azure Static Web Apps.
+# Triggered on push to main or manual workflow dispatch.
+
+name: Deploy Web Application
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/web/**'
+      - '.github/workflows/deploy-web.yml'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy to ${{ github.event.inputs.environment || 'dev' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        working-directory: apps/web
+        run: bun install --frozen-lockfile
+
+      - name: Set environment variables
+        run: |
+          echo "NEXT_PUBLIC_API_URL=${{ secrets.API_URL }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_APP_INSIGHTS_KEY=${{ secrets.APP_INSIGHTS_KEY }}" >> $GITHUB_ENV
+
+      - name: Build application
+        working-directory: apps/web
+        run: bun run build
+
+      - name: Deploy to Azure Static Web Apps
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: 'upload'
+          app_location: 'apps/web'
+          output_location: '.next'
+          skip_app_build: true
+
+      - name: Deployment summary
+        run: |
+          echo "## Web Application Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: ${{ github.event.inputs.environment || 'dev' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build**: Successful" >> $GITHUB_STEP_SUMMARY
+          echo "- **Deployment**: Complete" >> $GITHUB_STEP_SUMMARY

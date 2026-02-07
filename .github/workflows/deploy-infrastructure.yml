@@ -1,0 +1,115 @@
+# Azure Infrastructure Deployment
+#
+# Deploys Azure resources using Bicep templates.
+# Triggered manually or on push to main after CI passes.
+#
+# Prerequisites:
+#   - AZURE_CREDENTIALS secret configured
+#   - Service Principal with Contributor access
+#   - Resource Group created manually
+
+name: Deploy Infrastructure
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+      what_if:
+        description: 'Run what-if analysis only (no deployment)'
+        required: false
+        default: false
+        type: boolean
+  push:
+    branches:
+      - main
+    paths:
+      - 'infrastructure/**'
+      - '.github/workflows/deploy-infrastructure.yml'
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AZURE_LOCATION: eastus2
+  RESOURCE_GROUP_PREFIX: rg-d365-license-agent
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment || 'dev' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set deployment variables
+        id: vars
+        run: |
+          ENV="${{ github.event.inputs.environment || 'dev' }}"
+          RG="${RESOURCE_GROUP_PREFIX}-${ENV}"
+          echo "environment=${ENV}" >> $GITHUB_OUTPUT
+          echo "resource_group=${RG}" >> $GITHUB_OUTPUT
+
+      - name: Create Resource Group
+        run: |
+          az group create \
+            --name ${{ steps.vars.outputs.resource_group }} \
+            --location ${{ env.AZURE_LOCATION }}
+
+      - name: Run What-If Analysis
+        if: github.event.inputs.what_if == 'true' || github.event_name == 'pull_request'
+        run: |
+          az deployment group what-if \
+            --resource-group ${{ steps.vars.outputs.resource_group }} \
+            --template-file infrastructure/main.bicep \
+            --parameters infrastructure/parameters.json \
+            --parameters environment=${{ steps.vars.outputs.environment }}
+
+      - name: Deploy Infrastructure
+        if: github.event.inputs.what_if != 'true' && github.event_name != 'pull_request'
+        run: |
+          az deployment group create \
+            --resource-group ${{ steps.vars.outputs.resource_group }} \
+            --template-file infrastructure/main.bicep \
+            --parameters infrastructure/parameters.json \
+            --parameters environment=${{ steps.vars.outputs.environment }} \
+            --mode Incremental \
+            --verbose
+
+      - name: Get deployment outputs
+        if: github.event.inputs.what_if != 'true'
+        id: outputs
+        run: |
+          OUTPUTS=$(az deployment group show \
+            --resource-group ${{ steps.vars.outputs.resource_group }} \
+            --name main \
+            --query properties.outputs \
+            --output json)
+          echo "outputs=${OUTPUTS}" >> $GITHUB_OUTPUT
+
+      - name: Display outputs
+        if: github.event.inputs.what_if != 'true'
+        run: |
+          echo "## Deployment Outputs" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.outputs.outputs }}' | jq -r 'to_entries[] | "- **\(.key)**: \(.value.value)"' >> $GITHUB_STEP_SUMMARY
+
+      - name: Tag deployment
+        if: github.event.inputs.what_if != 'true' && steps.vars.outputs.environment == 'production'
+        run: |
+          git tag -a "infra-prod-$(date +%Y%m%d-%H%M%S)" -m "Production infrastructure deployment"
+          git push origin --tags
