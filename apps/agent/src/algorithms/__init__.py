@@ -1,3 +1,4 @@
+"""Algorithm implementations for license optimization.
 Exported algorithms:
   - Algorithm 1.1: Role License Composition Analyzer
 """Phase 1 & 2 algorithm implementations for license optimization.
@@ -8,6 +9,7 @@ Exported algorithms:
   - Algorithm 2.5: License Minority Detection
   - Algorithm 3.3: Privilege Creep Detector
   - Algorithm 3.4: Toxic Combination Detector
+  - Algorithm 3.7: Service Account Analyzer
   - Algorithm 4.7: New User License Recommender
 
   Phase 2:
@@ -40,6 +42,11 @@ from .algorithm_3_4_toxic_combination_detector import (
     detect_toxic_combinations,
     detect_toxic_combinations_batch,
 )
+from .algorithm_3_7_service_account_analyzer import (
+    ServiceAccountAnalysis,
+    ServiceAccountConfig,
+    ServiceAccountFinding,
+    analyze_service_accounts,
 from .algorithm_3_5_orphaned_account_detector import (
     detect_orphaned_accounts,
     OrphanedAccountResult,
@@ -76,6 +83,10 @@ __all__ = [
     "detect_privilege_creep",
     "detect_toxic_combinations",
     "detect_toxic_combinations_batch",
+    "ServiceAccountAnalysis",
+    "ServiceAccountConfig",
+    "ServiceAccountFinding",
+    "analyze_service_accounts",
     "NewUserLicenseRecommender",
     "LicenseRecommendationOption",
     "suggest_license_for_new_user",
