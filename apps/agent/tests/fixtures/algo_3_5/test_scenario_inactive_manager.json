@@ -1,0 +1,28 @@
+{
+  "scenario_name": "Inactive Manager: User's Manager Has Left",
+  "description": "Active user with a manager who is now inactive (left the company or disabled). Account has a manager_id but the manager is no longer valid. HIGH risk because oversight has been lost.",
+
+  "user": {
+    "user_id": "USR-ORPHAN-005",
+    "name": "Emily Davis",
+    "email": "emily.davis@contoso.com",
+    "status": "Active",
+    "manager_id": "MGR-INACTIVE-001",
+    "manager_status": "Inactive",
+    "department": "Procurement",
+    "department_exists": true,
+    "current_license": "SCM",
+    "current_license_cost_monthly": 180.00,
+    "roles": ["Purchasing Agent"],
+    "role_count": 1,
+    "days_since_last_activity": 10
+  },
+
+  "expected_result": {
+    "is_orphaned": true,
+    "orphan_reasons": ["Manager is inactive"],
+    "orphan_type": "INACTIVE_MANAGER",
+    "risk_level": "HIGH",
+    "recommendation": "Assign a new active manager"
+  }
+}
