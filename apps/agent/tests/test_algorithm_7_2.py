@@ -38,7 +38,6 @@ from typing import Any
 import pandas as pd
 
 from src.algorithms.algorithm_7_2_cost_allocation_engine import (
-    CostAllocation,
     CostAllocationAnalysis,
     allocate_license_costs,
 )

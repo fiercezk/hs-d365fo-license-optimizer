@@ -6,9 +6,9 @@ Exported algorithms:
   - Algorithm 2.5: License Minority Detection
   - Algorithm 3.3: Privilege Creep Detector
   - Algorithm 3.4: Toxic Combination Detector
-  - Algorithm 3.9: Entra-D365 License Sync Validator
+  - Algorithm 4.2: License Attach Optimizer
   - Algorithm 4.7: New User License Recommender
-  - Algorithm 7.4: ROI Calculator
+  - Algorithm 5.3: Time-Based Access Analyzer
 """
 
 from .algorithm_1_2_user_segment_analyzer import (
@@ -32,22 +32,20 @@ from .algorithm_3_4_toxic_combination_detector import (
     detect_toxic_combinations,
     detect_toxic_combinations_batch,
 )
-from .algorithm_3_9_entra_d365_sync_validator import (
-    EntraD365SyncReport,
-    MismatchRecord,
-    MismatchType,
-    validate_entra_d365_sync,
+from .algorithm_4_2_license_attach_optimizer import (
+    AttachOptimization,
+    AttachOptimizationResult,
+    optimize_license_attach,
 )
 from .algorithm_4_7_new_user_license_recommender import (
     NewUserLicenseRecommender,
     LicenseRecommendationOption,
     suggest_license_for_new_user,
 )
-from .algorithm_7_4_roi_calculator import (
-    OptimizationRecommendationInput,
-    ROIAnalysis,
-    ROISummary,
-    calculate_roi,
+from .algorithm_5_3_time_based_access_analyzer import (
+    TimeBasedAccessAlert,
+    TimeBasedAccessAnalysis,
+    analyze_time_based_access,
 )
 
 __all__ = [
@@ -74,15 +72,13 @@ __all__ = [
     "detect_privilege_creep",
     "detect_toxic_combinations",
     "detect_toxic_combinations_batch",
-    "EntraD365SyncReport",
-    "MismatchRecord",
-    "MismatchType",
-    "validate_entra_d365_sync",
+    "AttachOptimization",
+    "AttachOptimizationResult",
+    "optimize_license_attach",
     "NewUserLicenseRecommender",
     "LicenseRecommendationOption",
     "suggest_license_for_new_user",
-    "OptimizationRecommendationInput",
-    "ROIAnalysis",
-    "ROISummary",
-    "calculate_roi",
+    "TimeBasedAccessAlert",
+    "TimeBasedAccessAnalysis",
+    "analyze_time_based_access",
 ]
