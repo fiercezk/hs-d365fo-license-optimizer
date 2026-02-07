@@ -1,0 +1,28 @@
+{
+  "scenario_name": "No Department: User With Missing Department",
+  "description": "Active user with manager but no valid department. Department was likely deleted during reorganization. HIGH risk because active with no departmental oversight.",
+
+  "user": {
+    "user_id": "USR-ORPHAN-003",
+    "name": "Maria Garcia",
+    "email": "maria.garcia@contoso.com",
+    "status": "Active",
+    "manager_id": "MGR-003",
+    "manager_status": "Active",
+    "department": null,
+    "department_exists": false,
+    "current_license": "Commerce",
+    "current_license_cost_monthly": 180.00,
+    "roles": ["Retail Manager", "POS Operator"],
+    "role_count": 2,
+    "days_since_last_activity": 15
+  },
+
+  "expected_result": {
+    "is_orphaned": true,
+    "orphan_reasons": ["No valid department"],
+    "orphan_type": "NO_DEPARTMENT",
+    "risk_level": "HIGH",
+    "recommendation": "Assign user to a valid department"
+  }
+}
