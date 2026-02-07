@@ -1,0 +1,290 @@
+{
+  "$schema": "./algorithm-manifest-schema.json",
+  "version": "1.0.0",
+  "last_updated": "2026-02-07",
+  "source_document": "Requirements/08-Algorithm-Review-Summary.md",
+  "expected_total": 34,
+  "description": "Canonical manifest of all implemented algorithms. This file is the single source of truth for portfolio completeness validation. Any new algorithm MUST be added here BEFORE implementation (TDD for infrastructure). The validate_algorithms.py script checks this manifest against the actual filesystem.",
+  "categories": {
+    "cost_optimization": "Algorithms focused on reducing license spend (1.x, 2.x series)",
+    "security_compliance": "Algorithms focused on security, compliance, and fraud prevention (3.x series)",
+    "license_management": "Algorithms focused on license type optimization (4.x series)",
+    "analytics_behavior": "Algorithms focused on user behavior and analytics (5.x series)",
+    "role_management": "Algorithms focused on role hygiene and optimization (6.x series)",
+    "advanced_analytics": "Algorithms focused on trends, cost allocation, and ROI (7.x series)"
+  },
+  "algorithms": [
+    {
+      "id": "1.1",
+      "name": "Role License Composition Analyzer",
+      "category": "cost_optimization",
+      "implementation_file": "algorithm_1_1_role_composition_analyzer.py",
+      "test_file": "test_algorithm_1_1.py",
+      "init_export_required": true
+    },
+    {
+      "id": "1.2",
+      "name": "User Segment Analyzer",
+      "category": "cost_optimization",
+      "implementation_file": "algorithm_1_2_user_segment_analyzer.py",
+      "test_file": "test_algorithm_1_2.py",
+      "init_export_required": true
+    },
+    {
+      "id": "1.3",
+      "name": "Role Splitting Recommender",
+      "category": "cost_optimization",
+      "implementation_file": "algorithm_1_3_role_splitting_recommender.py",
+      "test_file": "test_algorithm_1_3.py",
+      "init_export_required": true
+    },
+    {
+      "id": "1.4",
+      "name": "Component Removal Recommender",
+      "category": "cost_optimization",
+      "implementation_file": "algorithm_1_4_component_removal.py",
+      "test_file": "test_algorithm_1_4.py",
+      "init_export_required": true
+    },
+    {
+      "id": "2.1",
+      "name": "Permission vs. Usage Analyzer",
+      "category": "cost_optimization",
+      "implementation_file": "algorithm_2_1_permission_usage_analyzer.py",
+      "test_file": "test_algorithm_2_1.py",
+      "init_export_required": true
+    },
+    {
+      "id": "2.2",
+      "name": "Read-Only User Detector",
+      "category": "cost_optimization",
+      "implementation_file": "algorithm_2_2_readonly_detector.py",
+      "test_file": "test_algorithm_2_2.py",
+      "init_export_required": true
+    },
+    {
+      "id": "2.3",
+      "name": "Role Segmentation by Usage",
+      "category": "cost_optimization",
+      "implementation_file": "algorithm_2_3_role_usage_segmentation.py",
+      "test_file": "test_algorithm_2_3.py",
+      "init_export_required": true
+    },
+    {
+      "id": "2.4",
+      "name": "Multi-Role Optimization",
+      "category": "cost_optimization",
+      "implementation_file": "algorithm_2_4_multi_role_optimizer.py",
+      "test_file": "test_algorithm_2_4.py",
+      "init_export_required": true
+    },
+    {
+      "id": "2.5",
+      "name": "License Minority Detection",
+      "category": "cost_optimization",
+      "implementation_file": "algorithm_2_5_license_minority_detector.py",
+      "test_file": "test_algorithm_2_5.py",
+      "init_export_required": true
+    },
+    {
+      "id": "2.6",
+      "name": "Cross-Role License Optimization",
+      "category": "cost_optimization",
+      "implementation_file": "algorithm_2_6_cross_role_optimizer.py",
+      "test_file": "test_algorithm_2_6.py",
+      "init_export_required": true
+    },
+    {
+      "id": "3.1",
+      "name": "Segregation of Duties (SoD) Violation Detector",
+      "category": "security_compliance",
+      "implementation_file": "algorithm_3_1_sod_violation_detector.py",
+      "test_file": "test_algorithm_3_1.py",
+      "init_export_required": true
+    },
+    {
+      "id": "3.2",
+      "name": "Anomalous Role Change Detector",
+      "category": "security_compliance",
+      "implementation_file": "algorithm_3_2_anomalous_role_change_detector.py",
+      "test_file": "test_algorithm_3_2.py",
+      "init_export_required": true
+    },
+    {
+      "id": "3.3",
+      "name": "Privilege Creep Detector",
+      "category": "security_compliance",
+      "implementation_file": "algorithm_3_3_privilege_creep_detector.py",
+      "test_file": "test_algorithm_3_3.py",
+      "init_export_required": true
+    },
+    {
+      "id": "3.4",
+      "name": "Toxic Combination Detector",
+      "category": "security_compliance",
+      "implementation_file": "algorithm_3_4_toxic_combination_detector.py",
+      "test_file": "test_algorithm_3_4.py",
+      "init_export_required": true
+    },
+    {
+      "id": "3.5",
+      "name": "Orphaned Account Detector",
+      "category": "security_compliance",
+      "implementation_file": "algorithm_3_5_orphaned_account_detector.py",
+      "test_file": "test_algorithm_3_5.py",
+      "init_export_required": true
+    },
+    {
+      "id": "3.6",
+      "name": "Emergency Account Monitor",
+      "category": "security_compliance",
+      "implementation_file": "algorithm_3_6_emergency_account_monitor.py",
+      "test_file": "test_algorithm_3_6.py",
+      "init_export_required": true
+    },
+    {
+      "id": "3.7",
+      "name": "Service Account Analyzer",
+      "category": "security_compliance",
+      "implementation_file": "algorithm_3_7_service_account_analyzer.py",
+      "test_file": "test_algorithm_3_7.py",
+      "init_export_required": true
+    },
+    {
+      "id": "3.8",
+      "name": "Access Review Automation",
+      "category": "security_compliance",
+      "implementation_file": "algorithm_3_8_access_review_automation.py",
+      "test_file": "test_algorithm_3_8.py",
+      "init_export_required": true
+    },
+    {
+      "id": "3.9",
+      "name": "Entra-D365 License Sync Validator",
+      "category": "security_compliance",
+      "implementation_file": "algorithm_3_9_entra_d365_sync_validator.py",
+      "test_file": "test_algorithm_3_9.py",
+      "init_export_required": true
+    },
+    {
+      "id": "4.1",
+      "name": "Device License Opportunity Detector",
+      "category": "license_management",
+      "implementation_file": "algorithm_4_1_device_license_detector.py",
+      "test_file": "test_algorithm_4_1.py",
+      "init_export_required": true
+    },
+    {
+      "id": "4.2",
+      "name": "License Attach Optimizer",
+      "category": "license_management",
+      "implementation_file": "algorithm_4_2_license_attach_optimizer.py",
+      "test_file": "test_algorithm_4_2.py",
+      "init_export_required": true
+    },
+    {
+      "id": "4.3",
+      "name": "Cross-Application License Analyzer",
+      "category": "license_management",
+      "implementation_file": "algorithm_4_3_cross_app_analyzer.py",
+      "test_file": "test_algorithm_4_3.py",
+      "init_export_required": true
+    },
+    {
+      "id": "4.7",
+      "name": "New User License Recommendation Engine",
+      "category": "license_management",
+      "implementation_file": "algorithm_4_7_new_user_license_recommender.py",
+      "test_file": "test_algorithm_4_7.py",
+      "init_export_required": true
+    },
+    {
+      "id": "5.1",
+      "name": "License Cost Trend Analyzer",
+      "category": "analytics_behavior",
+      "implementation_file": "algorithm_5_1_license_trend_analyzer.py",
+      "test_file": "test_algorithm_5_1.py",
+      "init_export_required": true
+    },
+    {
+      "id": "5.2",
+      "name": "Security Risk Scorer",
+      "category": "analytics_behavior",
+      "implementation_file": "algorithm_5_2_security_risk_scorer.py",
+      "test_file": "test_algorithm_5_2.py",
+      "init_export_required": true
+    },
+    {
+      "id": "5.3",
+      "name": "Time-Based Access Analyzer",
+      "category": "analytics_behavior",
+      "implementation_file": "algorithm_5_3_time_based_access_analyzer.py",
+      "test_file": "test_algorithm_5_3.py",
+      "init_export_required": true
+    },
+    {
+      "id": "5.4",
+      "name": "Contractor Access Tracker",
+      "category": "analytics_behavior",
+      "implementation_file": "algorithm_5_4_contractor_access_tracker.py",
+      "test_file": "test_algorithm_5_4.py",
+      "init_export_required": true
+    },
+    {
+      "id": "6.1",
+      "name": "Stale Role Detector",
+      "category": "role_management",
+      "implementation_file": "algorithm_6_1_stale_role_detector.py",
+      "test_file": "test_algorithm_6_1.py",
+      "init_export_required": true
+    },
+    {
+      "id": "6.2",
+      "name": "Permission Explosion Detector",
+      "category": "role_management",
+      "implementation_file": "algorithm_6_2_permission_explosion_detector.py",
+      "test_file": "test_algorithm_6_2.py",
+      "init_export_required": true
+    },
+    {
+      "id": "6.3",
+      "name": "Duplicate Role Consolidator",
+      "category": "role_management",
+      "implementation_file": "algorithm_6_3_duplicate_role_consolidator.py",
+      "test_file": "test_algorithm_6_3.py",
+      "init_export_required": true
+    },
+    {
+      "id": "6.4",
+      "name": "Role Hierarchy Optimizer",
+      "category": "role_management",
+      "implementation_file": "algorithm_6_4_role_hierarchy_optimizer.py",
+      "test_file": "test_algorithm_6_4.py",
+      "init_export_required": true
+    },
+    {
+      "id": "7.1",
+      "name": "License Utilization Trend Analyzer",
+      "category": "advanced_analytics",
+      "implementation_file": "algorithm_7_1_license_utilization_trend.py",
+      "test_file": "test_algorithm_7_1.py",
+      "init_export_required": true
+    },
+    {
+      "id": "7.2",
+      "name": "Cost Allocation Engine",
+      "category": "advanced_analytics",
+      "implementation_file": "algorithm_7_2_cost_allocation_engine.py",
+      "test_file": "test_algorithm_7_2.py",
+      "init_export_required": true
+    },
+    {
+      "id": "7.4",
+      "name": "ROI Calculator",
+      "category": "advanced_analytics",
+      "implementation_file": "algorithm_7_4_roi_calculator.py",
+      "test_file": "test_algorithm_7_4.py",
+      "init_export_required": true
+    }
+  ]
+}
