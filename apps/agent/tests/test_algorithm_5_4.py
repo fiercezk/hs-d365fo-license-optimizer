@@ -29,14 +29,12 @@ Key behaviors:
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any
 
 import pandas as pd
-import pytest
 
 from src.algorithms.algorithm_5_4_contractor_access_tracker import (
-    ContractorAccessFinding,
     ContractorAccessReport,
     FindingSeverity,
     track_contractor_access,

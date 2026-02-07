@@ -38,7 +38,6 @@ import pytest
 
 from src.algorithms.algorithm_3_9_entra_d365_sync_validator import (
     EntraD365SyncReport,
-    MismatchRecord,
     MismatchType,
     validate_entra_d365_sync,
 )

@@ -23,7 +23,7 @@ See Requirements/08-Algorithm-Review-Summary.md.
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
 
 import pandas as pd
