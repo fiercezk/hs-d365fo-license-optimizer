@@ -42,6 +42,7 @@ from src.algorithms.algorithm_3_9_entra_d365_sync_validator import (
     validate_entra_d365_sync,
 )
 
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -375,7 +376,8 @@ class TestM2ComplianceGap:
         gaps = [
             m
             for m in result.mismatches
-            if m.mismatch_type == MismatchType.M2_COMPLIANCE_GAP and m.user_id == "USR-OK"
+            if m.mismatch_type == MismatchType.M2_COMPLIANCE_GAP
+            and m.user_id == "USR-OK"
         ]
         assert len(gaps) == 0
 
@@ -420,7 +422,11 @@ class TestM3OverProvisioned:
             pricing_config=DEFAULT_PRICING,
         )
 
-        over = [m for m in result.mismatches if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED]
+        over = [
+            m
+            for m in result.mismatches
+            if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED
+        ]
         assert len(over) >= 1
         assert over[0].user_id == "USR-OVER"
         assert over[0].severity == "MEDIUM"
@@ -453,7 +459,11 @@ class TestM3OverProvisioned:
             pricing_config=DEFAULT_PRICING,
         )
 
-        over = [m for m in result.mismatches if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED]
+        over = [
+            m
+            for m in result.mismatches
+            if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED
+        ]
         assert len(over) >= 1
         # Finance ($180) - Team Members ($60) = $120
         assert over[0].monthly_cost_impact == pytest.approx(120.0, abs=0.01)
@@ -489,7 +499,8 @@ class TestM3OverProvisioned:
         over = [
             m
             for m in result.mismatches
-            if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED and m.user_id == "USR-MATCH"
+            if m.mismatch_type == MismatchType.M3_OVER_PROVISIONED
+            and m.user_id == "USR-MATCH"
         ]
         assert len(over) == 0
 
@@ -535,7 +546,9 @@ class TestM4StaleEntitlement:
         )
 
         stale = [
-            m for m in result.mismatches if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT
+            m
+            for m in result.mismatches
+            if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT
         ]
         assert len(stale) >= 1
         assert stale[0].user_id == "USR-STALE"
@@ -570,7 +583,9 @@ class TestM4StaleEntitlement:
         )
 
         stale = [
-            m for m in result.mismatches if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT
+            m
+            for m in result.mismatches
+            if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT
         ]
         assert len(stale) >= 1
         assert stale[0].monthly_cost_impact == pytest.approx(180.0, abs=0.01)
@@ -606,7 +621,8 @@ class TestM4StaleEntitlement:
         stale = [
             m
             for m in result.mismatches
-            if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT and m.user_id == "USR-ACTIVE"
+            if m.mismatch_type == MismatchType.M4_STALE_ENTITLEMENT
+            and m.user_id == "USR-ACTIVE"
         ]
         assert len(stale) == 0
 
@@ -820,7 +836,9 @@ class TestReportModelStructure:
 
     def test_mismatch_has_required_fields(self) -> None:
         """MismatchRecord should have all spec-required fields."""
-        entra = _build_entra_licenses([{"user_id": "USR-FIELD", "license_type": "Finance"}])
+        entra = _build_entra_licenses(
+            [{"user_id": "USR-FIELD", "license_type": "Finance"}]
+        )
         d365 = _build_d365_users(
             [{"user_id": "USR-FIELD", "roles": [], "theoretical_license": None}]
         )
