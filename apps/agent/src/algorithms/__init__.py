@@ -19,6 +19,10 @@ from .algorithm_2_1_permission_usage_analyzer import analyze_permission_usage
   - Algorithm 1.4: Component Removal Recommender
 """
 
+from .algorithm_1_2_user_segment_analyzer import (
+    UserSegmentAnalysis,
+    UserSegmentDetail,
+    analyze_user_segments,
 from .algorithm_1_1_role_composition_analyzer import (
     LicenseCompositionEntry,
     RoleComposition,
@@ -49,6 +53,9 @@ from .algorithm_4_7_new_user_license_recommender import (
 )
 
 __all__ = [
+    "UserSegmentAnalysis",
+    "UserSegmentDetail",
+    "analyze_user_segments",
     # Phase 2
     "detect_orphaned_accounts",
     "OrphanedAccountResult",
