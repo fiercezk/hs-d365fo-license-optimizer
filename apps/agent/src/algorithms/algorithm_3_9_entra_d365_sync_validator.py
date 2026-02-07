@@ -306,9 +306,9 @@ def validate_entra_d365_sync(
         if d365_status == "Disabled":
             continue
 
-        entra_record = entra_map.get(user_id)
+        user_entra_record: dict[str, Any] | None = entra_map.get(user_id)
 
-        if entra_record is None:
+        if user_entra_record is None:
             # M2: Compliance Gap -- has D365 roles but NO Entra license
             mismatches.append(
                 MismatchRecord(
@@ -329,7 +329,7 @@ def validate_entra_d365_sync(
             )
         else:
             # Check if Entra tier is LOWER than theoretical (under-licensed)
-            entra_license = entra_record["license_type"]
+            entra_license = user_entra_record["license_type"]
             entra_tier = _get_tier_priority(entra_license)
             theoretical_tier = _get_tier_priority(theoretical_license)
 
