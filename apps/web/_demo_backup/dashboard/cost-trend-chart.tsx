@@ -181,7 +181,7 @@ export function CostTrendChart({
             <p className="text-xs text-gray-500">Savings vs. Forecast</p>
             <p className="text-lg font-semibold text-green-600">
               {formatCurrency(
-                data[data.length - 1].forecastCost - data[data.length - 1].actualCost
+                (data[data.length - 1].forecastCost ?? 0) - data[data.length - 1].actualCost
               )}
             </p>
           </div>

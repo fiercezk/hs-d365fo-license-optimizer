@@ -3,6 +3,22 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import type { LucideIcon } from "lucide-react";
+import {
+  LayoutDashboard,
+  TrendingDown,
+  BarChart3,
+  Eye,
+  Users,
+  GitBranch,
+  Shield,
+  AlertTriangle,
+  Activity,
+  FileCheck,
+  Wand2,
+  CheckCircle,
+  Settings,
+} from "lucide-react";
 
 /**
  * Main sidebar navigation.
@@ -20,7 +36,7 @@ import { cn } from "@/lib/utils";
 interface NavItem {
   label: string;
   href: string;
-  icon: string;
+  icon: LucideIcon;
   children?: NavItem[];
 }
 
@@ -28,63 +44,63 @@ const navigation: NavItem[] = [
   {
     label: "Dashboard",
     href: "/dashboard",
-    icon: "LayoutDashboard",
+    icon: LayoutDashboard,
   },
   {
     label: "License Optimization",
     href: "/algorithms",
-    icon: "TrendingDown",
+    icon: TrendingDown,
     children: [
-      { label: "Overview", href: "/algorithms", icon: "BarChart3" },
-      { label: "Read-Only Users", href: "/algorithms/readonly", icon: "Eye" },
+      { label: "Overview", href: "/algorithms", icon: BarChart3 },
+      { label: "Read-Only Users", href: "/algorithms/readonly", icon: Eye },
       {
         label: "License Minority",
         href: "/algorithms/minority",
-        icon: "Users",
+        icon: Users,
       },
       {
         label: "Cross-Role Optimization",
         href: "/algorithms/cross-role",
-        icon: "GitBranch",
+        icon: GitBranch,
       },
     ],
   },
   {
     label: "Security & Compliance",
     href: "/algorithms/security",
-    icon: "Shield",
+    icon: Shield,
     children: [
       {
         label: "SoD Violations",
         href: "/algorithms/security/sod",
-        icon: "AlertTriangle",
+        icon: AlertTriangle,
       },
       {
         label: "Anomalous Activity",
         href: "/algorithms/security/anomalies",
-        icon: "Activity",
+        icon: Activity,
       },
       {
         label: "Compliance Reports",
         href: "/algorithms/security/compliance",
-        icon: "FileCheck",
+        icon: FileCheck,
       },
     ],
   },
   {
     label: "New User Wizard",
     href: "/wizard",
-    icon: "Wand2",
+    icon: Wand2,
   },
   {
     label: "Recommendations",
     href: "/recommendations",
-    icon: "CheckCircle",
+    icon: CheckCircle,
   },
   {
     label: "Administration",
     href: "/admin",
-    icon: "Settings",
+    icon: Settings,
   },
 ];
 
@@ -122,7 +138,7 @@ export function Sidebar() {
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                 )}
               >
-                <span className="text-xs">{item.icon}</span>
+                <item.icon className="h-5 w-5 shrink-0" />
                 {item.label}
               </Link>
 
